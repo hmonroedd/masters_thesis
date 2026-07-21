@@ -78,36 +78,96 @@ This section is usually 3-5 pages.
 
 
 %%%%%%%%%%%%%%%%
-\chapter{Design}
+\chapter{Gas sparging model}
 %%%%%%%%%%%%%%%%
 
-Introduce and discuss the design decisions that you made during this project.
-Highlight why individual decisions are important and/or necessary. Discuss
-how the design fits together.
+% Introduce and discuss the design decisions that you made during this project.
+% Highlight why individual decisions are important and/or necessary. Discuss
+% how the design fits together.
 
-This section is usually 5-10 pages.
+% This section is usually 5-10 pages.
 
+\section{Mathematical framework}
+\subsection{Mass transfer}
+% expose diffusivity, boundary layer model, then advective transport 
+\subsection{Fluid dynamics}
+% expose correlations
+\subsection{Boundary conditions}
+\subsection{Assumptions of the model}
+
+\section{Numerical implementation}
+% The implementation covers some of the implementation details of your project.
+% This is not intended to be a low level description of every line of code that
+% you wrote but covers the implementation aspects of the projects.
+
+% This section is usually 3-5 pages.
+
+\subsection{Python package structure}
+% just a quick figure of the packages dependencies, API
+\subsection{Numerical scheme}
+\subsection{Fluid dynamics parameters resolution}
+% parameters dependance graph
+% graph resolution algorithm 
+
+\subsection{Verification and numerical convergence}
+% convergence plot: quantify convergence without tau at that point ? (not already introduced)
+% add a MMS verification
+
+
+\section{Model exploration}
+% all that was learn by playing around with the model
+\subsection{Effect of mixing}
+\subsubsection{Continuous stirred tank approximation}
+\subsubsection{Plug flow reactor approximation}
+
+\subsection{Limiting regimes}
+% plot error vs Pi 
+\subsubsection{Mass transfer limited}
+% sobol at low Pi -> Ks negligible
+\subsubsection{Partial pressure limited}
+% sobol at higher Pi -> Ks not negligible
+\subsection{Analytical 0D model}
+\subsubsection{Derivation}
+\subsubsection{Extension to partial pressure limited regime}
+% fit e(Pi) with polynomial to get tau(Pi) 
 
 %%%%%%%%%%%%%%%%%%%%%%%%
-\chapter{Implementation}
+\chapter{Application to the LIBRA Pi tritium breeding experiment}
 %%%%%%%%%%%%%%%%%%%%%%%%
 
-The implementation covers some of the implementation details of your project.
-This is not intended to be a low level description of every line of code that
-you wrote but covers the implementation aspects of the projects.
+\section{Prediction of the extraction time}
 
-This section is usually 3-5 pages.
+\subsection{Dependence on operating parameters}
+\subsubsection{Sensitivity analysis}
+% sobol plot of operating parameters
+\subsubsection{Operating point}
+% tau vs (n,T) map
+% add cost function to give optimal region ?
+\subsection{Uncertainty on transport parameters}
+% given Pi number (previous chapter), can Ks be neglected
+% pessimistic vs optimistic scenario
+
+\section{Tritium permeation study}
+
+\subsection{Tritium transport model}
+\subsubsection{Geometry}
+\subsubsection{Numerical scheme}
+
+\subsection{Results}
+\subsubsection{Impact of sweep gas composition}
+\subsubsection{Impact of recombination constant}
+\subsubsection{Effect of tritium extraction kinetics}
 
 
 %%%%%%%%%%%%%%%%%%%%
 \chapter{Evaluation}
 %%%%%%%%%%%%%%%%%%%%
 
-In the evaluation you convince the reader that your design works as intended.
-Describe the evaluation setup, the designed experiments, and how the
-experiments showcase the individual points you want to prove.
+% In the evaluation you convince the reader that your design works as intended.
+% Describe the evaluation setup, the designed experiments, and how the
+% experiments showcase the individual points you want to prove.
 
-This section is usually 5-10 pages.
+% This section is usually 5-10 pages.
 
 
 %%%%%%%%%%%%%%%%%%%%%%
