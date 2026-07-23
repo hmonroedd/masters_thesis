@@ -13,6 +13,14 @@
 \usepackage[MScThesis,lablogo]{EPFLreport}
 \usepackage{xspace}
 
+% added packages
+\usepackage{amsmath}
+\usepackage{cleveref}
+\usepackage{float}
+\usepackage{tabularx}
+\usepackage{booktabs}
+\usepackage{xltabular}
+
 \title{Tritium extraction and transport from molten salt breeding experiments}
 \author{Hippolyte Monroe}
 \supervisor{Dr. Rémi Delaporte-Mathurin}
@@ -22,10 +30,10 @@
 
 % custom commands
 \newcommand{\sysname}{FooSystem\xspace}
-\newcommand{\PT}{P_{T_2}}
-\newcommand{\CT}{c_{T_2}}
-\newcommand{\JT}{J_{T_2}}
-\newcommand{\YT}{y_{T_2}}
+\newcommand{\PT}{\ensuremath{P_{T_2}}}
+\newcommand{\CT}{\ensuremath{c_{T_2}}}
+\newcommand{\JT}{\ensuremath{J_{T_2}}}
+\newcommand{\YT}{\ensuremath{y_{T_2}}}
 
 \begin{document}
 \maketitle
@@ -49,6 +57,8 @@ English abstract. For other projects this is optional.
 \end{frenchabstract}
 
 \maketoc
+
+\input{notations}
 
 %%%%%%%%%%%%%%%%%%%%%%
 \chapter{Introduction}
@@ -92,6 +102,20 @@ This section is usually 3-5 pages.
 % expose diffusivity, boundary layer model, then advective transport 
 \subsection{Fluid dynamics}
 % expose correlations
+
+\subsection{Advection-reaction-dispersion model}
+\begin{itemize}
+    \item Liquid: 
+    \begin{equation}
+    \label{eq:CT2}
+        \varepsilon_l \frac{\partial c_{T_2}}{\partial t} =  \underbrace{\varepsilon_l E_{l} \frac{\partial ^2 c_{T_{2}}}{\partial z^2}}_\text{liquid dispersion} + \underbrace{S_{T_2}}_\text{tritium source} - \underbrace{a\,J_{T_2}}_{\text{mass transfer}}
+    \end{equation}
+    \item Gas: 
+    \begin{equation}
+    \label{eq:PT2}
+        \varepsilon_g \frac{1}{RT} \frac{\partial P_{T_2}}{\partial t} = \underbrace{-\frac{1}{RT}\frac{\partial (\,u_g\,P_{T_2})}{\partial z}}_\text{gas advection} + \underbrace{\varepsilon_g E_{g} \frac{1}{RT}\frac{\partial ^2 P_{T_{2}}}{\partial z^2}}_\text{gas dispersion} + a\,J_{T_2}
+    \end{equation}
+\end{itemize}
 \subsection{Boundary conditions}
 \subsection{Assumptions of the model}
 
@@ -109,7 +133,9 @@ This section is usually 3-5 pages.
 % parameters dependance graph
 % graph resolution algorithm 
 
-\subsection{Verification and numerical convergence}
+\subsection{Verification}
+\subsubsection{Method of manufactured solution}
+\subsubsection{Numerical error estimate}
 % convergence plot: quantify convergence without tau at that point ? (not already introduced)
 % add a MMS verification
 
@@ -128,6 +154,41 @@ This section is usually 3-5 pages.
 % sobol at higher Pi -> Ks not negligible
 \subsection{Analytical 0D model}
 \subsubsection{Derivation}
+Let us consider a single He bubble $b$, immersed in a static liquid of tritium concentration $c_l$. The evolution of the tritium inventory $n_{T_2,b}$ in the bubble is governed by:
+\begin{equation}
+\label{eq:nb}
+    \frac{d\,n_{T_2,b}}{dt} = A_b\,\JT
+\end{equation}
+
+Writing it in terms of tritium partial pressure by using the ideal gas law and expanding the right term, \cref{eq:nb} becomes:
+
+\begin{equation}
+\label{eq:Pb_ODE}
+    \frac{V_b}{RT}\frac{d\,\PT}{dt} = A_b\,h_l\,(c_l-K_s\PT)
+\end{equation}
+
+We are assuming a spherical bubble of diameter $d_b$, the specific interfacial area of the bubble is $a_b=\frac{A_b}{V_b}=\frac{6}{d_b}$ (not to be confused with the specific interfacial area of the gas phase as a whole $a=\varepsilon_ga_b$).
+Solving \cref{eq:Pb_ODE} yields:
+\begin{equation}
+\label{eq:Pb_full}
+    \PT(t)=\frac{c_l}{K_s}\,(1-e^{-a_b\,R\,T\,h_l\,K_s\,t})
+\end{equation}
+
+The speed $v_b$ of the bubble, assumed constant, couples the time it spends in the system to its position: $t=\frac{z}{v_b}$. We can express the member of the exponential term in \cref{eq:Pb_full} as a dimensionless number $\Pi$ defined as:
+\begin{equation}
+\label{eq:Pi_def}
+    \Pi(z)\equiv \frac{a_b\,R\,T\,h_l\,K_s}{v_g}\,z
+\end{equation}
+
+$\Pi$ can be interpreted as "how close the bubble is to reaching $\frac{c_l}{K_s}$, i.e. being at equilibrium with the surrounding liquid". 
+\begin{itemize}
+    \item When $1-e^{\Pi(z)}\approx0$: the bubble can be considered free of any tritium, the driving force for tritium exchange \JT is therefore maximal, limited only by the liquid side mass transfer $h_l$, i.e. the ability of tritium to diffuse down the concentration gradient, through the liquid film up to the gas phase. 
+    \item When $1-e^{\Pi(z)}\approx1$: the bubble is saturated with tritium, the interfacial flux \JT drops as there is no concentration gradient through the liquid film to drive it, since the mass transfer process is throttled by the partial pressure in the bubble being at equilibrium with the liquid phase.
+\end{itemize}
+
+
+
+(i.e. it can leave the boundary of the system eventually)
 \subsubsection{Extension to partial pressure limited regime}
 % fit e(Pi) with polynomial to get tau(Pi) 
 
@@ -152,6 +213,10 @@ This section is usually 3-5 pages.
 \subsection{Tritium transport model}
 \subsubsection{Geometry}
 \subsubsection{Numerical scheme}
+\subsection{Grid refinement study}
+
+% safety factor SF=1.25 as recommanded for GCI on 3 or more grids
+% we use P1 linear lagrange elements which theoretically give an L2 norm of the error in O(h^2) for the field themselves and O(h) for their gradient. Bounday fluxes are obtained from gradient so the results p=1-1.3 are consistent with the theory 
 
 \subsection{Results}
 \subsubsection{Impact of sweep gas composition}
