@@ -20,6 +20,9 @@
 \usepackage{tabularx}
 \usepackage{booktabs}
 \usepackage{xltabular}
+\usepackage[version=4]{mhchem}
+\usepackage[colorinlistoftodos]{todonotes} % for the citing todo
+\newcommand{\needcite}[1]{\todo[color=red!40]{CITE: #1}}
 
 \title{Tritium extraction and transport from molten salt breeding experiments}
 \author{Hippolyte Monroe}
@@ -37,7 +40,15 @@
 
 \begin{document}
 \maketitle
+\listoftodos
 \makededication
+
+\acknowledgments{
+my ack 
+\par
+I would also like to acknowledge the support of the Zeno Karl Schindler foundation.
+
+}
 \makeacks
 
 \begin{abstract}
@@ -64,17 +75,66 @@ English abstract. For other projects this is optional.
 \chapter{Introduction}
 %%%%%%%%%%%%%%%%%%%%%%
 
-The introduction is a longer writeup that gently eases the reader into your
-thesis~\cite{dinesh20oakland}. Use the first paragraph to discuss the setting.
-In the second paragraph you can introduce the main challenge that you see.
-The third paragraph lists why related work is insufficient.
-The fourth and fifth paragraphs discuss your approach and why it is needed.
-The sixth paragraph will introduce your thesis statement. Think how you can
-distill the essence of your thesis into a single sentence.
-The seventh paragraph will highlight some of your results
-The eights paragraph discusses your core contribution.
+% The introduction is a longer writeup that gently eases the reader into your
+% thesis~\cite{dinesh20oakland}. Use the first paragraph to discuss the setting.
+% In the second paragraph you can introduce the main challenge that you see.
+% The third paragraph lists why related work is insufficient.
+% The fourth and fifth paragraphs discuss your approach and why it is needed.
+% The sixth paragraph will introduce your thesis statement. Think how you can
+% distill the essence of your thesis into a single sentence.
+% The seventh paragraph will highlight some of your results
+% The eights paragraph discusses your core contribution.
 
-This section is usually 3-5 pages.
+% This section is usually 3-5 pages.
+
+
+% try to keep it accessible to non scientifics, few literature references here, just explain the concepts 
+
+\section{Tritium in the nuclear industry}
+% intro type "c'est pas sorcier"
+Tritium is a radioactive isotope of hydrogen, its nucleus is made of 1 proton and 2 neutrons and is therefore denoted \ce{^3H} or \ce{T}. It disintegrates into \ce{^3He} through beta decay with a half life of 12.3 years. It is unintentionally produced: 
+\begin{itemize}
+    \item naturally: via interaction of highly energetic cosmic neutrons with atmospheric nitrogen (\ce{^14_7N(n,T)^12_6C} reaction)
+    \item as a product of the fission reactions in all fission reactors 
+\end{itemize}
+
+Even though beta radiations don't penetrate the skin, tritium can substitute to hydrogen in water to form \ce{HTO}, which if spread in the environment can contaminate the food chain and become a radiological hazard. For that reason, it is an undesirable byproduct in the fission industry. 
+
+Still, tritium finds a use as a fuel in nuclear fusion, because of its favorable cross section for fusion reactions with deuterium. Historically, nuclear fusion and therefore tritium have been serving military purposes, in nuclear weapons. But just like nuclear fission found a peaceful use in nuclear reactors for energy production, important efforts are being made since decades to control nuclear fusion and eventually produce electricity in a fusion power plant (FPP). 
+
+\todo{insert representation of H and T nucleus + isotope chart along with energy barrier}
+
+
+\section{Breeding tritium}
+% introduce "breeding"
+A typical FPP would require important amounts of tritium, estimated at $\sim$100 kg/year to fuel a 800~MWe DEMO-type commercial fusion plant. The current world inventory is estimated at $\sim$20 kg of tritium, halving every 12 years due to radioactive decay if not renewed. It is then necessary to intentionally produce tritium via nuclear reactions:
+\begin{align}
+    \ce{^2H + n &-> T + \gamma} \label{eq:D2_capture}\\
+    \ce{^6Li + n &-> T + \alpha} + 4.8~\mathrm{MeV} \label{eq:Li6_capture}\\
+    \ce{^7Li + n &-> T + \alpha} + \mathrm{n} - 2.5~\mathrm{MeV} \label{eq:Li7_capture}
+\end{align}
+
+As of now, the existing commercially available tritium is produced as a byproduct of heavy water moderated reactors operation, specifically CANada Deuterium Uranium,(CANDU) reactors. through neutron capture (\cref{eq:D2_capture}). But the small cross section of this reaction (0.5 millibarns for thermal neutrons) makes it unsuitable for large scale production. \Cref{eq:Li6_capture} on the other hand  has a 1000~barns thermal neutron cross section, it is used for military tritium production and is also the privileged path to tritium breeding for controlled fusion. Industrial tritium production would therefore rely on thermal neutron capture in a lithium-6 rich material, the cross section for \cref{eq:Li7_capture} being marginal (300 millibarns, for fast neutrons). 
+
+\todo{insert plot of neutron cross sections of those reactions}
+
+Such lithium rich materials can take different forms:
+\begin{itemize}
+    \item solid ceramics: lithium oxides
+    \item liquid metals: Lithium-Lead eutectic (LiPb)
+    \item molten salts: Fluorine-Lithium-Beryllium salt (FLiBe), Fluorine-Lithium-Sodium-Potassium (FLiNaK)
+\end{itemize}
+
+Pb and Be containing materials present the advantage of readily incorporating a neutron multiplier ((n,2n) reaction), which increases the tritium production.
+
+
+\section{Recovering the bred tritium}
+
+\section{State of the art and open questions}
+\subsection{What remains to be explored}
+
+\section{Problem definition}
+% roadmap: 1 sentence/chapter 
 
 %%%%%%%%%%%%%%%%%%%%
 \chapter{Background}
@@ -85,6 +145,8 @@ work. This is not necessarily related work but technologies and dependencies
 that must be resolved to understand your design and implementation.
 
 This section is usually 3-5 pages.
+
+% the literature review goes here, not in the intro
 
 
 %%%%%%%%%%%%%%%%
