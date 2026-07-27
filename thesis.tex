@@ -87,48 +87,102 @@ English abstract. For other projects this is optional.
 
 % This section is usually 3-5 pages.
 
-
-% try to keep it accessible to non scientifics, few literature references here, just explain the concepts 
-
-\section{Tritium in the nuclear industry}
-% intro type "c'est pas sorcier"
-Tritium is a radioactive isotope of hydrogen, its nucleus is made of 1 proton and 2 neutrons and is therefore denoted \ce{^3H} or \ce{T}. It disintegrates into \ce{^3He} through beta decay with a half life of 12.3 years. It is unintentionally produced: 
+\section{The tritium isotope}
+% what is tritium (main characteristics)
+Tritium is a radioactive isotope of hydrogen, its nucleus is made of 1 proton and 2 neutrons and is therefore denoted \ce{^3H} or \ce{T}. It disintegrates into \ce{^3He} through beta decay with a half life of 12.3 years. 
+% where do we find it
+Because of its short half life and its absence of any decay chain, tritium can't be naturally found in concentrated quantities unlike other radioactive isotopes (e.g. uranium-238, radon-222). It is unintentionally produced: 
 \begin{itemize}
-    \item naturally: via interaction of highly energetic cosmic neutrons with atmospheric nitrogen (\ce{^14_7N(n,T)^12_6C} reaction)
-    \item as a product of the fission reactions in all fission reactors 
+    \item naturally, from highly energetic cosmic neutrons interacting with atmospheric nitrogen (\ce{^14_7N(n,T)^12_6C} reaction, contribution estimated at 0.2 kg/year)
+    \item as a product of the fission reactions in all fission reactors, with a low yield ($10^{-4}$ to $10^{-6}$ T/fission event, depending on the fissile nuclide and the neutron energy) \needcite{IAEA database} %https://www-nds.iaea.org/relnsd/vcharthtml/VChartHTML.html
 \end{itemize}
 
-Even though beta radiations don't penetrate the skin, tritium can substitute to hydrogen in water to form \ce{HTO}, which if spread in the environment can contaminate the food chain and become a radiological hazard. For that reason, it is an undesirable byproduct in the fission industry. 
+% do we want tritium ?
+Even though beta radiations don't penetrate the skin, tritium can substitute to hydrogen in water to form \ce{HTO}, which if spread in the environment can contaminate the food chain and become a radiological hazard. For that reason, it is an undesirable byproduct in the fission industry. % -> no in fission
 
-Still, tritium finds a use as a fuel in nuclear fusion, because of its favorable cross section for fusion reactions with deuterium. Historically, nuclear fusion and therefore tritium have been serving military purposes, in nuclear weapons. But just like nuclear fission found a peaceful use in nuclear reactors for energy production, important efforts are being made since decades to control nuclear fusion and eventually produce electricity in a fusion power plant (FPP). 
+Still, tritium finds a use as a fuel in nuclear fusion: because of its favorable cross section for fusion reactions with deuterium (\ce{^2H} or \ce{D}), it was identified as the most efficient fuel for fusion devices \needcite{ITER physical basis report ?}. Historically, nuclear fusion and therefore tritium have been serving military purposes, in nuclear weapons. But just like nuclear fission found a peaceful use in nuclear reactors for energy production, controlled nuclear fusion offers a promising path to carbon-free energy. Compared to its fission counterpart, a fusion power plant (FPP) would present the advantage of lower and shorter radiotoxicity of its byproducts, increased safety and abundance of fuel. Controlled fusion has therefore been the subject of intense research for decades, and is now entering a fast growing phase: in 2026, the Fusion Industry Association counted 56 private fusion companies for a total funding of \$14.2bn worldwide, which is \$4.5bn more than in 2025\cite{noauthor_2026_2026}. Among these companies, 40 of them envision deuterium-tritium (DT) as fusion fuel. Deuterium is present in small proportions in seawater (\needcite{how many ppm ?}) and its extraction is a well known process as evidenced by the fleet of 44 Pressurized Heavy Water Reactors (PHWR) operating worldwide. Tritium fuel supply on the other hand is a much bigger concern due to itsp scarcity, stressing the need for industrial tritium production. % -> yes in fusion
 
 \todo{insert representation of H and T nucleus + isotope chart along with energy barrier}
+% elaborate on why do we want fusion power plants ? Dedicate a subsection ?
 
-
-\section{Breeding tritium}
-% introduce "breeding"
-A typical FPP would require important amounts of tritium, estimated at $\sim$100 kg/year to fuel a 800~MWe DEMO-type commercial fusion plant. The current world inventory is estimated at $\sim$20 kg of tritium, halving every 12 years due to radioactive decay if not renewed. It is then necessary to intentionally produce tritium via nuclear reactions:
+\section{Tritium production}
+\subsection{Main pathways}
+% how can we create tritium 
+A typical FPP would require important amounts of tritium, estimated at $\sim$100 kg/year to fuel a 800~MWe commercial fusion plant. The current world inventory of $\sim$20 kg of tritium is largely insufficient and halves every 12 years due to radioactive decay if not renewed. It is then necessary to intentionally produce tritium via nuclear transmutation:
 \begin{align}
+%include reaction with B10 ? -> in PWR 
     \ce{^2H + n &-> T + \gamma} \label{eq:D2_capture}\\
     \ce{^6Li + n &-> T + \alpha} + 4.8~\mathrm{MeV} \label{eq:Li6_capture}\\
     \ce{^7Li + n &-> T + \alpha} + \mathrm{n} - 2.5~\mathrm{MeV} \label{eq:Li7_capture}
 \end{align}
 
-As of now, the existing commercially available tritium is produced as a byproduct of heavy water moderated reactors operation, specifically CANada Deuterium Uranium,(CANDU) reactors. through neutron capture (\cref{eq:D2_capture}). But the small cross section of this reaction (0.5 millibarns for thermal neutrons) makes it unsuitable for large scale production. \Cref{eq:Li6_capture} on the other hand  has a 1000~barns thermal neutron cross section, it is used for military tritium production and is also the privileged path to tritium breeding for controlled fusion. Industrial tritium production would therefore rely on thermal neutron capture in a lithium-6 rich material, the cross section for \cref{eq:Li7_capture} being marginal (300 millibarns, for fast neutrons). 
+As of now, the existing commercially available tritium is produced as a byproduct of heavy water moderated reactors through neutron capture (\cref{eq:D2_capture}), specifically in CANada Deuterium Uranium,(CANDU) reactors (estimated at 130 g of tritium/reactor/year) \needcite{https://www.neimagazine.com/analysis/answering-the-big-tritium-question/?cf-view}. But the small cross section of this reaction (0.5 millibarns for thermal neutrons) makes it unsuitable for large scale production. \Cref{eq:Li6_capture} on the other hand  has a 1000~barns thermal neutron cross section \needcite{JANIS database (https://www.oecd-nea.org/janisweb/book/neutrons/H2/MT102/renderer/3458)}, it is used for military tritium production and is also the privileged path to tritium breeding for controlled fusion. Industrial tritium production would therefore rely on thermal neutron capture in a lithium-6 rich material, the cross section for \cref{eq:Li7_capture} being marginal (300 millibarns, for fast neutrons). 
 
-\todo{insert plot of neutron cross sections of those reactions}
+% where do we get the neutrons from
+Aforementioned transmutation reactions all need neutrons as a reactant. Neutrons can be found in fission reactors, but producing tritium there poses the problem of introducing large amounts of tritium in an environment where it is usually unwanted because of its handling difficulties and the associated radiological concern, and is anyway constrained to relatively low tritium amounts to leave enough neutrons for fission to self-sustain ($\sim$1 kg/reactor/year using Tritium Producing Burnable Absorbers Rods)\needcite{NRC?}. For those reasons, tritium production in fission reactors is restricted to military programs.
 
-Such lithium rich materials can take different forms:
+DT fusion itself produces fast neutrons (\cref{eq:DT_fusion}), it naturally follows that a FPP can act as a neutron source that \textit{breed} its own fuel. Contrary to external sources such as fission reactors or neutron beams, this approach offers the advantage that the available neutron flux scales with the amount of fuel needed and thus can sustain operation of an arbitrarily large fleet of FPP. This makes breeding the most scalable and economical path to industrial tritium fuel production. 
+
+\begin{align}
+    \ce{D + T -> \alpha}\ \mathrm{(3.5 MeV) + n \ (14 MeV)} \label{eq:DT_fusion}
+\end{align}
+    
+
+\todo{insert plot of neutron cross sections of those reactions} % use Remi's neutron XS plotter: https://github.com/openmc-data-storage/isotope-xs-plotter
+
+\subsection{The breeding blanket}
+
+In practice, a FPP would produce tritium in a \textit{breeding blanket} that surrounds the fusion core, be it inertially or magnetically confined. For \cref{eq:Li6_capture, eq:Li7_capture} to occur, the breeding blanket is made of a lithium-incorporating material, chosen among:
 \begin{itemize}
-    \item solid ceramics: lithium oxides
+    \item solid ceramics: lithium orthosilicate (\ce{Li4SiO4}), lithium metatitanate (\ce{Li2TiO3})
     \item liquid metals: Lithium-Lead eutectic (LiPb)
     \item molten salts: Fluorine-Lithium-Beryllium salt (FLiBe), Fluorine-Lithium-Sodium-Potassium (FLiNaK)
 \end{itemize}
 
-Pb and Be containing materials present the advantage of readily incorporating a neutron multiplier ((n,2n) reaction), which increases the tritium production.
+% material choice: tritium production
+From the perspective of tritium production optimization, the choice of breeding material is driven by: 
+\begin{itemize}
+    \item a high macroscopic neutron capture cross section: higher Li density, \ce{ ^6Li} enrichment is favorable
+    \item presence of a neutron moderator: the \ce{^6Li} reaction occurs with thermal neutrons, therefore light elements are favorable for their moderating capability
+    \item presence of a neutron multiplier: Pb and Be containing materials readily incorporate a neutron multiplier ((n,2n) reaction)
+\end{itemize}
+
+% the other roles of the BB
+Beyond the tritium production aspect, a breeding blanket must shield the 14 MeV neutrons produced by the fusion core, i.e. 80\% of the fusion energy (see \cref{eq:DT_fusion}) dissipates in it as heat. In that regard, liquid materials offer the advantage of being both tritium breeding materials and coolant. Molten salts in particular have a heat capacity superior to that of LiPb and don't conduct electricity which makes them favorable for compact and magnetically confined FPP designs, such as the Affordable-Robust-Compact (ARC) tokamak concept. 
 
 
-\section{Recovering the bred tritium}
+\section{Challenges of the tritium fuel cycle}
+% define the fuel cycle for tritium 
+\subsection{Self-sufficiency}
+% definition of the scientific and engineering TBR, tritium self-sufficiency of a FPP
+In order to be self sufficient, a FPP would have to breed more tritium than it consumes, the ratio of these two quantities is defined as the Tritium Breeding Ratio (TBR). This general definition can be made more specific, by having a distinction between the "scientific" TBR (\cref{eq:TBR_sci}), which only measures tritium being born in the breeding material, and the "engineering" TBR (\cref{eq:TBR_eng}) which measures the tritium that is actually retrieved and can be re-injected in the fusion core. 
+\begin{align}
+    \mathrm{TBR_{sci}}&= \frac{\mathrm{T_{bred}}}{\mathrm{T_{burnt}}} \label{eq:TBR_sci} \\
+    \mathrm{TBR_{eng}} &= \frac{\mathrm{T_{retrieved}}}{\mathrm{T_{burnt}}} =  \mathrm{TBR_{sci}} \cdot \eta  \label{eq:TBR_eng}\\
+    \eta &= \frac{\mathrm{T_{retrieved}}}{\mathrm{T_{bred}}}<1 \label{eq:eta}
+\end{align}
+
+Where $\eta$ accounts for losses due to radioactive decay, non-perfect extraction and tritium permeation. 
+
+% inner and outer fuel cycle ?
+$\mathrm{TBR_{sci}}$>1 is necessary, but it is not sufficient. A self sufficient FPP needs to achieve $\mathrm{TBR_{eng}}$>1 by maximizing both its components:
+\begin{itemize}
+    \item $\mathrm{TBR_{sci}}$ is purely neutronics dependant, it is optimized by use of \ce{^6Li} enrichment and by maximizing its thickness as well as the solid angle it covers around the fusion core;
+    \item $\eta$ is optimized by reducing permeation losses throughout the fuel cycle (e.g. by means of dedicated structural materials and coatings) and optimizing tritium extraction from the breeder.
+\end{itemize}  
+
+\subsection{Tritium handling}
+As isotopes of the same element share same electron structure, tritium chemically behaves like hydrogen: it forms \ce{T2} gas, substitutes with hydrogen in water to form tritiated water \ce{HTO}, and dissociates at metal surfaces into atomic \ce{T} that dissolves into the lattice. The latter is a consequence of hydrogen being a small but non-inert element, it therefore bonds with the conduction band electrons of the metal lattice (dissociation and chemisorption), can fit into interstitial sites (high \textit{solubility} in metals) and hop between them over a low energy barrier (high \textit{diffusivity}). The product of solubility and diffusivity is called \textit{permeability} and is the property that makes tritium especially hard to contain no matter how leak-tight and defect-free the container is. Permeability increases with temperature, which in the case of liquid breeders that need to operate above a certain melting point can pose a radiological issue and significantly degrade $\eta$. 
+
+\subsection{Tritium extraction}
+On top of directly retrieving tritium, maximizing the efficiency of the tritium extraction system (TES) has the indirect positive effect of reducing the amount of tritium available for permeation, therefore decreasing tritium permeation losses in the outer fuel cycle. A performant TES is therefore needed to achieve a sufficiently high $\eta$. 
+
+Several TES technologies exist, with various maturities:
+\begin{itemize}
+    \item Vacuum permeators:
+    \item Gas-liquid contactors: 
+    \item Vacuum sieve tray: 
+\end{itemize}
 
 \section{State of the art and open questions}
 \subsection{What remains to be explored}
