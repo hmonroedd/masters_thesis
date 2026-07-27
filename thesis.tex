@@ -121,7 +121,7 @@ As of now, the existing commercially available tritium is produced as a byproduc
 % where do we get the neutrons from
 Aforementioned transmutation reactions all need neutrons as a reactant. Neutrons can be found in fission reactors, but producing tritium there poses the problem of introducing large amounts of tritium in an environment where it is usually unwanted because of its handling difficulties and the associated radiological concern, and is anyway constrained to relatively low tritium amounts to leave enough neutrons for fission to self-sustain ($\sim$1 kg/reactor/year using Tritium Producing Burnable Absorbers Rods)\needcite{NRC?}. For those reasons, tritium production in fission reactors is restricted to military programs.
 
-DT fusion itself produces fast neutrons (\cref{eq:DT_fusion}), it naturally follows that a FPP can act as a neutron source that \textit{breed} its own fuel. Contrary to external sources such as fission reactors or neutron beams, this approach offers the advantage that the available neutron flux scales with the amount of fuel needed and thus can sustain operation of an arbitrarily large fleet of FPP. This makes breeding the most scalable and economical path to industrial tritium fuel production. 
+DT fusion itself produces fast neutrons (\cref{eq:DT_fusion}), it naturally follows that a FPP can act as a neutron source that \textit{breeds} its own fuel. Contrary to external sources such as fission reactors or neutron beams, this approach offers the advantage that the available neutron flux scales with the amount of fuel needed and thus can sustain operation of an arbitrarily large fleet of FPP. This makes breeding the most scalable and economical path to industrial tritium fuel production. 
 
 \begin{align}
     \ce{D + T -> \alpha}\ \mathrm{(3.5 MeV) + n \ (14 MeV)} \label{eq:DT_fusion}
@@ -132,11 +132,11 @@ DT fusion itself produces fast neutrons (\cref{eq:DT_fusion}), it naturally foll
 
 \subsection{The breeding blanket}
 % how is breeding engineered ?
-In practice, a FPP would produce tritium in a \textit{breeding blanket} that surrounds the fusion core, be it inertially or magnetically confined. For \cref{eq:Li6_capture, eq:Li7_capture} to occur, the breeding blanket is made of a lithium-incorporating material, chosen among:
+In practice, a FPP would produce tritium in a \textit{breeding blanket} that surrounds the fusion core, be it inertially or magnetically confined. For \cref{eq:Li6_capture,eq:Li7_capture} to occur, the breeding blanket is made of a lithium-containing material, chosen among:
 \begin{itemize}
     \item solid ceramics: lithium orthosilicate (\ce{Li4SiO4}), lithium metatitanate (\ce{Li2TiO3})
-    \item liquid metals: Lithium-Lead eutectic (LiPb)
-    \item molten salts: Fluorine-Lithium-Beryllium salt (FLiBe), Fluorine-Lithium-Sodium-Potassium (FLiNaK)
+    \item liquid metals: Lithium-Lead eutectic (\ce{Pb_{83}Li_{17}}), melting at 235°C
+    \item molten salts: FLiBe (\ce{2LiF-BeF2}), FLiNaK (\ce{LiF-NaF-KF}), melting at $\sim$450°C
 \end{itemize}
 
 % material choice: tritium production
@@ -156,29 +156,39 @@ The fusion fuel cycle is the set of processes that supplies tritium to the plasm
 \begin{itemize}
     \item \textit{inner fuel cycle}: recovery of what the plasma does not burn. It is characterized by the fueling efficiency (performance of the fuel injection system, i.e. how much fuel reaches the fusion core) and the tritium burn fraction TBF (performance of the fusion core, i.e. how much tritium fuses among the one that reached the core). The product of these two quantities isn't expected to exceed 5\% \cite{abdou_physics_2020}
     \item \textit{outer fuel cycle}: newly bred tritium to replace what was consumed. It is characterized by the Tritium Breeding Ratio (TBR), defined as the ratio of tritium bred per tritium consumed. 
-    
 \end{itemize}
-% define the fuel cycle for tritium 
+
+\todo{insert schematic of fuel cycle, from Meschini 2023 ARC fuel cycle paper ?}
+
 \subsection{Self-sufficiency}
 % definition of the scientific and engineering TBR, tritium self-sufficiency of a FPP
-In order to be self sufficient, a FPP would have to produces at least as much tritium as it consumes.achieve a sufficiently high TBR. For explanatory purposes. a distinction can be made between the "scientific" TBR (\cref{eq:TBR_sci}), which only measures tritium being born in the breeding material, and the "engineering" TBR (\cref{eq:TBR_eng}) which measures the tritium that is actually retrieved and can be injected in the fusion core. 
+% include doubling time considerations, achievable and required TBR ? (Ferry 2023, Abdou 2020)
+For the fusion power industry to be able to scale, individual FPPs have to produces at least as much tritium as they consumes, i.e. optimize their outer fuel cycle to achieve a sufficiently high TBR. For explanatory purposes. a distinction can be made between the "scientific" TBR (\cref{eq:TBR_sci}), which only measures tritium being born in the breeding material, and the "engineering" TBR (\cref{eq:TBR_eng}) which measures the tritium that is actually retrieved and can be injected in the fusion core. 
 \begin{align}
     \mathrm{TBR_{sci}}&= \frac{\mathrm{T_{bred}}}{\mathrm{T_{burnt}}} \label{eq:TBR_sci} \\
     \mathrm{TBR_{eng}} &= \frac{\mathrm{T_{retrieved}}}{\mathrm{T_{burnt}}} =  \mathrm{TBR_{sci}} \cdot \eta  \label{eq:TBR_eng}\\
     \eta &= \frac{\mathrm{T_{retrieved}}}{\mathrm{T_{bred}}}<1 \label{eq:eta}
 \end{align}
 
-Where $\eta$ accounts for losses due to radioactive decay, non-perfect extraction and tritium permeation. 
+Where $\eta$ accounts for losses through the outer fuel cycle. 
 
-% inner and outer fuel cycle ?
 $\mathrm{TBR_{sci}}$>1 is necessary, but it is not sufficient. A self sufficient FPP needs to achieve $\mathrm{TBR_{eng}}$>1 by maximizing both its components:
 \begin{itemize}
-    \item $\mathrm{TBR_{sci}}$ is purely neutronics dependant, it is optimized by use of \ce{^6Li} enrichment and by maximizing its thickness as well as the solid angle it covers around the fusion core;
+    \item $\mathrm{TBR_{sci}}$ is purely neutronics dependent, it is optimized by use of \ce{^6Li} enrichment and by maximizing its thickness as well as the solid angle it covers around the fusion core;
     \item $\eta$ is optimized by reducing permeation losses throughout the fuel cycle (e.g. by means of dedicated structural materials and coatings) and optimizing tritium extraction from the breeder.
 \end{itemize}  
 
 \subsection{Tritium handling}
-As isotopes of the same element share same electron structure, tritium chemically behaves like hydrogen: it forms \ce{T2} gas, substitutes with hydrogen in water to form tritiated water \ce{HTO}, and dissociates at metal surfaces into atomic \ce{T} that dissolves into the lattice. The latter is a consequence of hydrogen being a small but non-inert element, it therefore bonds with the conduction band electrons of the metal lattice (dissociation and chemisorption), can fit into interstitial sites (high \textit{solubility} in metals) and hop between them over a low energy barrier (high \textit{diffusivity}). The product of solubility and diffusivity is called \textit{permeability} and is the property that makes tritium especially hard to contain no matter how leak-tight and defect-free the container is. Permeability increases with temperature, which in the case of liquid breeders that need to operate above a certain melting point can pose a radiological issue and significantly degrade $\eta$. 
+% tritium is very mobile
+As isotopes of the same element share same electron structure, tritium chemically behaves like hydrogen (notwithstanding a few nuances in their kinetic properties arising from their mass difference). Tritium forms \ce{T2} gas and can substitutes with hydrogen to form tritiated water \ce{HTO}. It can dissolve as atomic \ce{T} in metallic materials, as a consequence of hydrogen being a small but non-inert element, enabling a 3-step process called \textit{permeation}: 
+\begin{enumerate}
+    \item tritium bonds with the conduction band electrons at the metal surface (dissociation of \ce{T2} into adsorbed \ce{T})
+    \item it then fits into interstitial sites of the lattice (high \textit{solubility} in metals) and hop between them over a low energy barrier (high \textit{diffusivity})
+    \item  until it reaches the opposite free surface where it becomes \ce{T2} gas again (recombination and desorption)
+\end{enumerate}
+Permeation is characterized by \textit{permeability} = diffusivity $\times$ solubility, and makes tritium especially hard to contain no matter how leak-tight and defect-free the container is. 
+
+Permeation represents a significant part of outer fuel cycle losses (i.e. degrades $\eta$) and can pose a radiological issue. This is especially the case in liquid breeders that need to operate above a certain melting point, since permeability increases with temperature. 
 
 \subsection{Tritium extraction}
 On top of directly retrieving tritium, maximizing the efficiency of the tritium extraction system (TES) has the indirect positive effect of reducing the amount of tritium available for permeation, therefore decreasing tritium permeation losses in the outer fuel cycle. A performant TES is therefore needed to achieve a sufficiently high $\eta$. 
@@ -190,27 +200,52 @@ Several TES technologies exist, with various maturities:
     \item Vacuum sieve tray: 
 \end{itemize}
 
-\section{State of the art and open questions}
-\subsection{What remains to be explored}
+\section{State of the art and existing gaps}
+
+Both inner and outer fuel cycle are the subject of intense research, with the aim not to lose tritium and maximize its production. 
+
+On the outer fuel cycle side, the main focus is to better understand tritium handling and extraction, in other words to be able to predict and maximize $\mathrm{TBR_{eng}}$. In the context of the International Thermonuclear Experimental Reactor (ITER), the OFC aspect of ceramic and liquid metal based breeders was investigated in several studies\needcite{ITER references}. 
+
+There is however large uncertainties when it comes to molten salt based breeders, due to the challenges involved in experimenting with them: high temperatures, corrosion, Be toxicity and general tritium handling. This gap is addressed by the Liquid Immersion Blanket:Robust Accountancy (LIBRA) experiment, which main goal is to demonstrate accurate prediction of tritium breeding (the $\mathrm{TBR_{sci}}$ component) and extraction (the $\eta$ component), in a FLiBe salt breeder and DT fusion conditions (14 MeV neutrons)\cite{ferry_libra_2023}. 
+
+Early results from this program are encouraging. The BABY 1L campaign, conducted on litre-scale salt volumes, showed good tritium recovery without any dedicated extraction system: tritium was collected simply by letting it diffuse through the salt to the free surface, or permeate through the container walls \cite{delaporte-mathurin_baby_2026}. At this scale, passive transport is sufficient.
+
+This approach does not survive scaling, as the characteristic time for tritium to diffuse out of the salt grows quadratically with the salt dimensions. The forthcoming LIBRA Pi experiment will operate on a salt volume of $\sim$100\,L, its characteristic diffusion time is $\frac{L^2}{D}=\frac{(30\ \mathrm{cm})^2}{5\cdot10^{-9} \ \mathrm{m^2/s}}\approx200 \ \mathrm{days}$ if no convective transport is considered. Such a timescale is incompatible with the experimental iteration rate the program requires, and an active extraction system therefore becomes necessary.
+
+Gas sparging was identified as a candidate to fill this role. The principle is to bubble an inert gas (typically helium) through the liquid breeder: tritium transfers from the liquid to the rising bubbles across the gas-liquid interface and is carried out of the tank, while the motion of the bubbles simultaneously promotes advective tritium transport within the liquid itself. The process is affordable, mechanically simple, and well documented in the chemical engineering literature \needcite{BCR / sparging chemical engineering references}. 
 
 \section{Problem definition}
 % roadmap: 1 sentence/chapter 
 
+The viability of gas sparging as a tritium extraction system for LIBRA Pi has not been established yet. It is the object of the present modelling work, focusing on three main questions:
+\begin{itemize}
+    \item \textit{What extraction timescales could a sparging system achieve in LIBRA Pi ?}
+    \item \textit{How can the extraction speed be optimized ?}
+    \item \textit{What are the limitations of this prediction and how can it be improved ?}
+\end{itemize}
+
+\Cref{sec:background} will introduce the prior work on gas sparging upon which this work is built. 
+
+\Cref{sec:sparging_model} will present the general gas sparging species extraction model developped in this work, beginning with the description of the underlying mathematical model (\cref{sec:sparging_maths}), following with its practical implementation (\cref{sec:sparging_impl}), then presenting the engineering insights that can be learnt from this model (\cref{sec:sparging_expl}). 
+
+\Cref{sec:LIBRAPi_app} will apply the developed model to the LIBRA Pi experiment, first focusing on extraction time prediction (\cref{sec:LIBRAPi_extraction}), which will then be used to inform a study of tritium permeation in LIBRA Pi (\cref{sec:LIBRAPi_permeation}). 
+
 %%%%%%%%%%%%%%%%%%%%
 \chapter{Background}
 %%%%%%%%%%%%%%%%%%%%
+\label{sec:background}
+% The background section introduces the necessary background to understand your
+% work. This is not necessarily related work but technologies and dependencies
+% that must be resolved to understand your design and implementation.
 
-The background section introduces the necessary background to understand your
-work. This is not necessarily related work but technologies and dependencies
-that must be resolved to understand your design and implementation.
-
-This section is usually 3-5 pages.
+% This section is usually 3-5 pages.
 
 % the literature review goes here, not in the intro
-
+Helium sparging was used in the Molten Salt Reactor Experiment (MSRE), primarily intended for Xe-135 poison removal but also impacting the tritium distribution\cite{briggs_calculation_1970}. 
 
 %%%%%%%%%%%%%%%%
 \chapter{Gas sparging model}
+\label{sec:sparging_model}
 %%%%%%%%%%%%%%%%
 
 % Introduce and discuss the design decisions that you made during this project.
@@ -220,6 +255,7 @@ This section is usually 3-5 pages.
 % This section is usually 5-10 pages.
 
 \section{Mathematical framework}
+\label{sec:sparging_maths}
 \subsection{Mass transfer}
 % expose diffusivity, boundary layer model, then advective transport 
 \subsection{Fluid dynamics}
@@ -242,6 +278,7 @@ This section is usually 3-5 pages.
 \subsection{Assumptions of the model}
 
 \section{Numerical implementation}
+\label{sec:sparging_impl}
 % The implementation covers some of the implementation details of your project.
 % This is not intended to be a low level description of every line of code that
 % you wrote but covers the implementation aspects of the projects.
@@ -263,6 +300,7 @@ This section is usually 3-5 pages.
 
 
 \section{Model exploration}
+\label{sec:sparging_expl}
 % all that was learn by playing around with the model
 \subsection{Effect of mixing}
 \subsubsection{Continuous stirred tank approximation}
@@ -317,9 +355,10 @@ $\Pi$ can be interpreted as "how close the bubble is to reaching $\frac{c_l}{K_s
 %%%%%%%%%%%%%%%%%%%%%%%%
 \chapter{Application to the LIBRA Pi tritium breeding experiment}
 %%%%%%%%%%%%%%%%%%%%%%%%
+\label{sec:LIBRAPi_app}
 
 \section{Prediction of the extraction time}
-
+\label{sec:LIBRAPi_extraction}
 \subsection{Dependence on operating parameters}
 \subsubsection{Sensitivity analysis}
 % sobol plot of operating parameters
@@ -331,7 +370,8 @@ $\Pi$ can be interpreted as "how close the bubble is to reaching $\frac{c_l}{K_s
 % pessimistic vs optimistic scenario
 
 \section{Tritium permeation study}
-
+\label{sec:LIBRAPi_permeation}
+\todo{study considers we are in diffusion-limited regime, but check W>>1 from Abdou 2020}
 \subsection{Tritium transport model}
 \subsubsection{Geometry}
 \subsubsection{Numerical scheme}
