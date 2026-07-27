@@ -108,7 +108,7 @@ Still, tritium finds a use as a fuel in nuclear fusion: because of its favorable
 \section{Tritium production}
 \subsection{Main pathways}
 % how can we create tritium 
-A typical FPP would require important amounts of tritium, estimated at $\sim$100 kg/year to fuel a 800~MWe commercial fusion plant. The current world inventory of $\sim$20 kg of tritium is largely insufficient and halves every 12 years due to radioactive decay if not renewed. It is then necessary to intentionally produce tritium via nuclear transmutation:
+A typical FPP would require important amounts of tritium, estimated at $\sim$55 kg/year per GW of fusion power \cite{abdou_physics_2020}. The current world inventory of $\sim$20 kg of tritium is largely insufficient and halves every 12 years due to radioactive decay if not renewed. It is then necessary to intentionally produce tritium via nuclear transmutation:
 \begin{align}
 %include reaction with B10 ? -> in PWR 
     \ce{^2H + n &-> T + \gamma} \label{eq:D2_capture}\\
@@ -131,7 +131,7 @@ DT fusion itself produces fast neutrons (\cref{eq:DT_fusion}), it naturally foll
 \todo{insert plot of neutron cross sections of those reactions} % use Remi's neutron XS plotter: https://github.com/openmc-data-storage/isotope-xs-plotter
 
 \subsection{The breeding blanket}
-
+% how is breeding engineered ?
 In practice, a FPP would produce tritium in a \textit{breeding blanket} that surrounds the fusion core, be it inertially or magnetically confined. For \cref{eq:Li6_capture, eq:Li7_capture} to occur, the breeding blanket is made of a lithium-incorporating material, chosen among:
 \begin{itemize}
     \item solid ceramics: lithium orthosilicate (\ce{Li4SiO4}), lithium metatitanate (\ce{Li2TiO3})
@@ -152,10 +152,16 @@ Beyond the tritium production aspect, a breeding blanket must shield the 14 MeV 
 
 
 \section{Challenges of the tritium fuel cycle}
+The fusion fuel cycle is the set of processes that supplies tritium to the plasma, divided in two independent closed loops: % "independent": outer loop doesn't have the output of inner loop as input, contrary to what the "inner" and "outer" denominations suggest
+\begin{itemize}
+    \item \textit{inner fuel cycle}: recovery of what the plasma does not burn. It is characterized by the fueling efficiency (performance of the fuel injection system, i.e. how much fuel reaches the fusion core) and the tritium burn fraction TBF (performance of the fusion core, i.e. how much tritium fuses among the one that reached the core). The product of these two quantities isn't expected to exceed 5\% \cite{abdou_physics_2020}
+    \item \textit{outer fuel cycle}: newly bred tritium to replace what was consumed. It is characterized by the Tritium Breeding Ratio (TBR), defined as the ratio of tritium bred per tritium consumed. 
+    
+\end{itemize}
 % define the fuel cycle for tritium 
 \subsection{Self-sufficiency}
 % definition of the scientific and engineering TBR, tritium self-sufficiency of a FPP
-In order to be self sufficient, a FPP would have to breed more tritium than it consumes, the ratio of these two quantities is defined as the Tritium Breeding Ratio (TBR). This general definition can be made more specific, by having a distinction between the "scientific" TBR (\cref{eq:TBR_sci}), which only measures tritium being born in the breeding material, and the "engineering" TBR (\cref{eq:TBR_eng}) which measures the tritium that is actually retrieved and can be re-injected in the fusion core. 
+In order to be self sufficient, a FPP would have to produces at least as much tritium as it consumes.achieve a sufficiently high TBR. For explanatory purposes. a distinction can be made between the "scientific" TBR (\cref{eq:TBR_sci}), which only measures tritium being born in the breeding material, and the "engineering" TBR (\cref{eq:TBR_eng}) which measures the tritium that is actually retrieved and can be injected in the fusion core. 
 \begin{align}
     \mathrm{TBR_{sci}}&= \frac{\mathrm{T_{bred}}}{\mathrm{T_{burnt}}} \label{eq:TBR_sci} \\
     \mathrm{TBR_{eng}} &= \frac{\mathrm{T_{retrieved}}}{\mathrm{T_{burnt}}} =  \mathrm{TBR_{sci}} \cdot \eta  \label{eq:TBR_eng}\\
