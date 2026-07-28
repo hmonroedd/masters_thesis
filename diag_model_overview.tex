@@ -1,0 +1,77 @@
+% Requires in the preamble of thesis.tex:
+%   \usepackage{tikz}
+%   \usetikzlibrary{positioning, fit, backgrounds, arrows.meta}
+\begin{figure}[ht]
+\centering
+\hyphenpenalty=10000\exhyphenpenalty=10000
+\begin{tikzpicture}[
+  font=\scriptsize,
+  boxbase/.style={
+    draw=black!55, rounded corners=2.5pt, fill=white,
+    align=center, inner sep=3pt
+  },
+  boxin/.style={boxbase, text width=2.5cm, fill=purple!6, draw=purple!50},
+  boxproc/.style={boxbase, minimum height=1.35cm},
+  boxdat/.style={boxbase, fill=green!9, draw=green!45!black, minimum height=1.35cm},
+  arrpipe/.style={-{Stealth[length=2.4mm]}, draw=black!70, line width=0.9pt},
+  leader/.style={draw=black!40, dotted, line width=0.5pt},
+  annot/.style={align=center, font=\scriptsize, text=black!65},
+  badge/.style={
+    circle, fill=#1, text=white, font=\scriptsize\bfseries,
+    inner sep=0.8pt, minimum size=3.8mm
+  },
+  tag/.style={
+    anchor=south west, fill=#1, text=white,
+    font=\scriptsize\bfseries, inner sep=2pt, rounded corners=2pt
+  }
+]
+
+% ---------------- model input ----------------
+\node[boxin] (design) at (-5.90,  0.52) {\textbf{Design}\\ $H$, $A$, $d_n$, $N_n$};
+\node[boxin] (operat) at (-5.90, -0.52) {\textbf{Operating}\\ $T$, $P_\mathrm{top}$, $\dot n_g$, $S_{T_2}$};
+
+\begin{scope}[on background layer]
+  \node[fit=(design)(operat), inner sep=2.2mm,
+        draw=purple!60, fill=purple!4, rounded corners=3pt] (input) {};
+\end{scope}
+
+% ---------------- the two stages ----------------
+\node[boxproc, text width=2.2cm, fill=teal!8, draw=teal!60] (clos) at (-2.60, 0)
+  {\textbf{Closure relations}\\ empirical correlations};
+\node[boxproc, text width=1.9cm, fill=violet!8, draw=violet!60] (ard) at (0.20, 0)
+  {\textbf{1D ARD}\\ finite element solution};
+
+% ---------------- outputs ----------------
+\node[boxdat, text width=2.3cm] (fields) at (3.05, 0)
+  {\textbf{Fields}\\[1mm] $\CT(z,t)$\\ $\PT(z,t)$};
+\node[boxdat, text width=2.4cm] (derived) at (6.15, 0)
+  {\textbf{Derived quantities}\\[1mm] $N_l(t)$, $\tau$};
+
+% ---------------- pipeline ----------------
+\draw[arrpipe] (input)  -- (clos);
+\draw[arrpipe] (clos)   -- (ard);
+\draw[arrpipe] (ard)    -- (fields);
+\draw[arrpipe] (fields) -- (derived);
+
+% ---------------- what flows between the stages ----------------
+\node[annot, text width=4.6cm] (coef) at (-1.20, -1.95)
+  {ARD coefficients\\ $\varepsilon_g$, $a$, $h_l$, $u_g$, $E_g$, $E_l$, $K_s$};
+\draw[leader] (coef.north) -- (-1.20, -0.02);
+
+\node[annot, text width=2.4cm] (pp) at (4.60, -1.85) {post-processing};
+\draw[leader] (pp.north) -- (4.60, -0.02);
+
+% ---------------- stage numbers and group label ----------------
+\node[badge=teal!70]   at (clos.north west)  {1};
+\node[badge=violet!70] at (ard.north west)   {2};
+\node[tag=purple!60]   at (input.north west) {Model input};
+
+\end{tikzpicture}
+\caption{Organisation of the model. The design and operating parameters of the column are
+turned into the coefficients of the 1D-ARD equations by a first stage of empirical closure
+relations~(1), and those equations are then solved by the finite element method~(2) for the
+tritium concentration in the liquid and its partial pressure in the gas. The quantities of
+interest --- the liquid tritium inventory and the extraction time constant $\tau$ --- are
+derived from these fields. The two stages are the subject of the following subsections.}
+\label{fig:model_overview}
+\end{figure}
