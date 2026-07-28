@@ -1,0 +1,119 @@
+% Requires in the preamble of thesis.tex:
+%   \usepackage{tikz}
+%   \usetikzlibrary{positioning, fit, backgrounds, arrows.meta, shapes.geometric}
+\begin{figure}[p]
+\centering
+\hyphenpenalty=10000\exhyphenpenalty=10000 % no hyphenation in the narrow boxes
+\begin{tikzpicture}[
+  font=\scriptsize,
+  termbox/.style={
+    draw=black!60, rounded corners=9pt, fill=blue!6,
+    align=center, inner sep=4pt, text width=4.4cm
+  },
+  donebox/.style={
+    draw=green!45!black, rounded corners=9pt, fill=green!10,
+    align=center, inner sep=4pt, text width=3.0cm
+  },
+  failbox/.style={
+    draw=red!60!black, rounded corners=9pt, fill=red!8,
+    align=center, inner sep=4pt, text width=3.0cm
+  },
+  actbox/.style={
+    draw=black!60, fill=white, align=center, inner sep=4pt, text width=4.2cm
+  },
+  decbox/.style={
+    diamond, aspect=2.6, draw=black!60, fill=yellow!14,
+    align=center, inner sep=1pt
+  },
+  callbox/.style={
+    draw=violet!60, fill=violet!7, align=center, inner sep=4pt, text width=2.2cm
+  },
+  logicdot/.style={
+    circle, draw=black!60, fill=black!8, inner sep=1pt, minimum size=6.5mm,
+    font=\scriptsize\bfseries
+  },
+  sidenote/.style={align=left, text width=3.4cm, text=black!60, font=\scriptsize\itshape},
+  arrmain/.style={-{Stealth[length=2mm]}, draw=black!70, line width=0.6pt},
+  arrback/.style={arrmain, dashed, draw=violet!70},
+  lbl/.style={font=\scriptsize, inner sep=1.5pt, fill=white}
+]
+
+% ---------------- entry ----------------
+\node[termbox] (entry) at (0, 1.6) {a parameter required by the model};
+
+% ---------------- decision cascade ----------------
+\node[decbox] (d1) at (0, 0)    {already\\resolved?};
+\node[decbox] (d2) at (0, -2.4) {supplied\\as a value?};
+\node[decbox] (d3) at (0, -4.9) {closure relation\\given by the user?};
+\node[decbox] (d4) at (5.3, -4.9) {a default one\\exists?};
+
+% ---------------- outcomes ----------------
+\node[donebox] (a) at (-4.9, 0)    {reuse the value already stored};
+\node[donebox] (b) at (-4.9, -2.4) {store it as a user-given input};
+\node[failbox] (fail) at (5.3, -7.0) {the parameter cannot be resolved};
+
+% ---------------- closure-relation branch ----------------
+\node[logicdot] (orn) at (0, -6.9) {or};
+
+\node[callbox] (p1)   at (-2.7, -9.0) {resolve $p_1$};
+\node                 (pdots) at (0, -9.0) {$\cdots$};
+\node[callbox] (pn)   at (2.7, -9.0)  {resolve $p_n$};
+
+% double side bars: the flowchart mark of a call to the same procedure
+\foreach \c in {p1,pn}{
+  \draw[draw=violet!60] ([xshift=2.2mm]\c.north west) -- ([xshift=2.2mm]\c.south west);
+  \draw[draw=violet!60] ([xshift=-2.2mm]\c.north east) -- ([xshift=-2.2mm]\c.south east);
+}
+
+\node[logicdot] (andn) at (0, -10.7) {and};
+\node[actbox]   (eval) at (0, -12.0) {evaluate the closure relation};
+\node[donebox, text width=4.2cm] (done) at (0, -13.6)
+  {store the value, linked to the parameters it was computed from};
+
+% ---------------- side notes ----------------
+\node[sidenote] (n1) at (4.6, 0.1)
+  {what is already resolved is never recomputed: this is what makes the
+   recursion terminate};
+\node[sidenote] (n2) at (4.9, -10.7)
+  {the relation can only be evaluated once all of them are resolved};
+\node[sidenote, text width=10cm, align=center] (n3) at (0, -15.1)
+  {applied in turn to every parameter the model requires, the procedure returns
+   their values together with the graph of what was computed from what};
+
+% ---------------- flow ----------------
+\draw[arrmain] (entry) -- (d1);
+\draw[arrmain] (d1) -- node[lbl,above]{yes} (a);
+\draw[arrmain] (d1) -- node[lbl,right]{no} (d2);
+\draw[arrmain] (d2) -- node[lbl,above]{yes} (b);
+\draw[arrmain] (d2) -- node[lbl,right]{no} (d3);
+\draw[arrmain] (d3) -- node[lbl,above]{no} (d4);
+\draw[arrmain] (d3) -- node[lbl,right]{yes} (orn);
+\draw[arrmain] (d4.west) -- ++(-0.55,0) |- node[lbl,pos=0.75,above]{yes} (orn.east);
+\draw[arrmain] (d4) -- node[lbl,right]{no} (fail);
+
+\draw[arrmain] (orn.south) -- ++(0,-0.75) -| (p1.north);
+\draw[arrmain] (orn.south) -- ++(0,-0.75) -| (pn.north);
+\node[font=\scriptsize] at (0, -8.37)
+  {the parameters it depends on: $p_1 \dots p_n$};
+
+\draw[arrmain] (p1.south) |- ++(0,-0.75) -| (andn.north);
+\draw[arrmain] (pn.south) |- ++(0,-0.75) -| (andn.north);
+\draw[arrmain] (andn) -- (eval);
+\draw[arrmain] (eval) -- (done);
+
+% recursive call
+\draw[arrback] (p1.west) -- ++(-3.4,0) |- (entry.west);
+\node[font=\scriptsize\itshape, text=violet!70] at (-4.75, 1.95)
+  {each one by this same procedure};
+
+\end{tikzpicture}
+\caption{Logic of the closure-relation resolution. Every parameter the model requires is
+obtained by the same procedure: it is either already known, or given by the user as a
+value, or computed from a closure relation --- the one the user chose, or else the default
+one. A closure relation can only be evaluated once every parameter it depends on has been
+resolved, each of them by a recursive application of the same procedure; the search fails
+only when a parameter is reached that is neither supplied nor covered by a default
+relation. Because a parameter that is already resolved is returned immediately, each one
+is computed at most once and the recursion is guaranteed to terminate.}
+\label{fig:graph_search}
+\end{figure}
