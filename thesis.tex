@@ -87,6 +87,7 @@ English abstract. For other projects this is optional.
 
 % This section is usually 3-5 pages.
 \todo{fusion first}
+\section{Motivation: fusion energy}
 
 \section{The tritium isotope}
 % what is tritium (main characteristics)
@@ -119,6 +120,7 @@ A typical FPP would require important amounts of tritium, estimated at $\sim$55 
 
 As of now, the existing commercially available tritium is produced as a byproduct of heavy water moderated reactors through neutron capture (\cref{eq:D2_capture}), specifically in CANada Deuterium Uranium,(CANDU) reactors (estimated at 130 g of tritium/reactor/year) \needcite{https://www.neimagazine.com/analysis/answering-the-big-tritium-question/?cf-view}. But the small cross section of this reaction (0.5 millibarns for thermal neutrons) makes it unsuitable for large scale production. \Cref{eq:Li6_capture} on the other hand  has a 1000~barns thermal neutron cross section \needcite{JANIS database (https://www.oecd-nea.org/janisweb/book/neutrons/H2/MT102/renderer/3458)}, it is used for military tritium production and is also the privileged path to tritium breeding for controlled fusion. Industrial tritium production would therefore rely on thermal neutron capture in a lithium-6 rich material, the cross section for \cref{eq:Li7_capture} being marginal (300 millibarns, for fast neutrons). 
 
+\todo{paragraph on lithium (scarcitiy of Li6, 8\% naturally}
 % where do we get the neutrons from
 Aforementioned transmutation reactions all need neutrons as a reactant. Neutrons can be found in fission reactors, but producing tritium there poses the problem of introducing large amounts of tritium in an environment where it is usually unwanted because of its handling difficulties and the associated radiological concern, and is anyway constrained to relatively low tritium amounts to leave enough neutrons for fission to self-sustain ($\sim$1 kg/reactor/year using Tritium Producing Burnable Absorbers Rods)\needcite{NRC?}. For those reasons, tritium production in fission reactors is restricted to military programs.
 
@@ -136,7 +138,7 @@ DT fusion itself produces fast neutrons (\cref{eq:DT_fusion}), it naturally foll
 In practice, a FPP would produce tritium in a \textit{breeding blanket} that surrounds the fusion core, be it inertially or magnetically confined. For \cref{eq:Li6_capture,eq:Li7_capture} to occur, the breeding blanket is made of a lithium-containing material, chosen among:
 \begin{itemize}
     \item solid ceramics: lithium orthosilicate (\ce{Li4SiO4}), lithium metatitanate (\ce{Li2TiO3})
-    \item liquid metals: Lithium-Lead eutectic (\ce{Pb_{83}Li_{17}}), melting at 235°C
+    \item liquid metals: Lithium-Lead eutectic (\ce{Pb_{84}Li_{16}}), melting at 235°C
     \item molten salts: FLiBe (\ce{2LiF-BeF2}), FLiNaK (\ce{LiF-NaF-KF}), melting at $\sim$450°C
 \end{itemize}
 
@@ -149,8 +151,9 @@ From the perspective of tritium production optimization, the choice of breeding 
 \end{itemize}
 
 % the other roles of the BB
-Beyond the tritium production aspect, a breeding blanket must shield the 14 MeV neutrons produced by the fusion core, i.e. 80\% of the fusion energy (see \cref{eq:DT_fusion}) dissipates in it as heat. In that regard, liquid materials offer the advantage of being both tritium breeding materials and coolant. Molten salts in particular have a heat capacity superior to that of LiPb and don't conduct electricity which makes them favorable for compact and magnetically confined FPP designs, such as the Affordable-Robust-Compact (ARC) tokamak concept. 
+Beyond the tritium production aspect, a breeding blanket must shield the 14 MeV neutrons produced by the fusion core, i.e. 80\% of the fusion energy (see \cref{eq:DT_fusion}) dissipates in it as heat. In that regard, liquid materials offer the advantage of being both tritium breeding materials and coolant. Molten salts in particular have a heat capacity superior to that of LiPb and don't conduct electricity which makes them favorable for compact and magnetically confined FPP designs, such as the Affordable-Robust-Compact (ARC) tokamak concept\cite{sorbom_arc_2015}. 
 
+\todo{paragraph about LIB in particular} % see Gabriele thesis
 
 \section{Challenges of the tritium fuel cycle}
 The fusion fuel cycle is the set of processes that supplies tritium to the plasma, divided in two independent closed loops: % "independent": outer loop doesn't have the output of inner loop as input, contrary to what the "inner" and "outer" denominations suggest
@@ -200,6 +203,7 @@ Several TES technologies exist, with various maturities:
     \item Gas-liquid contactors: 
     \item Vacuum sieve tray: 
 \end{itemize}
+\todo{elaborate a bit}
 
 \section{State of the art and existing gaps}
 
@@ -295,7 +299,7 @@ Advective transport through fluid motion is expected to influence, if not domina
 \par
 
 The net bubble velocity gives rise to an advective term, while phases mixing translates into a dispersion term. Mixing is expressed by a "dispersion" term that resembles molecular diffusion, as both phenomena have a Fickian behavior which tends to flatten the concentration profiles. They are however inherently different from a physical point of view and shouldn't be mixed up, as transport caused by phases mixing largely dominates molecular diffusion at macroscopic scales. This translates in dispersion coefficients being order of magnitude larger than diffusion coefficients. 
-\todo{elaborate on choices of correlations}
+\todo{elaborate on choices of correlations, put the correlation table here and present typical order of magnitude values for the present work -> will be used in the assumptions/simplifications}
 
 \subsection{Advection-reaction-dispersion model}
 \todo{move this to the beginning of the chapter}
@@ -368,16 +372,16 @@ Equating \cref{eq:n_g_constraint} and \cref{eq:n_g_integrated} yields the BCs th
     \end{equation}
     \item At the top of the salt, unlike at the inlet, the gas flow is undisturbed, the tritium concentration stays flat at the transitions from the salt to the free head space:
     \begin{equation}
-    \label{eq:BC4}
+    \label{eq:BC2}
         \frac{\partial\PT}{\partial z}\bigg \rvert_{z=H}=0
     \end{equation}
     \item Tritium transport due to phase mixing is restrained to the tank volume, and tritium can only escape the system by being advected in the gas phase. In other words, the net tritium current arising from dispersion terms in \cref{eq:CT2,eq:PT2} must be null at the tank's boundaries for the liquid phase. This is enforced by the Neumann BCs:
     \begin{equation}
-    \label{eq:BC2}
+    \label{eq:BC3}
         \frac{\partial\CT}{\partial z}\bigg \rvert_{z=0}=0
     \end{equation}
     \begin{equation}
-    \label{eq:BC3}
+    \label{eq:BC4}
         \frac{\partial\CT}{\partial z}\bigg \rvert_{z=H}=0
     \end{equation}
 \end{itemize}
@@ -386,8 +390,18 @@ Equating \cref{eq:n_g_constraint} and \cref{eq:n_g_integrated} yields the BCs th
 
 \subsection{Assumptions of the model}
 \label{sec:sparging_assumptions}
-- no permeation, no diffusion : conservative estimate of the tritium extraction speed. Permeation can be estimated by coupling with a model for tritium transport is solid media
-\section{Numerical implementation}
+- no permeation, no diffusion : conservative estimate of the tritium extraction speed. Permeation can be estimated by coupling with a model for tritium transport is solid media \\
+
+- no bubbles coalescence (---\todo{compute space between bubbles, compare with bubbles size}----). At such low superficial gas velocity, void fractions falls below 1\%, we can reasonably expect the bubbles not to interact \cite{taylor_implementation_2022} 
+\\
+- homogeneous temperature field: in the experiments for which this model was developed, we don't have spatial resolution for the salt temperature. It is the only model input that can't be controlled nor measured precisely. The approach then is to consider a rather large distribution of possible temperatures, which should give lower and upper bounds on the predicted sparger performance. 
+\\
+- the contribution of $T_2$ to bubble pressure is negligible 
+\\
+- bubbles and liquid are always at thermal equilibrium, and the temperature is homogeneous. This implies that the liquid brings some heat to the bubbles as they expand toward the top of the tank (the bubbles expansion is non-adiabatic), allowing to write for a bubble: $P_bV_b=n_bRT=\mathrm{constant}$ thus $V_b(z)=V_{b0} \frac{P_{b0}}{P_b(z)}$
+\\
+- chemical speciation: the redox of the salt is perfectly controlled, prevailing newborn tritium to form highly soluble and poorly mobile tritium fluoride ($TF$). Thus, tritium is assumed to be only present as molecular $T_2$, which molecular diffusion coefficient is 3-5 times higher than its $TF$ counterpart, as recent ab initio molecular dynamics results suggest \cite{lam_impact_2021}. Mass transfer properties are based on this assumption. 
+\section{Implementation}
 \label{sec:sparging_impl}
 % The implementation covers some of the implementation details of your project.
 % This is not intended to be a low level description of every line of code that
@@ -395,18 +409,23 @@ Equating \cref{eq:n_g_constraint} and \cref{eq:n_g_integrated} yields the BCs th
 
 % This section is usually 3-5 pages.
 
-\subsection{Python package structure}
+\subsection{Code structure}
 % just a quick figure of the packages dependencies, API
 \subsection{Numerical scheme}
+% FEM
+% derivation of the weak formulation
 \subsection{Fluid dynamics parameters resolution}
-% parameters dependance graph
-% graph resolution algorithm 
+% graph resolution algorithm in general (flexible)
+
+% parameters dependance graph for the standard set of closure relations ("canonical", the one that is empoloyed throughout this work)
 
 \subsection{Verification}
+\subsection{Analytical solution}
+% introduced tau 
 \subsubsection{Method of manufactured solution}
+% for later if have time
 \subsubsection{Numerical error estimate}
-% convergence plot: quantify convergence without tau at that point ? (not already introduced)
-% add a MMS verification
+% convergence plot: quantify convergence with tau
 
 
 \section{Model exploration}
@@ -480,6 +499,8 @@ $\Pi$ can be interpreted as "how close the bubble is to reaching $\frac{c_l}{K_s
 % pessimistic vs optimistic scenario
 
 \section{Tritium permeation study}
+
+% presentation of FESTIM: see file:///C:/Users/hippo/OneDrive/temp/Estimations%20of%20tritium%20retention%20through%20DT1%20in%20a%20full%20tungsten%20ITER.pdf
 \label{sec:LIBRAPi_permeation}
 \todo{study considers we are in diffusion-limited regime, but check W>>1 from Abdou 2020}
 \subsection{Tritium transport model}
@@ -519,6 +540,8 @@ you overcome some of the weaknesses of related work by discussing the
 trade-offs. Stay positive!
 
 This section is usually 3-5 pages.
+
+% discuss Li 2026: file:///C:/Users/hippo/Zotero/storage/2UQWTFV4/Li%20et%20al.%20-%202026%20-%20Toward%20efficient%20tritium%20extraction%20High-fidelity%20simulation%20of%20gas-liquid%20contactors%20in%20molten%20sal.pdf
 
 
 %%%%%%%%%%%%%%%%%%%%
