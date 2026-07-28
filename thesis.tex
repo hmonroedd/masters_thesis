@@ -419,7 +419,7 @@ The 1D-ARD equations require as input some tritium transport and fluid dynamics 
 
 \subsection{Code structure}
 % diagram of the high level structure of the model, showing the workflow, with corresponding file and API
-\input{code_structure}
+\input{diag_code_structure}
 \subsection{Numerical scheme}
 % FEM
 % derivation of the weak formulation
@@ -431,7 +431,7 @@ In particular, the topic of gas sparging in molten salts presents large unknowns
 
 This flexibility is achieved by dynamically resolving the dependencies between physical quantities every time a new simulation is launched, based on a set of correlations and known parameters specified by the user for this specific simulation. 
 
-This is abstracted as a graph search algorithm, implemented in the \texttt{SimulationInput:from_parameters()} class method. 
+This is abstracted as a graph search algorithm, implemented in the \verb|SimulationInput:from_parameters()| class method. 
 % graph resolution algorithm in general (flexible)
 
 % parameters dependance graph for the standard set of closure relations ("canonical", the one that is empoloyed throughout this work)
