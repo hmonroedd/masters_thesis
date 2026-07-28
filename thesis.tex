@@ -329,13 +329,18 @@ where $a \:\mathrm{[m^2/m^3]}$ is the specific interfacial area per unit volume,
 
 \subsubsection{Derivation from mass conservation considerations}
 
-This model is about gas sparging for tritium extraction, the BCs should therefore be chosen so that tritium is constrained to leave the tank solely via the gas phase, by:(1) transferring from the liquid where it gets born through \JT; (2) getting advected by the bubbles ($u_g$) up to the gas outlet. It is a deliberate choice of this model not to consider permeation from the liquid to the structural material nor direct molecular diffusion from the liquid top free-surface to the sweep gas above. This constraint on the evolution of the tritium inventory ($\dot n_\alpha \ \mathrm{[mol/s]}$) in the respective phases is expressed as follows: 
-\begin{align}
-    \dot n_l &= - \iiint_V a\JT \,dV \\
-    \dot n_g &= A \,(u_g\,c_g\rvert_{z=\mathrm{inlet}} - u_g\,c_g\rvert_{z=\mathrm{outlet}}) + \iiint_V a\JT \,dV \label{eq:n_g_constraint}
-\end{align}
+This model is about gas sparging for tritium extraction from the liquid salt where it is bred, the life of a tritium atom that it aims to describe is as follows: (1) tritium gets born in the salt from neutron interaction (abstracted as a known source term $S_\mathrm{T_2}$); (2) transfers from the liquid to the gas phase (through an unknown interfacial flux \JT); (3) gets advected by the bubbles ($u_g$) up to the gas outlet where it is eventually considered as extracted. Note that tritium is constrained to leave the tank \textbf{solely via the gas phase}. It is a deliberate choice of this model not to consider other extraction mechanisms such as permeation from the liquid to the structural material or direct molecular diffusion from the liquid top free-surface to the sweep gas above. 
 
-Where $c_g \equiv\frac{\PT}{RT}$ is the concentration in the gas phase, $A$ is the base area of the tank and $H$ its height. The BCs that enforce this constraint are obtained by integrating \cref{eq:CT2,eq:PT2} over the tank volume:
+The tritium path (1),(2) and (3) translate into constraints on the evolution of the tritium inventory $\dot n_\alpha \ \mathrm{[mol/s]}$ in each phase, which will condition the choice of BCs. They are expressed as follows: 
+\begin{align}
+    \dot n_l &= \stackrel{(1)}{\iiint_V S_\mathrm{T_2} \,dV}\stackrel{(2)}{- \iiint_V a\JT \,dV} \label{eq:n_l_constraint}\\
+    \dot n_g &= \stackrel{(3)}{A \,(u_g\,c_g\rvert_{z=\mathrm{inlet}} - u_g\,c_g\rvert_{z=\mathrm{outlet}})} + \stackrel{(2)}{\iiint_V a\JT \,dV} \label{eq:n_g_constraint}
+\end{align}
+Where $c_g \equiv\frac{\PT}{RT}$ is the concentration in the gas phase, $A$ is the base area of the tank and $H$ its height. Note $c_g\rvert_{z=\mathrm{inlet}}$ is kept to stay general, but is eventually null so that (1) is the only way tritium is introduced in the system (i.e. the sparging gas is pure He).
+
+\todo{fix inconsistency with ng notation (used for the molar flow rate of gas itself)} % maybe switch to n_{T_2,gas}
+
+The BCs that enforce this constraint are obtained by integrating \cref{eq:CT2,eq:PT2} over the tank volume:
 \begin{align}
     \dot n_l &= \frac{d}{dt}\iiint_V \varepsilon_g \,c_l \,dV =\iiint_V \varepsilon_g \, \frac{\partial c_l}{\partial t}\,dV  \nonumber\\
     &\stackrel{\eqref{eq:CT2}}{=} A\,\bigg(\varepsilon_l\,E_l\,\frac{\partial c_l}{\partial z}\bigg\rvert_{z=H} -\varepsilon_l\,E_l\,\frac{\partial c_l}{\partial z}\bigg\rvert_{z=0} \bigg)- \iiint_V a\JT \,dV  \label{eq:n_l_integrated}
@@ -393,6 +398,12 @@ Equating \cref{eq:n_g_constraint} and \cref{eq:n_g_integrated} yields the BCs th
 
 \Cref{eq:BC3} implies that no tritium is transported from the top of the liquid surface to the above head space gas. This assumption is discussed in section \ref{sec:sparging_assumptions}.
 
+\subsection{Derived quantities}
+% inventory, tau
+% reuse eq:n_l_constraint to derive the evolution of the tritium inventory -> exponential component 
+% define tau as the e-folding time, the fact that it is better to get it from an exponential fit (for timestep independence) can be introduced later
+
+
 \subsection{Assumptions of the model}
 \label{sec:sparging_assumptions}
 - no permeation, no diffusion : conservative estimate of the tritium extraction speed. Permeation can be estimated by coupling with a model for tritium transport is solid media \\
@@ -415,13 +426,10 @@ Equating \cref{eq:n_g_constraint} and \cref{eq:n_g_integrated} yields the BCs th
 
 % This section is usually 3-5 pages.
 
-\subsection{High level description}
+\subsection{Overview}
 The 1D-ARD equations require as input some tritium transport and fluid dynamics parameters that are non-trivially linked to known operating and design parameters. The implementation of the model is two staged: known parameters are fed into (1) a closure relations resolution stage, which computes the parameters needed by (2) the 1D-ARD equations, which compute the space and time dependence of the tritium concentrations ($\PT(z,t),\CT(z,t$). Diverse quantities of interest can then be derived from these. 
 
 
-\subsection{Numerical scheme}
-% FEM
-% derivation of the weak formulation
 \subsection{Closure relations resolution}
 
 There are several available correlations in the literature for the same quantity, and the choice of which correlation to use is sometimes non-trivial: it changes depending on what parameters are already known and in what range they are. \todo{give an example (bubble size)}
@@ -431,20 +439,25 @@ In particular, the topic of gas sparging in molten salts presents large unknowns
 
 This flexibility is achieved by dynamically resolving the dependencies between physical quantities every time a new simulation is launched, based on a set of correlations and known parameters specified by the user for this specific simulation. 
 
-This is abstracted as a graph search algorithm, implemented in the \verb|SimulationInput:from_parameters()| class method. 
+This is abstracted as a graph search algorithm, implemented in the \verb|SimulationInput:from_parameters()| class method. Each closure relation is a function $f$ of several parameters $p_1,...,p_n$. 
 
-% graph resolution algorithm in general (flexible)
+% graph resolution algorithm flowchart 
 \input{diag_graph_search}
 
 % parameters dependance graph for the standard set of closure relations ("canonical", the one that is empoloyed throughout this work)
 % something like: closure relations presented in table 1 and 2 (mass transfer and fluid dynamics paragraph respectively) form a complete set of closure relations that uniquely define the input parameters of the 1D-ARD model. 
+
+
+\subsection{Numerical scheme}
+% FEM
+% derivation of the weak formulation
 
 \subsection{Summary of the code structure}
 % diagram of the high level structure of the model, showing the workflow, with corresponding file and API
 \input{diag_code_structure}
 
 \subsection{Verification}
-\subsection{Analytical solution}
+\subsubsection{Analytical solution}
 % introduced tau 
 \subsubsection{Method of manufactured solution}
 % for later if have time
