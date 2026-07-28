@@ -424,6 +424,14 @@ The 1D-ARD equations require as input some tritium transport and fluid dynamics 
 % FEM
 % derivation of the weak formulation
 \subsection{Closure relations resolution}
+
+There are several available correlations in the literature for the same quantity, and the choice of which correlation to use is sometimes non-trivial: it changes depending on what parameters are already known and in what range they are. \todo{give an example (bubble size)}
+
+In particular, the topic of gas sparging in molten salts presents large unknowns (\todo{add diffusivity/solubility correlation plots in Background and refer to it here}), and it is the purpose of this model to explore them. It was therefore designed to offer flexibility as to the closure relations used and the assumptions they are built upon. 
+
+This flexibility is achieved by dynamically resolving the dependencies between physical quantities every time a new simulation is launched, based on a set of correlations and known parameters specified by the user for this specific simulation. 
+
+This is abstracted as a graph search algorithm, implemented in the \texttt{SimulationInput:from_parameters()} class method. 
 % graph resolution algorithm in general (flexible)
 
 % parameters dependance graph for the standard set of closure relations ("canonical", the one that is empoloyed throughout this work)
