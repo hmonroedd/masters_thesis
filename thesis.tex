@@ -33,10 +33,10 @@
 
 % custom commands
 \newcommand{\sysname}{FooSystem\xspace}
-\newcommand{\PT}{\ensuremath{P_{T_2}}}
-\newcommand{\CT}{\ensuremath{c_{T_2}}}
-\newcommand{\JT}{\ensuremath{J_{T_2}}}
-\newcommand{\YT}{\ensuremath{y_{T_2}}}
+\newcommand{\PT}{\ensuremath{P_\mathrm{T_2}}}
+\newcommand{\CT}{\ensuremath{c_\mathrm{T_2}}}
+\newcommand{\JT}{\ensuremath{J_\mathrm{T_2}}}
+\newcommand{\YT}{\ensuremath{y_\mathrm{T_2}}}
 
 \begin{document}
 \maketitle
@@ -86,6 +86,7 @@ English abstract. For other projects this is optional.
 % The eights paragraph discusses your core contribution.
 
 % This section is usually 3-5 pages.
+\todo{fusion first}
 
 \section{The tritium isotope}
 % what is tritium (main characteristics)
@@ -231,7 +232,7 @@ The viability of gas sparging as a tritium extraction system for LIBRA Pi has no
 \Cref{sec:LIBRAPi_app} will apply the developed model to the LIBRA Pi experiment, first focusing on extraction time prediction (\cref{sec:LIBRAPi_extraction}), which will then be used to inform a study of tritium permeation in LIBRA Pi (\cref{sec:LIBRAPi_permeation}). 
 
 %%%%%%%%%%%%%%%%%%%%
-\chapter{Background}
+\chapter{Background: gas sparging in molten salts}
 %%%%%%%%%%%%%%%%%%%%
 \label{sec:background}
 % The background section introduces the necessary background to understand your
@@ -253,30 +254,139 @@ Helium sparging was used in the Molten Salt Reactor Experiment (MSRE), primarily
 % how the design fits together.
 
 % This section is usually 5-10 pages.
+The main contribution of this work is the development of a tool that models the transport of dilute species from a static molten salt to bubbles of inert gas that rise through Its original purpose is to be applied to tritium as the dilute species, but it is not restricted to it. 
+
+A schematic of the problem at hand along with the main quantities of interest is presented in \cref{fig:sparging_tank}.
+
+\begin{figure}[ht]
+  \centering
+  \includegraphics[width=0.5\linewidth]{fig/sparging schematic.pdf}
+  \caption{Schematic of a static liquid containing tank equipped with a gas sparging system. Gas bubbles induce mixing in the initially static liquid (blue dotted arrows) as they rise through it}
+  \label{fig:sparging_tank}
+\end{figure}
 
 \section{Mathematical framework}
 \label{sec:sparging_maths}
+
 \subsection{Mass transfer}
 % expose diffusivity, boundary layer model, then advective transport 
+Transport through the liquid-gas interface created by bubbles is what directly allows tritium extraction from the liquid breeder. 
+It relies primarily on diffusion, where the density gradient occurring at the interface drives a particle flux $\JT \:\mathrm{[mol/m^2/s]}$ from the tritium-rich liquid to the tritium-poor gas, hereafter the \textit{interfacial flux}. On top of pure diffusion, turbulence at the liquid-gas interface tends to promote mass exchange between phases. 
+% It depends on two fundamental properties of the solute-solvant couple (here tritium-molten salt): diffusivity $D_T \:\mathrm{[m^2/s]}$ and solubility $K_s$  ($\mathrm{[mol/m^3/Pa]}$ or $\mathrm{[mol/m^3/Pa^{0.5}]}$ depending on the solubility law).
+\\
+Transport of solute gases through liquid-gas interfaces is commonly described by the the Lewis-Whitman two-film model \cite{lewis_principles_1924}. In molten salts, \ce{H_2} has a very low solubility \needcite{H2 low solubility}, so mass transfer through the interface is limited by the liquid film, the interfacial flux is therefore expressed using the liquid side mass transfer coefficient $h_l \:\mathrm{[m/s]}$ which characterized both molecular diffusion and turbulent transport through the liquid film. The interfacial flux is expressed as:
+\todo{insert illustration of two fluid model}
+
+\begin{equation*}
+    \JT = h_l \,(\CT-c_\mathrm{T_2,i})
+\end{equation*}
+
+Where $\CT \: \mathrm{[mol/m^3]}$ is the tritium concentration in the bulk liquid phase, $c_\mathrm{T_2,i}$ is the tritium concentration at the liquid-gas interface.
+\par
+Concentration at the liquid-gas interface is assumed to be always at equilibrium, dictated by the solubility in the liquid phase: $c_{T_2,i}=c_{T_2,eq}=K_s \,P_{T_2}$, where $P_{T_2} \:\mathrm{[Pa]}$ is the tritium partial pressure in the gas phase, and the solubility of the tritium follows a Henry's law with constant $K_s \: \mathrm{[mol/m^3/Pa]}$ as it is the case for molten salts. It follows:
+\begin{equation}
+    \label{eq:JT2}
+    J_{T_2} = h_l \, (c_{T_2}-K_sP_{T_2})
+\end{equation}
+
 \subsection{Fluid dynamics}
 % expose correlations
+Advective transport through fluid motion is expected to influence, if not dominate, the tritium concentration and partial pressure profiles in the liquid and gas phases respectively. In a 2D or 3D model, it would require to solve for the velocity field of both phases. Because this work's purpose is to be exploratory, a good pragmatic choice is the simpler one-dimensional axial dispersion model presented by Levenspiel \cite{levenspiel_chemical_1999}, broadly used in chemical reactors modeling \cite{schluter_modeling_1992}. The gas upward velocity is described by the bubble's terminal velocity $u_g \:\mathrm{[m/s]}$, and the liquid and gas mixing effects are described by empirical dispersion coefficients $E_l$ and $E_g$ ($\mathrm{[m^2/s]}$)\textbf{}. The temperature $T$ is assumed constant in time and space. 
+\par
+
+The net bubble velocity gives rise to an advective term, while phases mixing translates into a dispersion term. Mixing is expressed by a "dispersion" term that resembles molecular diffusion, as both phenomena have a Fickian behavior which tends to flatten the concentration profiles. They are however inherently different from a physical point of view and shouldn't be mixed up, as transport caused by phases mixing largely dominates molecular diffusion at macroscopic scales. This translates in dispersion coefficients being order of magnitude larger than diffusion coefficients. 
+\todo{elaborate on choices of correlations}
 
 \subsection{Advection-reaction-dispersion model}
+\todo{move this to the beginning of the chapter}
+Bringing mass transfer and fluid dynamics together, the equations for tritium transport in a two-phase mixture of liquid and gas can be adapted from the existing literature on transport in a porous media. Following the spatial smoothing methodology presented in \cite{gray_derivation_1975}, the concentration fields of both phases are defined and continuous over the whole tank domain, the discontinuous nature of the 2-phases mixture is accounted for in the phase fractions coefficients ($\varepsilon_\alpha)$. Except when specified, the space ($z$) and time ($t$) dependences are implicit throughout this work for clarity. 
 \begin{itemize}
     \item Liquid: 
     \begin{equation}
     \label{eq:CT2}
-        \varepsilon_l \frac{\partial c_{T_2}}{\partial t} =  \underbrace{\varepsilon_l E_{l} \frac{\partial ^2 c_{T_{2}}}{\partial z^2}}_\text{liquid dispersion} + \underbrace{S_{T_2}}_\text{tritium source} - \underbrace{a\,J_{T_2}}_{\text{mass transfer}}
+        \varepsilon_l \frac{\partial \CT}{\partial t} =  \underbrace{\varepsilon_l E_{l} \frac{\partial ^2 \CT}{\partial z^2}}_\text{liquid dispersion} + \underbrace{S_\mathrm{T_2}}_\text{tritium source} - \underbrace{a\,\JT}_{\text{mass transfer}}
     \end{equation}
     \item Gas: 
     \begin{equation}
     \label{eq:PT2}
-        \varepsilon_g \frac{1}{RT} \frac{\partial P_{T_2}}{\partial t} = \underbrace{-\frac{1}{RT}\frac{\partial (\,u_g\,P_{T_2})}{\partial z}}_\text{gas advection} + \underbrace{\varepsilon_g E_{g} \frac{1}{RT}\frac{\partial ^2 P_{T_{2}}}{\partial z^2}}_\text{gas dispersion} + a\,J_{T_2}
+        \varepsilon_g \frac{1}{RT} \frac{\partial \PT}{\partial t} = \underbrace{-\frac{1}{RT}\frac{\partial (\,u_g\,\PT)}{\partial z}}_\text{gas advection} + \underbrace{\varepsilon_g E_{g} \frac{1}{RT}\frac{\partial ^2 \PT}{\partial z^2}}_\text{gas dispersion} + a\,\JT
     \end{equation}
 \end{itemize}
-\subsection{Boundary conditions}
-\subsection{Assumptions of the model}
 
+where $a \:\mathrm{[m^2/m^3]}$ is the specific interfacial area per unit volume, $\varepsilon_g$ and $\varepsilon_l$ are the gas and liquid phase fractions, $u_g \: \mathrm{[m/s]}$ is the superficial gas phase velocity (not to be confused with the true bubbles velocity, previous work on the topic of tritium extraction can be ambiguous). $\CT$ and $\PT$ are phase specific or so-called "intrinsic" quantities (as defined by \cite{whitaker_method_1999}) of the liquid and gas phases respectively, in the fact that they represent the accumulation of a species \textit{per unit volume of the fluid phase} and not \textit{per unit volume of the porous medium}. This adaptation of \cite{gray_derivation_1975} intentionally omits molecular diffusion and mesoscale dispersion terms, as these are expected to be largely hidden by the system scale dispersion terms presented here.
+
+\subsection{Boundary conditions}
+\Cref{eq:CT2,eq:PT2} form a system of two partial differential equations coupled through \cref{eq:JT2}, called \textbf{1D Advection-Reaction-Dispersion (ARD)} model. It needs 4 boundary conditions (BCs) to have a unique solution.
+
+\subsubsection{Derivation from mass conservation considerations}
+
+This model is about gas sparging for tritium extraction, the BCs should therefore be chosen so that tritium is constrained to leave the tank solely via the gas phase, by:(1) transferring from the liquid where it gets born through \JT; (2) getting advected by the bubbles ($u_g$) up to the gas outlet. It is a deliberate choice of this model not to consider permeation from the liquid to the structural material nor direct molecular diffusion from the liquid top free-surface to the sweep gas above. This constraint on the evolution of the tritium inventory ($\dot n_\alpha \ \mathrm{[mol/s]}$) in the respective phases is expressed as follows: 
+\begin{align}
+    \dot n_l &= - \iiint_V a\JT \,dV \\
+    \dot n_g &= A \,(u_g\,c_g\rvert_{z=\mathrm{inlet}} - u_g\,c_g\rvert_{z=\mathrm{outlet}}) + \iiint_V a\JT \,dV \label{eq:n_g_constraint}
+\end{align}
+
+Where $c_g \equiv\frac{\PT}{RT}$ is the concentration in the gas phase, $A$ is the base area of the tank and $H$ its height. The BCs that enforce this constraint are obtained by integrating \cref{eq:CT2,eq:PT2} over the tank volume:
+\begin{align}
+    \dot n_l &= \frac{d}{dt}\iiint_V \varepsilon_g \,c_l \,dV =\iiint_V \varepsilon_g \, \frac{\partial c_l}{\partial t}\,dV  \nonumber\\
+    &\stackrel{\eqref{eq:CT2}}{=} A\,\bigg(\varepsilon_l\,E_l\,\frac{\partial c_l}{\partial z}\bigg\rvert_{z=H} -\varepsilon_l\,E_l\,\frac{\partial c_l}{\partial z}\bigg\rvert_{z=0} \bigg)- \iiint_V a\JT \,dV  \label{eq:n_l_integrated}
+\end{align}
+Where $c_l\equiv \CT$ is the \ce{T2} concentration in the liquid phase, used in this derivation for consistency with the gas phase notation $c_g$. Similarly:
+\begin{align}
+    \dot n_g &\stackrel{\eqref{eq:PT2}}{=}  A \,\bigg(u_g\,c_g\rvert_{z=0} - u_g\,c_g\rvert_{z=H} \,+ \varepsilon_g\,E_g\,\frac{\partial c_g}{\partial z}\bigg\rvert_{z=H} -\varepsilon_g\,E_g\,\frac{\partial c_g}{\partial z}\bigg\rvert_{z=0} \bigg) + \iiint_V a\JT \,dV \label{eq:n_g_integrated}
+\end{align}
+
+In these expressions, it can be seen that mathematical dispersion terms can contribute to tritium leaving the tank, via a "dispersive current" $\varepsilon_\alpha\,E_\alpha\,\frac{\partial c_\alpha}{\partial z}\bigg\rvert_{z=0,H}$, analogous to leakage due to molecular diffusion out of a system. Yet, in reality, physical mixing which dispersion terms describe doesn't make the phase being mixed "leak" at the boundaries of the tank. It is especially striking in the case of the liquid phase, which doesn't have a net flow and thus never enters nor leaves the system by any means (as illustrated by the blue dashed arrows in \cref{fig:sparging_tank}). 
+
+Equating \cref{eq:n_g_constraint} and \cref{eq:n_g_integrated} yields the BCs that make compatible the mathematical formulation and the physics to be described: 
+\begin{itemize}
+    \item in the case of the liquid phase: it forces a zero concentration gradient at the boundaries: 
+        \begin{equation*}
+            \frac{\partial c_l}{\partial z}\bigg \rvert_{z=0,H}=0
+        \end{equation*}
+    
+    \item in the case of the gas phase: a concentration gradient is expected to exist due to the non-zero advection term. The gas concentration at the inlet is known, \cref{eq:n_g_constraint} can thus be satisfied by allowing a discontinuity between the gas concentration there ($z=\mathrm{inlet}=0^-$) and the continuous concentration profile in the system. The resulting concentration jump introduces an advective transport contribution that cancels unphysical dispersion-induced leakage at the inlet. This type of 3rd type (Robin) BC is known as a \textit{Danckwerts boundary condition} in the chemical engineering literature: 
+        \begin{equation*}
+            u_g\,c_g\rvert_{z=0^-}= u_g\,c_g\rvert_{z=0} -\varepsilon_g\,E_g\,\frac{\partial c_g}{\partial z}\bigg\rvert_{z=0}
+        \end{equation*}
+    
+    The gas concentration at the outlet on the other hand is the unknown we typically want the model to predict, thus continuity is required here ($c_g\rvert_{z=H}=c_g\rvert_{z=\mathrm{outlet}}$), and \cref{eq:n_g_constraint} imposes a zero-gradient: 
+        \begin{equation*}
+            \frac{\partial c_g}{\partial z}\bigg \rvert_{z=H}=0
+        \end{equation*}
+    
+    This set of boundary conditions for the gas phase is typically refered to as "closed-closed" in the literature\cite{levenspiel_chemical_1999,mohan_experimental_2010}
+\end{itemize} 
+
+\subsubsection{Summary}
+\Crefrange{eq:BC1}{eq:BC4} presents the set of 4 boundary conditions previously derived, that enforce the desired tritium extraction physics for the 1D ARD model:
+\begin{itemize}
+    \item At the gas inlet, the sparging gas is considered pure He free of any tritium ($c_g\rvert_{z=0^-}=0$), the Danckwert BC becomes:
+    \begin{equation}
+    \label{eq:BC1}
+        u_g\,\PT\rvert_{z=0} =\varepsilon_g\,E_g\,\frac{\partial \PT}{\partial z}\bigg\rvert_{z=0}
+    \end{equation}
+    \item At the top of the salt, unlike at the inlet, the gas flow is undisturbed, the tritium concentration stays flat at the transitions from the salt to the free head space:
+    \begin{equation}
+    \label{eq:BC4}
+        \frac{\partial\PT}{\partial z}\bigg \rvert_{z=H}=0
+    \end{equation}
+    \item Tritium transport due to phase mixing is restrained to the tank volume, and tritium can only escape the system by being advected in the gas phase. In other words, the net tritium current arising from dispersion terms in \cref{eq:CT2,eq:PT2} must be null at the tank's boundaries for the liquid phase. This is enforced by the Neumann BCs:
+    \begin{equation}
+    \label{eq:BC2}
+        \frac{\partial\CT}{\partial z}\bigg \rvert_{z=0}=0
+    \end{equation}
+    \begin{equation}
+    \label{eq:BC3}
+        \frac{\partial\CT}{\partial z}\bigg \rvert_{z=H}=0
+    \end{equation}
+\end{itemize}
+
+\Cref{eq:BC3} implies that no tritium is transported from the top of the liquid surface to the above head space gas. This assumption is discussed in section \ref{sec:sparging_assumptions}.
+
+\subsection{Assumptions of the model}
+\label{sec:sparging_assumptions}
+- no permeation, no diffusion : conservative estimate of the tritium extraction speed. Permeation can be estimated by coupling with a model for tritium transport is solid media
 \section{Numerical implementation}
 \label{sec:sparging_impl}
 % The implementation covers some of the implementation details of your project.
