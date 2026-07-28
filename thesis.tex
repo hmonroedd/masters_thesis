@@ -22,6 +22,8 @@
 \usepackage{xltabular}
 \usepackage[version=4]{mhchem}
 \usepackage[colorinlistoftodos]{todonotes} % for the citing todo
+\usepackage{tikz}
+\usetikzlibrary{positioning, fit, backgrounds, arrows.meta}
 \newcommand{\needcite}[1]{\todo[color=red!40]{CITE: #1}}
 
 \title{Tritium extraction and transport from molten salt breeding experiments}
@@ -417,6 +419,7 @@ The 1D-ARD equations require as input some tritium transport and fluid dynamics 
 
 \subsection{Code structure}
 % diagram of the high level structure of the model, showing the workflow, with corresponding file and API
+\input{code_structure}
 \subsection{Numerical scheme}
 % FEM
 % derivation of the weak formulation

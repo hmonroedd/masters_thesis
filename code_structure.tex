@@ -1,0 +1,139 @@
+% Requires in the preamble of thesis.tex:
+%   \usepackage{tikz}
+%   \usetikzlibrary{positioning, fit, backgrounds, arrows.meta}
+\begin{figure}[p]
+\centering
+\hyphenpenalty=10000\exhyphenpenalty=10000 % no hyphenation in the narrow boxes
+\begin{tikzpicture}[
+  font=\scriptsize,
+  boxc/.style={
+    draw=black!55, rounded corners=2pt, fill=white,
+    align=left, inner sep=3pt
+  },
+  boxstep/.style={boxc, text width=6.4cm},
+  boxdata/.style={boxstep, fill=green!8, draw=green!45!black},
+  boxside/.style={boxc, text width=2.9cm, fill=black!3},
+  boxwide/.style={boxside, text width=3.6cm},
+  boxout/.style={boxc, text width=3.7cm, fill=blue!4},
+  arrflow/.style={-{Stealth[length=2mm]}, draw=black!65, line width=0.6pt},
+  arrghost/.style={arrflow, dashed, draw=black!45},
+  tag/.style={
+    anchor=south west, fill=#1, text=white,
+    font=\scriptsize\bfseries, inner sep=2pt, rounded corners=2pt
+  },
+  filetag/.style={tag=black!55}
+]
+
+% ============ 1. user-supplied description of the system ============
+\node[boxc, text width=2.9cm] (geom)
+  {\texttt{ColumnGeometry}\\ area, height, nozzles};
+\node[boxc, text width=2.9cm, right=2mm of geom] (mat)
+  {\texttt{BreederMaterial}\\ salt and its properties};
+\node[boxc, text width=2.9cm, below=2mm of geom.south west, anchor=north west] (oper)
+  {\texttt{OperatingParameters}\\ $T$, $P_\mathrm{top}$, gas flow, breeding};
+\node[boxc, text width=2.9cm, right=2mm of oper] (sparg)
+  {\texttt{SpargingParameters}\\ closure relations to enforce};
+
+\begin{scope}[on background layer]
+  \node[fit=(geom)(mat)(oper)(sparg), inner sep=2.5mm,
+        draw=purple!60, fill=purple!5, rounded corners=3pt] (g1) {};
+\end{scope}
+
+% ============ 2. resolution of the closure relations ============
+\node[boxstep, below=7mm of g1] (resolve)
+  {\texttt{SimulationInput.from\_parameters(}\\
+   \texttt{\quad geom, mat, oper, sparg)}\\[1mm]
+   recursive graph search (\texttt{find\_in\_graph}): every parameter still
+   missing is taken from the user input, or else from the default correlation};
+
+% ============ 3. resolved input of the 1D-ARD model ============
+\node[boxdata, below=7mm of resolve] (siminput)
+  {\texttt{SimulationInput}\\[1mm]
+   scalars: \texttt{height}, \texttt{area}, \texttt{temperature}, \texttt{K\_s},
+   \texttt{rho\_l}, \texttt{E\_g}, \texttt{E\_l}, \texttt{Q\_T}\\
+   profiles $z \mapsto$: \texttt{P\_l}, \texttt{P\_g}, \texttt{eps\_g},
+   \texttt{a}, \texttt{u\_g}, \texttt{h\_l}\\
+   \texttt{.graph}: intermediate parameters and their dependencies};
+
+% ============ 4. solve ============
+\node[boxstep, below=7mm of siminput] (solve)
+  {\texttt{Simulation(sim\_input, t\_final,}\\
+   \texttt{\quad dispersion\_on, constant\_profiles)}\\
+   \texttt{.solve(dt, dx)}\\[1mm]
+   1D-ARD weak form assembled and solved with FEniCSx/DOLFINx
+   (P1 elements, implicit time stepping, Newton solver)};
+
+% ============ 5. results ============
+\node[boxdata, below=7mm of solve] (results)
+  {\texttt{SimulationResults}\\[1mm]
+   \texttt{times}, \texttt{c\_T2\_profiles}, \texttt{y\_T2\_profiles},
+   \texttt{n\_T2\_salt\_series}, and the fields listed in
+   \texttt{Simulation.exports}};
+
+% ============ 6. post-processing ============
+\node[boxout, below=13mm of results] (post)
+  {\texttt{summarize\_decay()}\\ fitted $\tau$ against its analytical prediction};
+\node[boxout, left=3mm of post] (save)
+  {\texttt{exports\_to\_csv()}\\ \texttt{to\_json(sections)}\\ \texttt{to\_pickle()}};
+\node[boxout, right=3mm of post] (anim)
+  {\texttt{create\_animation()}\\ interactive $c_{T_2}(z,t)$ and $P_{T_2}(z,t)$};
+
+% ============ side: library of closure relations ============
+\node[boxside, left=5mm of resolve] (corr)
+  {\texttt{all\_correlations}\\[0.5mm]
+   \texttt{Correlation} and \texttt{Profile} objects: defaults, or a custom
+   one passed in the input};
+
+% ============ side: analytical diagnostics ============
+\node[boxside, left=5mm of siminput] (diag)
+  {\texttt{get\_Pi\_number()}\\ \texttt{get\_tau\_ave()}\\ \texttt{get\_Bo()}\\
+   \texttt{get\_c\_T2\_SS()}\\ \texttt{dx\_from\_Pe()}\\[0.5mm]
+   regime check, and sizing of \texttt{dt} and \texttt{dx}};
+
+% ============ side: ready-made inputs ============
+\node[boxwide, right=5mm of g1] (examples)
+  {\texttt{get\_sim\_input\_LIBRA\_Pi()}\\ \texttt{get\_sim\_input\_standard()}\\[0.5mm]
+   pre-built cases, bypassing steps 1 and 2};
+
+% ============ flow ============
+\draw[arrflow] (g1) -- (resolve);
+\draw[arrflow] (resolve) -- (siminput);
+\draw[arrflow] (siminput) -- (solve);
+\draw[arrflow] (solve) -- (results);
+\draw[arrflow] (corr.east) -- (resolve.west);
+\draw[arrflow] (siminput.west) -- (diag.east);
+\draw[arrflow] (diag.south) |- ([yshift=2mm]solve.west);
+\draw[arrghost] (examples.south) |- (siminput.east);
+
+\draw[arrflow] (results.south) -- ++(0,-4mm) -| (save.north);
+\draw[arrflow] (results.south) -- ++(0,-4mm) -| (post.north);
+\draw[arrflow] (results.south) -- ++(0,-4mm) -| ([xshift=5mm]anim.north);
+
+% ============ step numbers and source files ============
+\node[tag=purple!60]      at (g1.north west)       {1 -- describe the system \textbar{} \texttt{inputs.py}};
+\node[filetag]            at (resolve.north west)  {2 -- resolve the closures \textbar{} \texttt{inputs.py}};
+\node[tag=green!45!black] at (siminput.north west) {3 -- model input \textbar{} \texttt{inputs.py}};
+\node[filetag]            at (solve.north west)    {4 -- solve \textbar{} \texttt{model.py}};
+\node[tag=green!45!black] at (results.north west)  {5 -- results \textbar{} \texttt{model.py}};
+\node[tag=blue!55]        at (save.north west)     {6 \textbar{} \texttt{model.py}};
+\node[tag=blue!55]        at (post.north west)     {\texttt{postprocess.py}};
+\node[tag=blue!55]        at (anim.north west)     {\texttt{animation.py}};
+\node[filetag]            at (corr.north west)     {\texttt{correlations.py}};
+\node[filetag]            at (diag.north west)     {\texttt{inputs.py}};
+\node[filetag]            at (examples.north west) {\texttt{input\_examples.py}};
+
+\end{tikzpicture}
+\caption{High-level structure of the \texttt{sparging} package, and the order in which
+its API is used to write a simulation. The user describes the system with the four
+dataclasses of step~1, from which \texttt{from\_parameters} resolves, by recursive graph
+search, the scalars and $z$-profiles required by the 1D-ARD equations (step~3); any
+parameter left unspecified is filled with the default correlation of
+\texttt{correlations.py}. The dimensionless diagnostics of \texttt{SimulationInput} are
+available before any computation, and give the discretisation steps handed to
+\texttt{solve}, which returns a \texttt{SimulationResults} object holding the profiles and
+the requested exports. The dashed path is the shortcut used in practice: the pre-built
+cases of \texttt{input\_examples.py} return a ready \texttt{SimulationInput}. All
+quantities carry physical units, as \texttt{pint} objects built on the registry
+\texttt{ureg} of \texttt{config.py}.}
+\label{fig:code_structure}
+\end{figure}
