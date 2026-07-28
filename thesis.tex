@@ -290,8 +290,11 @@ Where $\CT \: \mathrm{[mol/m^3]}$ is the tritium concentration in the bulk liqui
 Concentration at the liquid-gas interface is assumed to be always at equilibrium, dictated by the solubility in the liquid phase: $c_{T_2,i}=c_{T_2,eq}=K_s \,P_{T_2}$, where $P_{T_2} \:\mathrm{[Pa]}$ is the tritium partial pressure in the gas phase, and the solubility of the tritium follows a Henry's law with constant $K_s \: \mathrm{[mol/m^3/Pa]}$ as it is the case for molten salts. It follows:
 \begin{equation}
     \label{eq:JT2}
-    J_{T_2} = h_l \, (c_{T_2}-K_sP_{T_2})
+    \JT = h_l \, (c_{T_2}-K_s\,\PT)
 \end{equation}
+
+In \cref{eq:JT2}, \JT and \PT are the unknown to be solved in the 1D-ARD model; $K_s$ is a salt property; $h_l$ is a parameter that depends on tritium diffusivity and fluid dynamic characteristics of the salt. 
+% -> transition to next section
 
 \subsection{Fluid dynamics}
 % expose correlations
@@ -299,7 +302,7 @@ Advective transport through fluid motion is expected to influence, if not domina
 \par
 
 The net bubble velocity gives rise to an advective term, while phases mixing translates into a dispersion term. Mixing is expressed by a "dispersion" term that resembles molecular diffusion, as both phenomena have a Fickian behavior which tends to flatten the concentration profiles. They are however inherently different from a physical point of view and shouldn't be mixed up, as transport caused by phases mixing largely dominates molecular diffusion at macroscopic scales. This translates in dispersion coefficients being order of magnitude larger than diffusion coefficients. 
-\todo{elaborate on choices of correlations, put the correlation table here and present typical order of magnitude values for the present work -> will be used in the assumptions/simplifications}
+\todo{elaborate on choices of correlations, put the fluid dynamics closure relations table here and present typical order of magnitude values for the present work -> will be used in the assumptions/simplifications}
 
 \subsection{Advection-reaction-dispersion model}
 \todo{move this to the beginning of the chapter}
@@ -401,6 +404,7 @@ Equating \cref{eq:n_g_constraint} and \cref{eq:n_g_integrated} yields the BCs th
 - bubbles and liquid are always at thermal equilibrium, and the temperature is homogeneous. This implies that the liquid brings some heat to the bubbles as they expand toward the top of the tank (the bubbles expansion is non-adiabatic), allowing to write for a bubble: $P_bV_b=n_bRT=\mathrm{constant}$ thus $V_b(z)=V_{b0} \frac{P_{b0}}{P_b(z)}$
 \\
 - chemical speciation: the redox of the salt is perfectly controlled, prevailing newborn tritium to form highly soluble and poorly mobile tritium fluoride ($TF$). Thus, tritium is assumed to be only present as molecular $T_2$, which molecular diffusion coefficient is 3-5 times higher than its $TF$ counterpart, as recent ab initio molecular dynamics results suggest \cite{lam_impact_2021}. Mass transfer properties are based on this assumption. 
+
 \section{Implementation}
 \label{sec:sparging_impl}
 % The implementation covers some of the implementation details of your project.
@@ -409,15 +413,18 @@ Equating \cref{eq:n_g_constraint} and \cref{eq:n_g_integrated} yields the BCs th
 
 % This section is usually 3-5 pages.
 
+The 1D-ARD equations require as input some tritium transport and fluid dynamics parameters that are non-trivially linked to known operating and design parameters. The implementation of the model is two staged: known parameters are fed into (1) a closure relations resolution stage, which computes the parameters needed by (2) the 1D-ARD equations, which compute the space and time dependence of the tritium concentrations ($\PT(z,t),\CT(z,t$). Diverse quantities of interest can then be derived from these. 
+
 \subsection{Code structure}
-% just a quick figure of the packages dependencies, API
+% diagram of the high level structure of the model, showing the workflow, with corresponding file and API
 \subsection{Numerical scheme}
 % FEM
 % derivation of the weak formulation
-\subsection{Fluid dynamics parameters resolution}
+\subsection{Closure relations resolution}
 % graph resolution algorithm in general (flexible)
 
 % parameters dependance graph for the standard set of closure relations ("canonical", the one that is empoloyed throughout this work)
+% something like: closure relations presented in table 1 and 2 (mass transfer and fluid dynamics paragraph respectively) form a complete set of closure relations that uniquely define the input parameters of the 1D-ARD model. 
 
 \subsection{Verification}
 \subsection{Analytical solution}
