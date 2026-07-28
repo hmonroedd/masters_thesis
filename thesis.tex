@@ -308,7 +308,15 @@ The net bubble velocity gives rise to an advective term, while phases mixing tra
 
 \subsection{Advection-reaction-dispersion model}
 \todo{move this to the beginning of the chapter}
-Bringing mass transfer and fluid dynamics together, the equations for tritium transport in a two-phase mixture of liquid and gas can be adapted from the existing literature on transport in a porous media. Following the spatial smoothing methodology presented in \cite{gray_derivation_1975}, the concentration fields of both phases are defined and continuous over the whole tank domain, the discontinuous nature of the 2-phases mixture is accounted for in the phase fractions coefficients ($\varepsilon_\alpha)$. Except when specified, the space ($z$) and time ($t$) dependences are implicit throughout this work for clarity. 
+Bringing mass transfer and fluid dynamics together, the equations for tritium transport in a two-phase mixture of liquid and gas can be adapted from the existing literature on transport in a porous media. Following the spatial smoothing methodology presented in \cite{gray_derivation_1975}, the concentration fields of the liquid and gas phases, respectively $\CT \ \mathrm{[molT_2/m^3]}$ and $\PT \ \mathrm{[Pa]}$, are defined as follows:
+\begin{align}
+    \CT(z,t) &\equiv \frac{\delta n_{\mathrm{T_2},l}(z,t)}{\delta V_l(z)} \\
+    \PT(z,t) &\equiv \frac{1}{RT} \frac{\delta n_{\mathrm{T_2},g}(z,t)}{\delta V_g(z)}
+\end{align}
+Where $\delta V_\alpha(z)$ is the volume of phase $\alpha$ contained in a \textit{representative elementary volume} $\delta V_t(z)$ (large compared to bubbles/pores but small compared to the tank), and $\delta n_{\mathrm{T_2},\alpha}(z,t)$ is the amount of \ce{T_2} in $\delta V_\alpha(z)$. The discontinuous nature of the 2-phases mixture is accounted for in the phase fractions $\varepsilon_\alpha(z)\equiv \frac{\delta V_\alpha(z)}{\delta V_t(z)}$. This allows \CT and \PT to be defined and continuous everywhere in the domain delimited by the tank volume $V_t$. As such, they correspond to phase specific or so-called \textit{intrinsic} quantities (as defined by \cite{whitaker_method_1999}) of their respective phase, in the fact that they represent the accumulation of a species \textit{per unit volume of the fluid phase} ($\delta V_\alpha$) and not \textit{per unit volume of the porous medium} ($\delta V_t$).
+ 
+
+Except when needed, the space ($z$) and time ($t$) dependences are implicit throughout this work for clarity. 
 \begin{itemize}
     \item Liquid: 
     \begin{equation}
@@ -322,7 +330,7 @@ Bringing mass transfer and fluid dynamics together, the equations for tritium tr
     \end{equation}
 \end{itemize}
 
-where $a \:\mathrm{[m^2/m^3]}$ is the specific interfacial area per unit volume, $\varepsilon_g$ and $\varepsilon_l$ are the gas and liquid phase fractions, $u_g \: \mathrm{[m/s]}$ is the superficial gas phase velocity (not to be confused with the true bubbles velocity, previous work on the topic of tritium extraction can be ambiguous). $\CT$ and $\PT$ are phase specific or so-called "intrinsic" quantities (as defined by \cite{whitaker_method_1999}) of the liquid and gas phases respectively, in the fact that they represent the accumulation of a species \textit{per unit volume of the fluid phase} and not \textit{per unit volume of the porous medium}. This adaptation of \cite{gray_derivation_1975} intentionally omits molecular diffusion and mesoscale dispersion terms, as these are expected to be largely hidden by the system scale dispersion terms presented here.
+where $a \:\mathrm{[m^2/m^3]}$ is the specific interfacial area per unit volume, $\varepsilon_g$ and $\varepsilon_l$ are the gas and liquid phase fractions, $u_g \: \mathrm{[m/s]}$ is the \textbf{superficial} gas phase velocity (not to be confused with the true bubbles velocity, previous work on the topic of tritium extraction can be ambiguous). This adaptation of \cite{gray_derivation_1975} intentionally omits molecular diffusion and mesoscale dispersion terms, as these are expected to be largely hidden by the system scale dispersion terms presented here.
 
 \subsection{Boundary conditions}
 \Cref{eq:CT2,eq:PT2} form a system of two partial differential equations coupled through \cref{eq:JT2}, called \textbf{1D Advection-Reaction-Dispersion (ARD)} model. It needs 4 boundary conditions (BCs) to have a unique solution.
@@ -408,7 +416,7 @@ Equating \cref{eq:n_g_constraint} and \cref{eq:n_g_integrated} yields the BCs th
 \label{sec:sparging_assumptions}
 - no permeation, no diffusion : conservative estimate of the tritium extraction speed. Permeation can be estimated by coupling with a model for tritium transport is solid media \\
 
-- no bubbles coalescence (---\todo{compute space between bubbles, compare with bubbles size}----). At such low superficial gas velocity, void fractions falls below 1\%, we can reasonably expect the bubbles not to interact \cite{taylor_implementation_2022} 
+- no bubbles coalescence . At such low superficial gas velocity, void fractions falls below 1\%, we can reasonably expect the bubbles not to interact \cite{taylor_implementation_2022} \todo{compute space between bubbles, compare with bubbles size}
 \\
 - homogeneous temperature field: in the experiments for which this model was developed, we don't have spatial resolution for the salt temperature. It is the only model input that can't be controlled nor measured precisely. The approach then is to consider a rather large distribution of possible temperatures, which should give lower and upper bounds on the predicted sparger performance. 
 \\
@@ -452,18 +460,32 @@ This is abstracted as a graph search algorithm, implemented in the \verb|Simulat
 % FEM
 % derivation of the weak formulation
 
-\subsection{Summary of the code structure}
-% diagram of the high level structure of the model, showing the workflow, with corresponding file and API
-\input{diag_code_structure}
-
 \subsection{Verification}
-\subsubsection{Analytical solution}
+\subsubsection{Comparison with the analytical solution}
 % introduced tau 
 \subsubsection{Method of manufactured solution}
 % for later if have time
 \subsubsection{Numerical error estimate}
 % convergence plot: quantify convergence with tau
 
+
+\subsection{Summary of the code structure}
+% diagram of the high level structure of the model, showing the workflow, with corresponding file and API
+
+% \paragraph{Software and availability.}
+The model is implemented as a Python package, \verb|libra_sparging| (Python 3.12 or later),
+released under the MIT license at
+\url{https://github.com/LIBRA-project/libra_sparging}. The finite element discretisation is
+built on FEniCSx/DOLFINx \needcite{DOLFINx}, and the resolution of the closure relations on
+the graph library NetworkX \needcite{NetworkX}. Every physical quantity carries its units
+through Pint \needcite{Pint}, which performs the conversions and catches dimensional
+inconsistencies at run time (a useful safeguard given the number of empirical
+correlations involved, each with its own convention). NumPy, SciPy, pandas and Matplotlib
+support the post-processing. Correctness is checked by a \verb|pytest| suite covering the
+resolution of the model input, the solver on cases with a known solution, and the
+serialisation of the results.
+
+\input{diag_code_structure}
 
 \section{Model exploration}
 \label{sec:sparging_expl}
