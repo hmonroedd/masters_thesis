@@ -435,19 +435,37 @@ Equating \cref{eq:n_g_constraint} and \cref{eq:n_g_integrated} yields the BCs th
 % This section is usually 3-5 pages.
 
 \subsection{Overview}
-The 1D-ARD equations require as input some tritium transport and fluid dynamics parameters that are non-trivially linked to known operating and design parameters. The implementation of the model is two staged: known parameters are fed into (1) a closure relations resolution stage, which computes the parameters needed by (2) the 1D-ARD equations, which compute the space and time dependence of the tritium concentrations ($\PT(z,t),\CT(z,t$). Diverse quantities of interest can then be derived from these. 
+The 1D-ARD equations require as input some tritium transport and fluid dynamics parameters that are non-trivially linked to known operating and design parameters. As illustrated in \cref{fig:model_overview}, the implementation of the model is two staged: known parameters are fed into (1) a closure relations resolution stage, which computes the parameters needed by (2) the 1D-ARD equations, which compute the space and time dependence of the tritium concentrations ($\PT(z,t),\CT(z,t$). Diverse quantities of interest can then be derived from these. T
 
+\input{diag_model_overview}
 
 \subsection{Closure relations resolution}
 
-There are several available correlations in the literature for the same quantity, and the choice of which correlation to use is sometimes non-trivial: it changes depending on what parameters are already known and in what range they are. \todo{give an example (bubble size)}
-
+There are several available correlations in the literature for the same physical quantity, and the choice of which correlation to use is sometimes non-trivial: it changes depending on what parameters are already known and in what range they are. \todo{give an example (bubble size)}
 
 In particular, the topic of gas sparging in molten salts presents large unknowns (\todo{add diffusivity/solubility correlation plots in Background and refer to it here}), and it is the purpose of this model to explore them. It was therefore designed to offer flexibility as to the closure relations used and the assumptions they are built upon. 
 
-This flexibility is achieved by dynamically resolving the dependencies between physical quantities every time a new simulation is launched, based on a set of correlations and known parameters specified by the user for this specific simulation. 
+This flexibility is achieved by dynamically resolving the dependencies between all the parameters of the model every time a new simulation is launched, based on a set of closure relations and known parameters specified by the user for this specific simulation. Here, a \textit{parameters} can be a physical quantity (e.g. temperature) or more broadly any quantity used to describes the system (e.g. gas fraction, dimensionless numbers); a \textit{closure relations} is any relation between parameters (e.g. correlation, state equation, definition)
 
-This is abstracted as a graph search algorithm, implemented in the \verb|SimulationInput:from_parameters()| class method. Each closure relation is a function $f$ of several parameters $p_1,...,p_n$. 
+Each closure relation that gives a parameter $p_j$ is a function $f_j$ of $n$ other parameters $p_i$ ($i=1,...,n\neq j$). The $p_i$ are either known (given by the user or already computed), or they have to be obtained as the output of an other closure relation $f_i$. The problem of dynamically resolving this potentially complex network of interdependent parameters can be described using the formalism of mathematical graphs:
+\begin{itemize}
+    \item each parameter $p_j$ is a \textit{node} $j$ of the graph;
+    \item the closure relation $f_j$ that computes $p_j$ from other parameters $p_i$ gives the \textit{ingoing links}, from each node $i=1,...,n$ to node $j$;
+    \item the closure relations $f_k(...,p_j,...)$ that require $p_j$ as an input give the \textit{outgoing links}, from node $j$ to each node $k$.
+\end{itemize}   
+Note that a node $j$ can be computed (i.e. is \textit{discovered}) only if the $n$ nodes it depends on have been discovered already. This prohibits cyclic dependencies, where a node needs itself to be computed, i.e. where $p_j=f_j(p_i,...)=f_j(f_i(p_j,...),...)$.
+
+Eventually, what is required by the sparging model are the ARD parameters that appear in the 1D ARD equations. The intermediate parameters that were used to derive the latter are valuable to understand the model. The input parameters are considered to be independently controlled by the user in the actual sparging experiment, they are the "bedrock" level of the graph in the sense that they cannot be obtained from closure relations. Computing the ARD parameters boils down to discovering the oriented graph presented above:
+\begin{itemize}
+    \item the user specifies a set of known parameters (nodes) $N=\{p_i\}$ and closure relations (links) $L=\{f_k\}$ The known parameters can be input, but also intermediate or ARD parameters if the user wants to short-circuit some closure relations;
+    \item the graph search algorithm is given a list of nodes it has to discover $\hat N=\{p_k, k=\mathrm{ARD \ parameters}\}$;
+    \item for each required node $k$, it recursively goes upstream the links leading to it, given in $L$, up to the closest known node $i$, which it uses to compute all the nodes on the way from $i$ to $k$;
+    \item each node thereby computed is added to the list of discovered nodes until it includes all the required nodes, when $\hat N \subset N$
+\end{itemize}
+
+The parameters resolution algorithm will fail if the user provides a set of known parameters and relations that is insufficient to compute the ARD parameters (\textit{incomplete}). 
+
+The \verb|from_parameters()| method of the \verb|SimulationInput| class implements this graph discovery, the recursive part of the algorithm is summarized in \cref{fig:graph_search}.
 
 % graph resolution algorithm flowchart 
 \input{diag_graph_search}
@@ -473,16 +491,7 @@ This is abstracted as a graph search algorithm, implemented in the \verb|Simulat
 % diagram of the high level structure of the model, showing the workflow, with corresponding file and API
 
 % \paragraph{Software and availability.}
-The model is implemented as a Python package, \verb|libra_sparging| (Python 3.12 or later),
-released under the MIT license at
-\url{https://github.com/LIBRA-project/libra_sparging}. The finite element discretisation is
-built on FEniCSx/DOLFINx \needcite{DOLFINx}, and the resolution of the closure relations on
-the graph library NetworkX \needcite{NetworkX}. Every physical quantity carries its units
-through Pint \needcite{Pint}, which performs the conversions and catches dimensional
-inconsistencies at run time (a useful safeguard given the number of empirical
-correlations involved, each with its own convention). NumPy, SciPy, pandas and Matplotlib
-support the post-processing. Correctness is checked by a \verb|pytest| suite covering the
-resolution of the model input, the solver on cases with a known solution, and the
+The model is implemented as a Python package, \verb|libra_sparging| (Python 3.12 or later), released under the MIT license at \url{https://github.com/LIBRA-project/libra_sparging}. The finite element discretisation is built on FEniCSx/DOLFINx \needcite{DOLFINx}, and the resolution of the closure relations on the graph library NetworkX \needcite{NetworkX}. Every physical quantity carries its units through Pint \needcite{Pint}, which performs the conversions and catches dimensional inconsistencies at run time (a useful safeguard given the number of empirical correlations involved, sometimes with archaic units). NumPy, SciPy, pandas and Matplotlib support the post-processing. Correctness is checked by a \verb|pytest| suite covering the resolution of the model input, the solver on cases with a known solution, and the
 serialisation of the results.
 
 \input{diag_code_structure}

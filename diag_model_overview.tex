@@ -3,6 +3,7 @@
 %   \usetikzlibrary{positioning, fit, backgrounds, arrows.meta}
 \begin{figure}[ht]
 \centering
+\label{fig:model_overview}
 \hyphenpenalty=10000\exhyphenpenalty=10000
 \begin{tikzpicture}[
   font=\scriptsize,
@@ -37,7 +38,7 @@
 
 % ---------------- the two stages ----------------
 \node[boxproc, text width=2.2cm, fill=teal!8, draw=teal!60] (clos) at (-2.60, 0)
-  {\textbf{Closure relations}\\ empirical correlations};
+  {\textbf{Closure relations}\\ fluid dynamics \& mass transport parameters};
 \node[boxproc, text width=1.9cm, fill=violet!8, draw=violet!60] (ard) at (0.20, 0)
   {\textbf{1D ARD}\\ finite element solution};
 
@@ -55,7 +56,7 @@
 
 % ---------------- what flows between the stages ----------------
 \node[annot, text width=4.6cm] (coef) at (-1.20, -1.95)
-  {ARD coefficients\\ $\varepsilon_g$, $a$, $h_l$, $u_g$, $E_g$, $E_l$, $K_s$};
+  {ARD parameters\\ $\varepsilon_g$, $a$, $h_l$, $u_g$, $E_g$, $E_l$, $K_s$};
 \draw[leader] (coef.north) -- (-1.20, -0.02);
 
 \node[annot, text width=2.4cm] (pp) at (4.60, -1.85) {post-processing};
@@ -67,11 +68,6 @@
 \node[tag=purple!60]   at (input.north west) {Model input};
 
 \end{tikzpicture}
-\caption{Organisation of the model. The design and operating parameters of the column are
-turned into the coefficients of the 1D-ARD equations by a first stage of empirical closure
-relations~(1), and those equations are then solved by the finite element method~(2) for the
-tritium concentration in the liquid and its partial pressure in the gas. The quantities of
-interest --- the liquid tritium inventory and the extraction time constant $\tau$ --- are
-derived from these fields. The two stages are the subject of the following subsections.}
+\caption{Organisation of the sparging model}
 \label{fig:model_overview}
 \end{figure}
