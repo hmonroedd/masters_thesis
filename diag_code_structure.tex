@@ -3,6 +3,7 @@
 %   \usetikzlibrary{positioning, fit, backgrounds, arrows.meta}
 \begin{figure}[H]
 \centering
+\label{fig:code_structure}
 \hyphenpenalty=10000\exhyphenpenalty=10000 % no hyphenation in the narrow boxes
 \begin{tikzpicture}[
   font=\scriptsize,
@@ -123,17 +124,6 @@
 \node[filetag]            at (examples.north west) {\texttt{input\_examples.py}};
 
 \end{tikzpicture}
-\caption{High-level structure of the \texttt{sparging} package, and the order in which
-its API is used to write a simulation. The user describes the system with the four
-dataclasses of step~1, from which \texttt{from\_parameters} resolves, by recursive graph
-search, the scalars and $z$-profiles required by the 1D-ARD equations (step~3); any
-parameter left unspecified is filled with the default correlation of
-\texttt{correlations.py}. The dimensionless diagnostics of \texttt{SimulationInput} are
-available before any computation, and give the discretisation steps handed to
-\texttt{solve}, which returns a \texttt{SimulationResults} object holding the profiles and
-the requested exports. The dashed path is the shortcut used in practice: the pre-built
-cases of \texttt{input\_examples.py} return a ready \texttt{SimulationInput}. All
-quantities carry physical units, as \texttt{pint} objects built on the registry
-\texttt{ureg} of \texttt{config.py}.}
+\caption{High-level structure of the \texttt{sparging} package, and the order in which its API is used to write a simulation}
 \label{fig:code_structure}
 \end{figure}

@@ -39,6 +39,13 @@
 \newcommand{\CT}{\ensuremath{c_\mathrm{T_2}}}
 \newcommand{\JT}{\ensuremath{J_\mathrm{T_2}}}
 \newcommand{\YT}{\ensuremath{y_\mathrm{T_2}}}
+\newcommand{\NT}{\ensuremath{n_\mathrm{T_2}}}
+\newcommand{\dotNT}{\ensuremath{\dot n_\mathrm{T_2}}}
+\newcommand{\NTl}{\ensuremath{n_\mathrm{T_2,l}}}
+\newcommand{\dotNTl}{\ensuremath{\dot n_\mathrm{T_2,l}}}
+\newcommand{\NTg}{\ensuremath{n_\mathrm{T_2,g}}}
+\newcommand{\dotNTg}{\ensuremath{\dot n_\mathrm{T_2,g}}}
+\newcommand{\ST}{\ensuremath{S_\mathrm{T_2}}}
 
 \begin{document}
 \maketitle
@@ -223,11 +230,12 @@ Gas sparging was identified as a candidate to fill this role. The principle is t
 
 \section{Problem definition}
 % roadmap: 1 sentence/chapter 
-
+\label{sec:problem_def}
+p
 The viability of gas sparging as a tritium extraction system for LIBRA Pi has not been established yet. It is the object of the present modelling work, focusing on three main questions:
 \begin{itemize}
     \item \textit{What extraction timescales could a sparging system achieve in LIBRA Pi ?}
-    \item \textit{How can the extraction speed be optimized ?}
+    \item \textit{What are the mechanisms affecting extraction kinetics of gas sparging and how can it be optimized ?} 
     \item \textit{What are the limitations of this prediction and how can it be improved ?}
 \end{itemize}
 
@@ -281,6 +289,7 @@ It relies primarily on diffusion, where the density gradient occurring at the in
 % It depends on two fundamental properties of the solute-solvant couple (here tritium-molten salt): diffusivity $D_T \:\mathrm{[m^2/s]}$ and solubility $K_s$  ($\mathrm{[mol/m^3/Pa]}$ or $\mathrm{[mol/m^3/Pa^{0.5}]}$ depending on the solubility law).
 \\
 Transport of solute gases through liquid-gas interfaces is commonly described by the the Lewis-Whitman two-film model \cite{lewis_principles_1924}. In molten salts, \ce{H_2} has a very low solubility \needcite{H2 low solubility}, so mass transfer through the interface is limited by the liquid film, the interfacial flux is therefore expressed using the liquid side mass transfer coefficient $h_l \:\mathrm{[m/s]}$ which characterized both molecular diffusion and turbulent transport through the liquid film. The interfacial flux is expressed as:
+
 \todo{insert illustration of two fluid model}
 
 \begin{equation*}
@@ -297,6 +306,8 @@ Concentration at the liquid-gas interface is assumed to be always at equilibrium
 
 In \cref{eq:JT2}, \JT and \PT are the unknown to be solved in the 1D-ARD model; $K_s$ is a salt property; $h_l$ is a parameter that depends on tritium diffusivity and fluid dynamic characteristics of the salt. 
 % -> transition to next section
+\todo{add table of closure relations for mass transport}
+\todo{add figure of P(c) equilibrium curve ?}
 
 \subsection{Fluid dynamics}
 % expose correlations
@@ -306,17 +317,41 @@ Advective transport through fluid motion is expected to influence, if not domina
 The net bubble velocity gives rise to an advective term, while phases mixing translates into a dispersion term. Mixing is expressed by a "dispersion" term that resembles molecular diffusion, as both phenomena have a Fickian behavior which tends to flatten the concentration profiles. They are however inherently different from a physical point of view and shouldn't be mixed up, as transport caused by phases mixing largely dominates molecular diffusion at macroscopic scales. This translates in dispersion coefficients being order of magnitude larger than diffusion coefficients. 
 \todo{elaborate on choices of correlations, put the fluid dynamics closure relations table here and present typical order of magnitude values for the present work -> will be used in the assumptions/simplifications}
 
+\todo{add table of closure relations for fluid dynamics}
+% take from sparging paper, add a column "order of magnitude" 
+
 \subsection{Advection-reaction-dispersion model}
 \todo{move this to the beginning of the chapter}
-Bringing mass transfer and fluid dynamics together, the equations for tritium transport in a two-phase mixture of liquid and gas can be adapted from the existing literature on transport in a porous media. Following the spatial smoothing methodology presented in \cite{gray_derivation_1975}, the concentration fields of the liquid and gas phases, respectively $\CT \ \mathrm{[molT_2/m^3]}$ and $\PT \ \mathrm{[Pa]}$, are defined as follows:
-\begin{align}
-    \CT(z,t) &\equiv \frac{\delta n_{\mathrm{T_2},l}(z,t)}{\delta V_l(z)} \\
-    \PT(z,t) &\equiv \frac{1}{RT} \frac{\delta n_{\mathrm{T_2},g}(z,t)}{\delta V_g(z)}
-\end{align}
-Where $\delta V_\alpha(z)$ is the volume of phase $\alpha$ contained in a \textit{representative elementary volume} $\delta V_t(z)$ (large compared to bubbles/pores but small compared to the tank), and $\delta n_{\mathrm{T_2},\alpha}(z,t)$ is the amount of \ce{T_2} in $\delta V_\alpha(z)$. The discontinuous nature of the 2-phases mixture is accounted for in the phase fractions $\varepsilon_\alpha(z)\equiv \frac{\delta V_\alpha(z)}{\delta V_t(z)}$. This allows \CT and \PT to be defined and continuous everywhere in the domain delimited by the tank volume $V_t$. As such, they correspond to phase specific or so-called \textit{intrinsic} quantities (as defined by \cite{whitaker_method_1999}) of their respective phase, in the fact that they represent the accumulation of a species \textit{per unit volume of the fluid phase} ($\delta V_\alpha$) and not \textit{per unit volume of the porous medium} ($\delta V_t$).
- 
 
-Except when needed, the space ($z$) and time ($t$) dependences are implicit throughout this work for clarity. 
+\subsubsection{Definitions}
+\todo{abstract c and P by using the general concept of concentration in phase alpha, introduce c and T later in the ARD equations}
+The system to be described is made of a liquid ($l$, the molten salt) and a gas phase ($g$, inert gas bubbles), enclosed in a tank ($t$) that delimits the domain. The concentration field in each phase $\alpha$ is defined as:
+\begin{equation}
+    c^\dag_\alpha(\vec r,t)\equiv \left \{ \begin{array}{rcl}
+         &  \frac{d n_{\mathrm{T_2},\alpha}(\vec r,t)}{d V_\alpha(\vec r)} , & \vec r\in\alpha\\
+         &  0 & \vec r \notin \alpha
+    \end{array}\right.
+\end{equation}
+
+This corresponds to a phase specific or so-called \textit{intrinsic} quantity of the phase (as defined by \cite{whitaker_method_1999}), in the fact that it represents the accumulation of a species \textit{per unit volume of the phase} ($d V_\alpha$) and not \textit{per unit volume of the porous medium} ($d V_t$). Due to the inherently discontinuous nature of two-fluid systems, such concentrations field is defined and continuous only in its respective phase.
+
+Such definition is physically intuitive, it doesn't hide the discontinuous nature of the system and is therefore conceptually useful to understand the model presented hereafter. However, working with a discontinuous function is inconvenient. We can use the spatial smoothing methodology presented in \cite{gray_derivation_1975} \todo{check consistency with the paper} and define a \textit{Representative Elementary Volume} (REV) denoted $\delta V_t$. It can be seen as a mesoscale volume: large compared to bubbles/pores (microscale, $dV_t$) but small compared to the tank (macroscale, $V_t$). Let us then extend the definition of $c^\dag_\alpha$ to a field $c_\alpha$ that is defined and homogeneous in the whole REV, and introduce the concept of phase fraction of $\alpha$:
+
+% In this two-fluid system, the concentration fields of the liquid and gas phases (respectively $\CT \ \mathrm{[molT_2/m^3]}$ and $\PT \ \mathrm{[Pa]}$) are defined 
+\begin{align}
+    % \CT(z,t) &\equiv \frac{\delta n_{\mathrm{T_2},l}(z,t)}{\delta V_l(z)} \label{eq:def_CT} \\
+    % \PT(z,t) &\equiv \frac{1}{RT} \frac{\delta n_{\mathrm{T_2},g}(z,t)}{\delta V_g(z)} \label{eq:def_PT}\\
+    c_\alpha (\vec r,t) &\equiv \frac{\delta n_{\mathrm{T_2},\alpha}(\vec r,t)}{\delta V_\alpha(\vec r)} \label{eq:def_c_generic}\\
+    \varepsilon_\alpha(\vec r) &\equiv \frac{\delta V_\alpha(\vec r)}{\delta V_t(\vec r)} \label{eq:def_eps_generic}
+\end{align}
+
+Where $\delta V_\alpha$ is the volume of phase $\alpha$ contained in $\delta V_t$ (the REV), and $\delta n_{\mathrm{T_2},\alpha}$ is the amount of \ce{T_2} in $\delta V_\alpha$. The field $c_\alpha$ is continuous everywhere in the domain, but because it was artificially extended we can't integrate it as such over the whole domain: this would overestimate the amount of species present in phase $\alpha$, because we would account for a non-zero concentration in regions of the domain where it was actually zero in the discontinuous definition $c^\dag_\alpha$. $\varepsilon_\alpha$ ensure that the total quantity of species $n_\alpha$ is conserved between the continuous and discontinuous definitions: 
+\begin{equation}
+    n_\alpha\equiv\iiint_{V_t}dn_\alpha= \iiint_{V_\alpha}c^\dag_\alpha\,dV_\alpha=\iiint_{V_t}\varepsilon_\alpha \,c_\alpha\,dV_t
+\end{equation}
+
+ \subsubsection{Governing differential equations}
+Bringing mass transfer and fluid dynamics together, the equations for tritium transport in a two-phase mixture of liquid and gas can be adapted from the existing literature on transport in a porous media. Except when needed, the space ($z$) and time ($t$) dependences are implicit throughout this work for clarity. 
 \begin{itemize}
     \item Liquid: 
     \begin{equation}
@@ -407,6 +442,45 @@ Equating \cref{eq:n_g_constraint} and \cref{eq:n_g_integrated} yields the BCs th
 \Cref{eq:BC3} implies that no tritium is transported from the top of the liquid surface to the above head space gas. This assumption is discussed in section \ref{sec:sparging_assumptions}.
 
 \subsection{Derived quantities}
+Ultimately, what we are interested in is the evolution of the tritium inventory in the molten salt $n_{T_2,l} \:\mathrm{[molT_2]}$, which can be obtained from the profiles computed by the 1D ARD model. 
+
+\subsubsection{Definition and conventions}
+
+The profiles solved by the 1D ARD model are inherently space dependent, and because of the hydrostatic pressure in the tank $P_l(z)=P_\mathrm{top}+\rho_l\,g\,(H-z)$, all the hydrodynamic parameters are also space dependent. It will be useful in the following to represent an arbitrary spatially varying quantity $\psi(z)$ by its average over a volume $\alpha$, defined as:
+\begin{equation}
+    \label{eq:def_average}
+    \langle \psi \rangle^\alpha \equiv \frac{\iiint_{V_\alpha}\psi(\vec r) \,dV_\alpha}{V_\alpha}
+\end{equation}
+
+When $\alpha$ is the liquid or gas phase ($l,g$) it should be specified in the notation, but we set the convention to omit it when it refers to the whole system (i.e. the tank $t=l \cup g$). Defining $H_\alpha\equiv\frac{V_\alpha}{A}$ and considering that $\iiint_{V_\alpha}\psi(\vec r) \,dV_\alpha=A\,\int_{H_\alpha}\psi(z)\,dz_\alpha$ since we are in 1D, it follows that:
+\begin{align}
+    \langle \varepsilon_l \rangle &= \frac{\int_{H_t}\varepsilon_l(z) \,dz_t}{H_t}\\
+    \langle \CT \rangle^l &= \frac{\int_{H_l}\CT(z) \,dz_l}{H_l} 
+\end{align}
+
+It comes naturally from the definition of the phase fraction (\cref{eq:def_eps}) that $\langle \varepsilon_l \rangle = \frac{V_l}{V_t}$. Similarly, the generic definition of the concentration (\cref{eq:def_c_generic}) and its average are consistent: $\langle \CT \rangle^l = \frac{n_{T_2.l}}{V_l}$. 
+
+
+
+\subsubsection{Quantity of interest}
+
+\paragraph{Evolution of the tritium inventory}
+The total tritium inventory present in the system at a certain time is the sum of the liquid and gas contributions:
+\begin{equation}
+    \NT \equiv \NTl+\NTg
+\end{equation}
+
+\Cref{eq:n_l_constraint,eq:n_g_constraint} being enforced by the boundary conditions, it follows that when sparging is turned ON and the neutron source that breeds tritium is OFF (\ST=0), the tritium inventory in the system evolves as:
+\begin{equation}
+    \dotNT = -A\,u_g\,\frac{\PT}{RT} \bigg\rvert_\mathrm{outlet}
+\end{equation}
+
+\paragraph{Quantifying the extraction kinetics}
+
+For the same sparging system, \dotNT varies with time and the tritium concentration, in that regard it is not a good metric for the tritium extraction kinetics. 
+
+
+Because the ARD equations are linear, the magnitude of the tritium concentration doesn't impact the extraction kinetics nor the distribution profile, $\tau$ is therefore agnostic of the magnitude of the initial the tritium inventory.
 % inventory, tau
 % reuse eq:n_l_constraint to derive the evolution of the tritium inventory -> exponential component 
 % define tau as the e-folding time, the fact that it is better to get it from an exponential fit (for timestep independence) can be introduced later
@@ -415,6 +489,8 @@ Equating \cref{eq:n_g_constraint} and \cref{eq:n_g_integrated} yields the BCs th
 \subsection{Assumptions of the model}
 \label{sec:sparging_assumptions}
 - no permeation, no diffusion : conservative estimate of the tritium extraction speed. Permeation can be estimated by coupling with a model for tritium transport is solid media \\
+
+- constant bubble rising velocity: equilibrium between buoyancy forces and drag forces, \todo{argue on how the forces scale with the bubble size}
 
 - no bubbles coalescence . At such low superficial gas velocity, void fractions falls below 1\%, we can reasonably expect the bubbles not to interact \cite{taylor_implementation_2022} \todo{compute space between bubbles, compare with bubbles size}
 \\
@@ -445,7 +521,7 @@ There are several available correlations in the literature for the same physical
 
 In particular, the topic of gas sparging in molten salts presents large unknowns (\todo{add diffusivity/solubility correlation plots in Background and refer to it here}), and it is the purpose of this model to explore them. It was therefore designed to offer flexibility as to the closure relations used and the assumptions they are built upon. 
 
-This flexibility is achieved by dynamically resolving the dependencies between all the parameters of the model every time a new simulation is launched, based on a set of closure relations and known parameters specified by the user for this specific simulation. Here, a \textit{parameters} can be a physical quantity (e.g. temperature) or more broadly any quantity used to describes the system (e.g. gas fraction, dimensionless numbers); a \textit{closure relations} is any relation between parameters (e.g. correlation, state equation, definition)
+This flexibility is achieved by dynamically resolving the dependencies between all the parameters of the model every time a new simulation is launched, based on a set of closure relations and known parameters specified by the user for this specific simulation. Here, a \textit{parameters} can be a physical quantity (e.g. temperature) or more broadly any quantity used to describes the system (e.g. gas fraction, dimensionless numbers), it doesn't have to be a scalar, some parameters have a spatially varying profile (the pressure dependent ones); a \textit{closure relations} is any relation between parameters (e.g. correlation, state equation, definition).
 
 Each closure relation that gives a parameter $p_j$ is a function $f_j$ of $n$ other parameters $p_i$ ($i=1,...,n\neq j$). The $p_i$ are either known (given by the user or already computed), or they have to be obtained as the output of an other closure relation $f_i$. The problem of dynamically resolving this potentially complex network of interdependent parameters can be described using the formalism of mathematical graphs:
 \begin{itemize}
@@ -453,16 +529,15 @@ Each closure relation that gives a parameter $p_j$ is a function $f_j$ of $n$ ot
     \item the closure relation $f_j$ that computes $p_j$ from other parameters $p_i$ gives the \textit{ingoing links}, from each node $i=1,...,n$ to node $j$;
     \item the closure relations $f_k(...,p_j,...)$ that require $p_j$ as an input give the \textit{outgoing links}, from node $j$ to each node $k$.
 \end{itemize}   
-Note that a node $j$ can be computed (i.e. is \textit{discovered}) only if the $n$ nodes it depends on have been discovered already. This prohibits cyclic dependencies, where a node needs itself to be computed, i.e. where $p_j=f_j(p_i,...)=f_j(f_i(p_j,...),...)$.
+An example of the typical dependencies of the sparging model is given in \todo{add dependencies diagram}, obtained using the closure relations presented in \cref{sec:sparging_maths}. Note that a node $j$ can be computed (i.e. is \textit{discovered}) only if the $n$ nodes it depends on have been discovered already. This prohibits cyclic dependencies, where a node needs itself to be computed, i.e. where $p_j=f_j(p_i,...)=f_j(f_i(p_j,...),...)$.
 
-Eventually, what is required by the sparging model are the ARD parameters that appear in the 1D ARD equations. The intermediate parameters that were used to derive the latter are valuable to understand the model. The input parameters are considered to be independently controlled by the user in the actual sparging experiment, they are the "bedrock" level of the graph in the sense that they cannot be obtained from closure relations. Computing the ARD parameters boils down to discovering the oriented graph presented above:
-\begin{itemize}
+Eventually, what is required by the sparging model are the ARD parameters that appear in the 1D ARD equations. The intermediate parameters that were used to derive the latter are valuable to understand the model. The input parameters are considered to be independently controlled by the user in the actual sparging experiment, they are the "bedrock" level of the graph in the sense that they cannot be obtained from closure relations. Computing the ARD parameters boils down to discovering the above described oriented graph, it is achieved by the closure relations resolution stage by following this sequence:
+\begin{enumerate}
     \item the user specifies a set of known parameters (nodes) $N=\{p_i\}$ and closure relations (links) $L=\{f_k\}$ The known parameters can be input, but also intermediate or ARD parameters if the user wants to short-circuit some closure relations;
     \item the graph search algorithm is given a list of nodes it has to discover $\hat N=\{p_k, k=\mathrm{ARD \ parameters}\}$;
-    \item for each required node $k$, it recursively goes upstream the links leading to it, given in $L$, up to the closest known node $i$, which it uses to compute all the nodes on the way from $i$ to $k$;
-    \item each node thereby computed is added to the list of discovered nodes until it includes all the required nodes, when $\hat N \subset N$
-\end{itemize}
-
+    \item for each element of $\hat N$, it recursively goes upstream the ingoing links leading to the required node $k$, following the set of links given in $L$, until reaching a known node $i$, which it uses to compute all the nodes on the way back from $i$ to $k$;
+    \item each node thereby computed is added to the list of discovered nodes $N$ until it includes all the required nodes, when $\hat N \subset N$
+\end{enumerate}
 The parameters resolution algorithm will fail if the user provides a set of known parameters and relations that is insufficient to compute the ARD parameters (\textit{incomplete}). 
 
 The \verb|from_parameters()| method of the \verb|SimulationInput| class implements this graph discovery, the recursive part of the algorithm is summarized in \cref{fig:graph_search}.
@@ -490,13 +565,18 @@ The \verb|from_parameters()| method of the \verb|SimulationInput| class implemen
 \subsection{Summary of the code structure}
 % diagram of the high level structure of the model, showing the workflow, with corresponding file and API
 
-% \paragraph{Software and availability.}
+\todo{refactor the code so that the function of each file/class is more explicit}
+
 The model is implemented as a Python package, \verb|libra_sparging| (Python 3.12 or later), released under the MIT license at \url{https://github.com/LIBRA-project/libra_sparging}. The finite element discretisation is built on FEniCSx/DOLFINx \needcite{DOLFINx}, and the resolution of the closure relations on the graph library NetworkX \needcite{NetworkX}. Every physical quantity carries its units through Pint \needcite{Pint}, which performs the conversions and catches dimensional inconsistencies at run time (a useful safeguard given the number of empirical correlations involved, sometimes with archaic units). NumPy, SciPy, pandas and Matplotlib support the post-processing. Correctness is checked by a \verb|pytest| suite covering the resolution of the model input, the solver on cases with a known solution, and the
 serialisation of the results.
+
+The API of \verb|libra_sparging| package is synthesized in \cref{fig:code_structure}: the user describes the system with the four dataclasses of step~1, from which \texttt{from\_parameters} resolves the parameters (scalars and $z$-profiles) required by the 1D-ARD equations (step~3); any parameter left unspecified is filled with the default correlation of \texttt{correlations.py}. The dimensionless diagnostics of \texttt{SimulationInput} are available before any computation, and give the discretisation steps handed to \texttt{solve}, which returns a \texttt{SimulationResults} object holding the profiles and the requested exports. The dashed path is the shortcut used in practice: the pre-built cases of \texttt{input\_examples.py} return a ready \texttt{SimulationInput}. All quantities carry physical units, as \texttt{pint} objects built on the registry \texttt{ureg} of \texttt{config.py}.
+\todo{should this rather be in the caption ?}
 
 \input{diag_code_structure}
 
 \section{Model exploration}
+The goal of this section is to present what was learnt from this model on the topic of gas sparging in molten salts in general, addressing the seconds problematic presented in \cref{sec:problem_def}. It is not bound to a specific sparger configuration. 
 \label{sec:sparging_expl}
 % all that was learn by playing around with the model
 \subsection{Effect of mixing}
