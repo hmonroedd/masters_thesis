@@ -324,6 +324,7 @@ The net bubble velocity gives rise to an advective term, while phases mixing tra
 \todo{move this to the beginning of the chapter}
 
 \subsubsection{Definitions}
+\label{sec:generic_definitions}
 \todo{abstract c and P by using the general concept of concentration in phase alpha, introduce c and T later in the ARD equations}
 The system to be described is made of a liquid ($l$, the molten salt) and a gas phase ($g$, inert gas bubbles), enclosed in a tank ($t$) that delimits the domain. The concentration field in each phase $\alpha$ is defined as:
 \begin{equation}
@@ -335,19 +336,19 @@ The system to be described is made of a liquid ($l$, the molten salt) and a gas 
 
 This corresponds to a phase specific or so-called \textit{intrinsic} quantity of the phase (as defined by \cite{whitaker_method_1999}), in the fact that it represents the accumulation of a species \textit{per unit volume of the phase} ($d V_\alpha$) and not \textit{per unit volume of the porous medium} ($d V_t$). Due to the inherently discontinuous nature of two-fluid systems, such concentrations field is defined and continuous only in its respective phase.
 
-Such definition is physically intuitive, it doesn't hide the discontinuous nature of the system and is therefore conceptually useful to understand the model presented hereafter. However, working with a discontinuous function is inconvenient. We can use the spatial smoothing methodology presented in \cite{gray_derivation_1975} \todo{check consistency with the paper} and define a \textit{Representative Elementary Volume} (REV) denoted $\delta V_t$. It can be seen as a mesoscale volume: large compared to bubbles/pores (microscale, $dV_t$) but small compared to the tank (macroscale, $V_t$). Let us then extend the definition of $c^\dag_\alpha$ to a field $c_\alpha$ that is defined and homogeneous in the whole REV, and introduce the concept of phase fraction of $\alpha$:
+Such definition is physically intuitive, it doesn't hide the discontinuous nature of the system and is therefore conceptually useful to understand the model presented hereafter. However, working with a discontinuous function is inconvenient. We can use the spatial smoothing methodology presented in \cite{gray_derivation_1975} \todo{check consistency with the paper} and define a \textit{Representative Elementary Volume} (REV) denoted $\delta V_t$. It can be seen as a mesoscale volume: large compared to bubbles/pores (microscale, $dV_t$) but small compared to the tank (macroscale, $V_t$). Let us then extend the definition of $c^\dag_\alpha$ to a field $c_\alpha$ that is defined and uniform in the whole REV, and introduce the concept of phase fraction of $\alpha$:
 
 % In this two-fluid system, the concentration fields of the liquid and gas phases (respectively $\CT \ \mathrm{[molT_2/m^3]}$ and $\PT \ \mathrm{[Pa]}$) are defined 
 \begin{align}
     % \CT(z,t) &\equiv \frac{\delta n_{\mathrm{T_2},l}(z,t)}{\delta V_l(z)} \label{eq:def_CT} \\
     % \PT(z,t) &\equiv \frac{1}{RT} \frac{\delta n_{\mathrm{T_2},g}(z,t)}{\delta V_g(z)} \label{eq:def_PT}\\
     c_\alpha (\vec r,t) &\equiv \frac{\delta n_{\mathrm{T_2},\alpha}(\vec r,t)}{\delta V_\alpha(\vec r)} \label{eq:def_c_generic}\\
-    \varepsilon_\alpha(\vec r) &\equiv \frac{\delta V_\alpha(\vec r)}{\delta V_t(\vec r)} \label{eq:def_eps_generic}
+    \varepsilon_\alpha(\vec r) &\equiv \frac{\delta V_\alpha(\vec r)}{\delta V_t(\vec r)} \label{eq:def_eps}
 \end{align}
 
 Where $\delta V_\alpha$ is the volume of phase $\alpha$ contained in $\delta V_t$ (the REV), and $\delta n_{\mathrm{T_2},\alpha}$ is the amount of \ce{T_2} in $\delta V_\alpha$. The field $c_\alpha$ is continuous everywhere in the domain, but because it was artificially extended we can't integrate it as such over the whole domain: this would overestimate the amount of species present in phase $\alpha$, because we would account for a non-zero concentration in regions of the domain where it was actually zero in the discontinuous definition $c^\dag_\alpha$. $\varepsilon_\alpha$ ensure that the total quantity of species $n_\alpha$ is conserved between the continuous and discontinuous definitions: 
 \begin{equation}
-    n_\alpha\equiv\iiint_{V_t}dn_\alpha= \iiint_{V_\alpha}c^\dag_\alpha\,dV_\alpha=\iiint_{V_t}\varepsilon_\alpha \,c_\alpha\,dV_t
+    n_\alpha\equiv\iiint_{V_t}dn_\alpha= \iiint_{V_\alpha}c^\dag_\alpha\,dV_\alpha=\iiint_{V_t}\varepsilon_\alpha \,c_\alpha\,dV_t \label{eq:def_n}
 \end{equation}
 
  \subsubsection{Governing differential equations}
@@ -355,12 +356,12 @@ Bringing mass transfer and fluid dynamics together, the equations for tritium tr
 \begin{itemize}
     \item Liquid: 
     \begin{equation}
-    \label{eq:CT2}
+    \label{eq:ARD_CT}
         \varepsilon_l \frac{\partial \CT}{\partial t} =  \underbrace{\varepsilon_l E_{l} \frac{\partial ^2 \CT}{\partial z^2}}_\text{liquid dispersion} + \underbrace{S_\mathrm{T_2}}_\text{tritium source} - \underbrace{a\,\JT}_{\text{mass transfer}}
     \end{equation}
     \item Gas: 
     \begin{equation}
-    \label{eq:PT2}
+    \label{eq:ARD_PT}
         \varepsilon_g \frac{1}{RT} \frac{\partial \PT}{\partial t} = \underbrace{-\frac{1}{RT}\frac{\partial (\,u_g\,\PT)}{\partial z}}_\text{gas advection} + \underbrace{\varepsilon_g E_{g} \frac{1}{RT}\frac{\partial ^2 \PT}{\partial z^2}}_\text{gas dispersion} + a\,\JT
     \end{equation}
 \end{itemize}
@@ -368,7 +369,7 @@ Bringing mass transfer and fluid dynamics together, the equations for tritium tr
 where $a \:\mathrm{[m^2/m^3]}$ is the specific interfacial area per unit volume, $\varepsilon_g$ and $\varepsilon_l$ are the gas and liquid phase fractions, $u_g \: \mathrm{[m/s]}$ is the \textbf{superficial} gas phase velocity (not to be confused with the true bubbles velocity, previous work on the topic of tritium extraction can be ambiguous). This adaptation of \cite{gray_derivation_1975} intentionally omits molecular diffusion and mesoscale dispersion terms, as these are expected to be largely hidden by the system scale dispersion terms presented here.
 
 \subsection{Boundary conditions}
-\Cref{eq:CT2,eq:PT2} form a system of two partial differential equations coupled through \cref{eq:JT2}, called \textbf{1D Advection-Reaction-Dispersion (ARD)} model. It needs 4 boundary conditions (BCs) to have a unique solution.
+\Cref{eq:ARD_CT,eq:ARD_PT} form a system of two partial differential equations coupled through \cref{eq:JT2}, called \textbf{1D Advection-Reaction-Dispersion (ARD)} model. It needs 4 boundary conditions (BCs) to have a unique solution.
 
 \subsubsection{Derivation from mass conservation considerations}
 
@@ -383,14 +384,14 @@ Where $c_g \equiv\frac{\PT}{RT}$ is the concentration in the gas phase, $A$ is t
 
 \todo{fix inconsistency with ng notation (used for the molar flow rate of gas itself)} % maybe switch to n_{T_2,gas}
 
-The BCs that enforce this constraint are obtained by integrating \cref{eq:CT2,eq:PT2} over the tank volume:
+The BCs that enforce this constraint are obtained by integrating \cref{eq:ARD_CT,eq:ARD_PT} over the tank volume:
 \begin{align}
     \dot n_l &= \frac{d}{dt}\iiint_V \varepsilon_g \,c_l \,dV =\iiint_V \varepsilon_g \, \frac{\partial c_l}{\partial t}\,dV  \nonumber\\
-    &\stackrel{\eqref{eq:CT2}}{=} A\,\bigg(\varepsilon_l\,E_l\,\frac{\partial c_l}{\partial z}\bigg\rvert_{z=H} -\varepsilon_l\,E_l\,\frac{\partial c_l}{\partial z}\bigg\rvert_{z=0} \bigg)- \iiint_V a\JT \,dV  \label{eq:n_l_integrated}
+    &\stackrel{\eqref{eq:ARD_CT}}{=} A\,\bigg(\varepsilon_l\,E_l\,\frac{\partial c_l}{\partial z}\bigg\rvert_{z=H} -\varepsilon_l\,E_l\,\frac{\partial c_l}{\partial z}\bigg\rvert_{z=0} \bigg)- \iiint_V a\JT \,dV  \label{eq:n_l_integrated}
 \end{align}
 Where $c_l\equiv \CT$ is the \ce{T2} concentration in the liquid phase, used in this derivation for consistency with the gas phase notation $c_g$. Similarly:
 \begin{align}
-    \dot n_g &\stackrel{\eqref{eq:PT2}}{=}  A \,\bigg(u_g\,c_g\rvert_{z=0} - u_g\,c_g\rvert_{z=H} \,+ \varepsilon_g\,E_g\,\frac{\partial c_g}{\partial z}\bigg\rvert_{z=H} -\varepsilon_g\,E_g\,\frac{\partial c_g}{\partial z}\bigg\rvert_{z=0} \bigg) + \iiint_V a\JT \,dV \label{eq:n_g_integrated}
+    \dot n_g &\stackrel{\eqref{eq:ARD_PT}}{=}  A \,\bigg(u_g\,c_g\rvert_{z=0} - u_g\,c_g\rvert_{z=H} \,+ \varepsilon_g\,E_g\,\frac{\partial c_g}{\partial z}\bigg\rvert_{z=H} -\varepsilon_g\,E_g\,\frac{\partial c_g}{\partial z}\bigg\rvert_{z=0} \bigg) + \iiint_V a\JT \,dV \label{eq:n_g_integrated}
 \end{align}
 
 In these expressions, it can be seen that mathematical dispersion terms can contribute to tritium leaving the tank, via a "dispersive current" $\varepsilon_\alpha\,E_\alpha\,\frac{\partial c_\alpha}{\partial z}\bigg\rvert_{z=0,H}$, analogous to leakage due to molecular diffusion out of a system. Yet, in reality, physical mixing which dispersion terms describe doesn't make the phase being mixed "leak" at the boundaries of the tank. It is especially striking in the case of the liquid phase, which doesn't have a net flow and thus never enters nor leaves the system by any means (as illustrated by the blue dashed arrows in \cref{fig:sparging_tank}). 
@@ -428,7 +429,7 @@ Equating \cref{eq:n_g_constraint} and \cref{eq:n_g_integrated} yields the BCs th
     \label{eq:BC2}
         \frac{\partial\PT}{\partial z}\bigg \rvert_{z=H}=0
     \end{equation}
-    \item Tritium transport due to phase mixing is restrained to the tank volume, and tritium can only escape the system by being advected in the gas phase. In other words, the net tritium current arising from dispersion terms in \cref{eq:CT2,eq:PT2} must be null at the tank's boundaries for the liquid phase. This is enforced by the Neumann BCs:
+    \item The liquid phase is restrained to the tank volume, and tritium can only escape the system by being advected in the gas phase. In other words, the net tritium current arising from dispersion terms in \cref{eq:ARD_PT} must be null at the tank's boundaries. This is enforced by Neumann BCs:
     \begin{equation}
     \label{eq:BC3}
         \frac{\partial\CT}{\partial z}\bigg \rvert_{z=0}=0
@@ -444,7 +445,7 @@ Equating \cref{eq:n_g_constraint} and \cref{eq:n_g_integrated} yields the BCs th
 \subsection{Derived quantities}
 Ultimately, what we are interested in is the evolution of the tritium inventory in the molten salt $n_{T_2,l} \:\mathrm{[molT_2]}$, which can be obtained from the profiles computed by the 1D ARD model. 
 
-\subsubsection{Definition and conventions}
+\subsubsection{Definition and properties}
 
 The profiles solved by the 1D ARD model are inherently space dependent, and because of the hydrostatic pressure in the tank $P_l(z)=P_\mathrm{top}+\rho_l\,g\,(H-z)$, all the hydrodynamic parameters are also space dependent. It will be useful in the following to represent an arbitrary spatially varying quantity $\psi(z)$ by its average over a volume $\alpha$, defined as:
 \begin{equation}
@@ -458,9 +459,14 @@ When $\alpha$ is the liquid or gas phase ($l,g$) it should be specified in the n
     \langle \CT \rangle^l &= \frac{\int_{H_l}\CT(z) \,dz_l}{H_l} 
 \end{align}
 
-It comes naturally from the definition of the phase fraction (\cref{eq:def_eps}) that $\langle \varepsilon_l \rangle = \frac{V_l}{V_t}$. Similarly, the generic definition of the concentration (\cref{eq:def_c_generic}) and its average are consistent: $\langle \CT \rangle^l = \frac{n_{T_2.l}}{V_l}$. 
+From the generic definition of the phase fraction (\cref{eq:def_eps}) and the generic definition of the concentration (\cref{eq:def_c_generic}), it comes a few properties that justify why the volume average we just defined is handy to work with:
+\begin{align}
+    \langle \varepsilon_l \rangle& = \frac{V_l}{V_t} \\
+    \langle \CT \rangle^l &= \frac{\NTl}{V_l} \\
+    \langle \varepsilon_l\,\CT \rangle &\stackrel{\eqref{eq:def_n}}{=} \frac{\NTl}{V_t}=\langle \varepsilon_l \rangle \, \langle \CT \rangle^l \label{eq:prop_separable}
+\end{align} 
 
-
+This holds equivalently for the corresponding gas phase quantities ($\varepsilon_g,\PT$). Note that the average of \CT alone makes physical sense only when averaged over the volume of the liquid phase, for the reason mentioned in \cref{sec:generic_definitions}. The quantity $\langle \CT \rangle$ corresponds to a dilution of the liquid phase tritium, from a volume $V_l$ to a volume $V_t=V_l+V_g$.
 
 \subsubsection{Quantity of interest}
 
@@ -470,19 +476,26 @@ The total tritium inventory present in the system at a certain time is the sum o
     \NT \equiv \NTl+\NTg
 \end{equation}
 
-\Cref{eq:n_l_constraint,eq:n_g_constraint} being enforced by the boundary conditions, it follows that when sparging is turned ON and the neutron source that breeds tritium is OFF (\ST=0), the tritium inventory in the system evolves as:
+\Cref{eq:n_l_constraint,eq:n_g_constraint} being enforced by the boundary conditions, it follows that during an \textit{extraction phase}, when sparging is turned ON and the neutron source that breeds tritium is OFF (\ST=0), the tritium inventory in the system evolves as:
 \begin{equation}
     \dotNT = -A\,u_g\,\frac{\PT}{RT} \bigg\rvert_\mathrm{outlet}
 \end{equation}
 
 \paragraph{Quantifying the extraction kinetics}
 
-For the same sparging system, \dotNT varies with time and the tritium concentration, in that regard it is not a good metric for the tritium extraction kinetics. 
+For the same sparging system, \dotNT varies with time and the tritium concentration, in that regard it is not a good metric to quantify the kinetics of the extraction phase. Instead, we can try to guess what law the extraction phase should follow, by considering the volume average of the ARD equation (\cref{eq:ARD_CT}):
+\begin{equation}
+    \langle \varepsilon_g \frac{\partial\CT}{\partial t} \rangle=-\langle a\,\JT \rangle 
+\end{equation}
 
+Note the dispersion term vanishes upon integration, as per our BCs (\cref{eq:BC3,eq:BC4}). Now applying a property of space averaging (\cref{eq:prop_separable}), considering that $\JT \approx h_l\,\CT$ and assuming that $a(z)\,h_l(z)$ is sufficiently uniform to write $\langle a\,h_l\,\CT\rangle\approx\langle a\,h_l\rangle \langle\CT\rangle^l$, we get that $\langle \varepsilon_l \rangle\frac{d}{dt}\langle\CT\rangle^l \approx -\langle a\,h_l\rangle \langle\CT\rangle^l$. Solving this differential equation yields: 
+\begin{equation}
+    \langle\CT\rangle^l(t)\approx \langle\CT\rangle^l(0)\cdot e^{-\frac{t}{\tau}}
+\end{equation}
 
-Because the ARD equations are linear, the magnitude of the tritium concentration doesn't impact the extraction kinetics nor the distribution profile, $\tau$ is therefore agnostic of the magnitude of the initial the tritium inventory.
-% inventory, tau
-% reuse eq:n_l_constraint to derive the evolution of the tritium inventory -> exponential component 
+This is a hint that the average concentration and therefore the tritium inventory are expected to follow an exponential decay, where $\tau$ can be used as a constant scalar metric to characterizes the kinetic of the extraction phase. 
+
+Because the ARD equations are linear, the magnitude of the tritium concentration doesn't impact the extraction kinetics, $\tau$ is therefore initial condition agnostic. Under the assumptions made above that the term $K_s\,\PT$ of the interfacial flux (\cref{eq:JT2}) is negligible, called in the rest of this work the \textit{small partial pressure} (SPP) regime, it has a known expression $\tau=\frac{\langle \varepsilon_l \rangle}{\langle a\,h_l\rangle}$. 
 % define tau as the e-folding time, the fact that it is better to get it from an exponential fit (for timestep independence) can be introduced later
 
 
@@ -494,11 +507,11 @@ Because the ARD equations are linear, the magnitude of the tritium concentration
 
 - no bubbles coalescence . At such low superficial gas velocity, void fractions falls below 1\%, we can reasonably expect the bubbles not to interact \cite{taylor_implementation_2022} \todo{compute space between bubbles, compare with bubbles size}
 \\
-- homogeneous temperature field: in the experiments for which this model was developed, we don't have spatial resolution for the salt temperature. It is the only model input that can't be controlled nor measured precisely. The approach then is to consider a rather large distribution of possible temperatures, which should give lower and upper bounds on the predicted sparger performance. 
+- uniform temperature field: in the experiments for which this model was developed, we don't have spatial resolution for the salt temperature. It is the only model input that can't be controlled nor measured precisely. The approach then is to consider a rather large distribution of possible temperatures, which should give lower and upper bounds on the predicted sparger performance. 
 \\
 - the contribution of $T_2$ to bubble pressure is negligible 
 \\
-- bubbles and liquid are always at thermal equilibrium, and the temperature is homogeneous. This implies that the liquid brings some heat to the bubbles as they expand toward the top of the tank (the bubbles expansion is non-adiabatic), allowing to write for a bubble: $P_bV_b=n_bRT=\mathrm{constant}$ thus $V_b(z)=V_{b0} \frac{P_{b0}}{P_b(z)}$
+- bubbles and liquid are always at thermal equilibrium, and the temperature is uniform. This implies that the liquid brings some heat to the bubbles as they expand toward the top of the tank (the bubbles expansion is non-adiabatic), allowing to write for a bubble: $P_bV_b=n_bRT=\mathrm{constant}$ thus $V_b(z)=V_{b0} \frac{P_{b0}}{P_b(z)}$
 \\
 - chemical speciation: the redox of the salt is perfectly controlled, prevailing newborn tritium to form highly soluble and poorly mobile tritium fluoride ($TF$). Thus, tritium is assumed to be only present as molecular $T_2$, which molecular diffusion coefficient is 3-5 times higher than its $TF$ counterpart, as recent ab initio molecular dynamics results suggest \cite{lam_impact_2021}. Mass transfer properties are based on this assumption. 
 
@@ -560,7 +573,7 @@ The \verb|from_parameters()| method of the \verb|SimulationInput| class implemen
 % for later if have time
 \subsubsection{Numerical error estimate}
 % convergence plot: quantify convergence with tau
-- Backward euler systematically overestimates tau -> can cancel discretization error by systematically subtracting 
+- Backward euler systematically overestimates tau by dt/2 -> can cancel discretization error by systematically subtracting 
 
 \subsection{Summary of the code structure}
 % diagram of the high level structure of the model, showing the workflow, with corresponding file and API
@@ -619,8 +632,8 @@ The speed $v_b$ of the bubble, assumed constant, couples the time it spends in t
 
 $\Pi$ can be interpreted as "how close the bubble is to reaching $\frac{c_l}{K_s}$, i.e. being at equilibrium with the surrounding liquid". 
 \begin{itemize}
-    \item When $1-e^{\Pi(z)}\approx0$: the bubble can be considered free of any tritium, the driving force for tritium exchange \JT is therefore maximal, limited only by the liquid side mass transfer $h_l$, i.e. the ability of tritium to diffuse down the concentration gradient, through the liquid film up to the gas phase. 
-    \item When $1-e^{\Pi(z)}\approx1$: the bubble is saturated with tritium, the interfacial flux \JT drops as there is no concentration gradient through the liquid film to drive it, since the mass transfer process is throttled by the partial pressure in the bubble being at equilibrium with the liquid phase.
+    \item When $1-e^{-\Pi(z)}\approx0$: the bubble can be considered free of any tritium, the driving force for tritium exchange \JT is therefore maximal, limited only by the liquid side mass transfer $h_l$, i.e. the ability of tritium to diffuse down the concentration gradient, through the liquid film up to the gas phase. 
+    \item When $1-e^{-\Pi(z)}\approx1$: the bubble is saturated with tritium, the interfacial flux \JT drops as there is no concentration gradient through the liquid film to drive it, since the mass transfer process is throttled by the partial pressure in the bubble being at equilibrium with the liquid phase.
 \end{itemize}
 
 
