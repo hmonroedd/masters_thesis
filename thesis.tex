@@ -497,10 +497,10 @@ The total tritium inventory present in the system at a certain time is the sum o
 \end{equation}
 
 \paragraph{Quantifying the extraction kinetics}
-
+\label{sec:extraction_kinetics}
 For the same sparging system, \dotNT varies with time and the tritium concentration, in that regard it is not a good metric to quantify the kinetics of the extraction phase. Instead, we can try to guess what law the extraction phase should follow, by considering the volume average of the ARD equation (\cref{eq:ARD_CT}):
 \begin{equation}
-    \langle \varepsilon_g \frac{\partial\CT}{\partial t} \rangle=-\langle a\,\JT \rangle 
+    \langle \varepsilon_l \frac{\partial\CT}{\partial t} \rangle=-\langle a\,\JT \rangle 
 \end{equation}
 
 Note the dispersion term vanishes upon integration, as per our BCs (\cref{eq:BC3,eq:BC4}). Now applying a property of space averaging (\cref{eq:prop_separable}), considering that $\JT \approx h_l\,\CT$ and assuming that $a(z)\,h_l(z)$ is sufficiently uniform to write $\langle a\,h_l\,\CT\rangle\approx\langle a\,h_l\rangle \langle\CT\rangle^l$, we get that $\langle \varepsilon_l \rangle\frac{d}{dt}\langle\CT\rangle^l \approx -\langle a\,h_l\rangle \langle\CT\rangle^l$. The solution of this differential equation is of the form: 
@@ -510,7 +510,10 @@ Note the dispersion term vanishes upon integration, as per our BCs (\cref{eq:BC3
 
 This is a hint that the average concentration and therefore the tritium inventory are expected to follow an exponential decay. Because the ARD equations are linear, the magnitude of the tritium concentration doesn't impact the extraction kinetics, $\tau$ is therefore initial condition agnostic. 
 
-\textbf{In the rest of this work, $\tau$ is used as a metric to characterizes the kinetic of the extraction phase}. Under the assumptions made above that the term $K_s\,\PT$ of the interfacial flux (\cref{eq:JT2}) is negligible, we have a known expression $\tau=\frac{\langle \varepsilon_l \rangle}{\langle a\,h_l\rangle}$. This specific case is referred to as the \textit{small partial pressure} (SPP) regime or \textit{mass transfer limited} (MTL) regime. \todo{choose between SPP and MTL}
+\textbf{In the rest of this work, $\tau$ is used as a metric to characterizes the kinetic of the extraction phase}. Here, we made the assumptions that the term $K_s\,\PT$ of the interfacial flux (\cref{eq:JT2}) is negligible, this specific case is referred to as the \textit{small partial pressure} (SPP) approximation, valid in the so-called \textit{mass transfer limited} (MTL) regime. In that regime, we have a known expression:  \todo{choose between SPP and MTL}
+\begin{equation}
+    \tau_\mathrm{SPP}=\frac{\langle \varepsilon_l \rangle}{\langle a\,h_l\rangle} \label{eq:tau_SPP}
+\end{equation}
 % define tau as the e-folding time, the fact that it is better to get it from an exponential fit (for timestep independence) can be introduced later
 
 
@@ -549,50 +552,72 @@ Solving this ODE yields:
     \PT(t)=\frac{\CT}{K_s}\,(1-e^{-a_b\,h_l\,R\,T\,K_s\,t})
 \end{equation}
 
-We can write the quantity in the exponential term as dimensionless number $\Pi$ defined as:
+Let us define the bubble saturation time constant:
 \begin{equation}
-\label{eq:Pi_def_micro}
-    \Pi(t)\equiv a_b\,h_l\,R\,T\,K_s\,t
+    \tau_\mathrm{sat}\equiv \frac{1}{a_b\,h_l\,R\,T\,K_s}
 \end{equation}
+Eventually, the bubble is removed of the liquid after a residence time $t_{res}$, it leaves the system with a tritium concentration $\PT(t_{res})=\frac{\CT}{K_s}\,(1-e^{-\frac{t_{res}}{\tau_\mathrm{sat}}})$. We can write the quantity in the exponential term as a dimensionless number $\Pi$ defined as the \textit{ratio of the bubble residence time to its saturation time constant}:
+\begin{equation}
+    \label{eq:Pi_def_micro}
+    \boxed{\Pi\equiv \frac{t_{res}}{\tau_\mathrm{sat}}= a_b\,h_l\,R\,T\,K_s\,t_{res}}
+\end{equation}
+
+It can be interpreted as a measure of "how close the bubble is to reaching equilibrium with the surrounding liquid", the equilibrium being $\PT=\frac{c_l}{K_s}$. 
 
 \paragraph{Solution for a sparging system}
 Now let us adapt the single bubble case to a whole swarm of bubbles rising in the liquid and eventually escaping it (i.e. a sparging system). The reasoning is as follows: 
 \begin{itemize}
-    \item The speed $v_b$ of the bubble, assumed constant (\cref{as:vb_is_constant}), allows the change of variable $t=\frac{z}{v_b}$. 
-    \item \cref{as:c_is_constant} has two implications:
+    \item The speed $v_b$ of the bubble, assumed constant (\cref{as:vb_is_constant}), allows the change of variable $t=\frac{z}{v_b}$ and yields a bubble residence time $t_{res}=\frac{H}{v_b}$. 
+    \item \Cref{as:c_is_constant} has two implications:
     \begin{itemize}
         \item \CT(z) seen by the bubble as it rises is well approximated by $\langle \CT\rangle^l$, i.e. \assumption{the concentration in the liquid phase can be considered uniform \label{as:c_is_uniform}} (\cref{as:c_is_uniform})
         \item $\langle \CT\rangle^l$ itself can be considered constant during the bubble's life, i.e. \assumption{the residence time of the bubble in the system is much shorter than the extraction timescale \label{as:short_res_time}} (\cref{as:short_res_time}): $\frac{H}{v_b}\ll\tau$
     \end{itemize}
-    \item \cref{eq:Pi_def_micro} is a microscopic scale definition of $\Pi$, it involves bubble specific quantities ($a_b=\frac{6}{d_b},v_b$). In the case of a macroscopic sparging system, with bubble's properties varying with pressure as they rise, we need to make the assumption that \assumption{the hydrodynamic parameters are well approximated by their spatial average\label{as:hydrodynamic_are_constant}} (\cref{as:hydrodynamic_are_constant}). Recalling that $a(z)=\varepsilon_g(z)\,a_b(z)$ and $u_g(z)=\varepsilon_g(z)\,v_b$ yields a \textit{macroscopic scale definition} of $\Pi$:
+    \item The definition of $\Pi$ given in \cref{eq:Pi_def_micro} involves microscopic scale (bubble specific) quantities ($a_b=\frac{6}{d_b}$) considered constant. In the case of a macroscopic sparging system, bubble's properties vary with pressure as they rise, $\Pi$ therefore becomes a function of position. Recalling that $a(z)=\varepsilon_g(z)\,a_b(z)$ and $u_g(z)=\varepsilon_g(z)\,v_b$ yields an expression in terms of macroscopic scale quantities:
     \begin{equation}
     \label{eq:Pi_def_macro}
-    \boxed{\Pi(z)\equiv \frac{\langle a\,h_l \rangle\,R\,T\,K_s}{u_g(z)}\,z}
+    % \boxed{\Pi(z)\equiv \frac{\langle a\,h_l \rangle\,R\,T\,K_s}{u_g(z)}\,z}
+    \boxed{\Pi(z)\equiv \frac{R\,T\,K_s\,a(z)\,h_l(z)}{u_g(z)}\,H}
+    \end{equation}
+    $\Pi$ can be volume averaged:
+    \begin{equation}
+    \langle\Pi\rangle = R\,T\,K_s\,\int_0^H\frac{a(z)\,h_l(z)}{u_g(z)}dz
     \end{equation}
 \end{itemize}
+
+
 
 These assumptions allow to get an analytical expression for the concentration profile in the gas phase:
 \begin{equation}
 \label{eq:PT_profile}
-    \PT(z)=\frac{\langle \CT\rangle^l}{K_s}\,\left(1-e^{-\frac{a_b\,R\,T\,h_l\,K_s}{v_b}\,z}\right)
+    % \PT(z)=\frac{\langle \CT\rangle^l}{K_s}\,\left(1-e^{-\frac{a_b\,R\,T\,h_l\,K_s}{v_b}\,z}\right)
+    \PT(z)=\frac{\langle \CT\rangle^l}{K_s}\,\left(1-e^{-\int_0^z\frac{a(s)\,h_l(s)\,R\,T\,K_s}{u_g(s)}\,ds}\right)
 \end{equation}
 
-We can plug this known gas concentration profile into the expression of the outgoing tritium flux (\cref{eq:dotNT}) to work out out the evolution of the tritium inventory:
+The now known gas concentration profile can be evaluated at the gas outlet and plugged into the expression of the outgoing tritium flux (\cref{eq:dotNT}) to work out out the evolution of the tritium inventory:
 \begin{equation}
-    \dotNT=-A\,u_g\frac{\PT}{RT}\bigg\rvert_\mathrm{outlet}=-\frac{A\,u_g(H)\,\langle \CT\rangle^l}{R\,T\,K_s}\,(1-e^{-\Pi(H)})
+    % \dotNT=-A\,u_g\frac{\PT}{RT}\bigg\rvert_\mathrm{outlet}=-\frac{A\,u_g(H)\,\langle \CT\rangle^l}{R\,T\,K_s}\,(1-e^{-\Pi(H)})
+    \dotNT=-A\,u_g\frac{\PT}{RT}\bigg\rvert_\mathrm{outlet}=-\frac{A\,u_g(H)\,\langle \CT\rangle^l}{R\,T\,K_s}\,\left(1-e^{-\int_0^z\frac{a(s)\,h_l(s)\,R\,T\,K_s}{u_g(s)}\,ds}\right)
 \end{equation}
-Given the assumed negligible bubble residence time (\cref{as:short_res_time}), we can consider that every tritium that goes into the gas phase is immediately evacuated out of the system, therefore $\NTg\ll\NTl \Rightarrow \NTl\approx\NT$. Simplifying $\langle \CT\rangle^l=\frac{\NTl}{V_l}=\frac{\NTl}{\langle \varepsilon_l\rangle V_t}$ and using the macroscopic definition of $\Pi$, this yields:
+Given the assumed negligible bubble residence time (\cref{as:short_res_time}), we can consider that every tritium that goes into the gas phase is immediately evacuated out of the system, therefore $\NTg\ll\NTl \Rightarrow \NTl\approx\NT$. Simplifying $\langle \CT\rangle^l=\frac{\NTl}{V_l}=\frac{\NTl}{\langle \varepsilon_l\rangle V_t}$ and expressing in terms of $\Pi$ yields:
 \begin{equation}
-    \dotNT=-\frac{\langle a\,h_l \rangle}{\langle \varepsilon_l \rangle}\,\frac{1-e^{-\Pi(H)}}{\Pi(H)}\,\NT 
+    % \dotNT=-\frac{\langle a\,h_l \rangle}{\langle \varepsilon_l \rangle}\,\frac{1-e^{-\Pi(H)}}{\Pi(H)}\,\NT 
+    \dotNT=-\frac{a(H)\,h_l(H)}{\langle \varepsilon_l \rangle}\,\frac{1-e^{-\langle\Pi\rangle}}{\Pi(H)}\,\NT 
 \end{equation}
 
-Solving yields an exponential decay, as obtained previously, with a generalized expression for $\tau$ which is valid for any partial pressure regime:
+Solving yields an exponential decay, as obtained previously under the small partial pressure approximation (\cref{sec:extraction_kinetics}), here generalized for any partial pressure regime:
 \begin{keyresult}
 \begin{equation}
-    \tau =\frac{\langle \varepsilon_l \rangle}{\langle a\,h_l \rangle}\,\frac{\Pi(H)}{1-e^{-\Pi(H)}}
+    % \tau =\frac{\langle \varepsilon_l \rangle}{\langle a\,h_l \rangle}\,\frac{\Pi(H)}{1-e^{-\Pi(H)}}
+    \tau =\frac{\langle \varepsilon_l \rangle}{a(H)\,h_l(H)}\,\frac{\Pi(H)}{1-e^{-\langle\Pi\rangle}}
     \label{eq:tau}
 \end{equation}
 \end{keyresult}
+
+If make the assumption that \assumption{the hydrodynamic parameters are well approximated by their spatial average\label{as:hydrodynamic_are_constant}} (\cref{as:hydrodynamic_are_constant}), we can approximate $a(H)\,h_l(H)\approx \langle a\,h_l \rangle$ and $\Pi(H)\approx\langle\Pi\rangle$ and reveal an expression in terms of the SPP extraction time $\tau_\mathrm{SPP}$ (\cref{eq:tau_SPP}):
+\begin{equation}
+    \tau \approx \tau_\mathrm{SPP}\,\frac{\langle\Pi\rangle}{1-e^{-\langle\Pi\rangle}}
+\end{equation}
 
 % it can be proven (see "derivation nT2-II") that this expression for P(H) holds even if c_T varies a lot along the height (ie we don't need assumption \label{as:c_is_uniform}) if Pi(H) is small enough (<0.1) -> in the general solution (with integral), we plug c = <c>+c', if the exponential is ~constant in the integration domain (Pi<0.1) then int(exp(pi) * c') = exp(pi)*int(c')=0 
 
@@ -651,6 +676,7 @@ The \verb|from_parameters()| method of the \verb|SimulationInput| class implemen
 \subsection{Verification of the ARD implementation}
 \subsubsection{Numerical error estimate}
 % convergence plot: quantify convergence with tau
+
 - Backward euler systematically overestimates tau by dt/2 -> can cancel discretization error by systematically subtracting 
 \subsubsection{Comparison with the analytical solution}
 % introduced tau 
@@ -671,7 +697,7 @@ The API of \verb|libra_sparging| package is synthesized in \cref{fig:code_struct
 \input{diag_code_structure}
 
 \section{Model exploration}
-The goal of this section is to present what was learnt from this model on the topic of gas sparging in molten salts in general, addressing the second question presented in \cref{sec:problem_def}. It is not bound to a specific sparger configuration. 
+The goal of this section is to present what was learned from this model on the topic of gas sparging in molten salts in general, addressing the second question presented in \cref{sec:problem_def}. It is not bound to a specific sparger configuration. 
 \label{sec:sparging_expl}
 % all that was learn by playing around with the model
 \subsection{Effect of mixing}
@@ -679,7 +705,8 @@ The goal of this section is to present what was learnt from this model on the to
 \subsubsection{Plug flow reactor approximation}
 
 \subsection{Limiting regimes}
-\paragraph{Pi number} It can be interpreted as a measure of "how close the bubble is to reaching equilibrium with the surrounding liquid", given by $\PT=\frac{c_l}{K_s}$ 
+\paragraph{Pi number} 
+% It can be interpreted as a measure of "how close the bubble is to reaching equilibrium with the surrounding liquid", given by $\PT=\frac{c_l}{K_s}$ 
 \begin{itemize}
     \item When $1-e^{-\Pi(z)}\approx0$: the bubble can be considered free of any tritium, the driving force for tritium exchange \JT is therefore maximal, limited only by the liquid side mass transfer $h_l$, i.e. the ability of tritium to diffuse down the concentration gradient, through the liquid film up to the gas phase. 
     \item When $1-e^{-\Pi(z)}\approx1$: the bubble is saturated with tritium, the interfacial flux \JT drops as there is no concentration gradient through the liquid film to drive it, since the mass transfer process is throttled by the partial pressure in the bubble being at equilibrium with the liquid phase.
@@ -690,7 +717,12 @@ The goal of this section is to present what was learnt from this model on the to
 \subsubsection{Partial pressure limited}
 % sobol at higher Pi -> Ks not negligible
 
+\subsection{Impact of hydrostatic pressure variation}
 
+Hydrodynamic parameters vary along tank height as a results of hydrostatic pressure variations. Depending on the height of the tank, these variations can impact the extraction performances. The pressure change from bottom to top can be characterized using an other dimensionless number:
+\begin{equation}
+    G_P\equiv \frac{P_l(0)-P_l(H)}{P_l(H)}=\frac{\rho_l\,g\,H}{P_\mathrm{top}}
+\end{equation}
 %%%%%%%%%%%%%%%%%%%%%%%%
 \chapter{Application to the LIBRA Pi tritium breeding experiment}
 %%%%%%%%%%%%%%%%%%%%%%%%
