@@ -270,7 +270,9 @@ The viability of gas sparging as a tritium extraction system for LIBRA Pi has no
 % This section is usually 3-5 pages.
 
 % the literature review goes here, not in the intro
-Helium sparging was used in the Molten Salt Reactor Experiment (MSRE), primarily intended for Xe-135 poison removal but also impacting the tritium distribution\cite{briggs_calculation_1970}. 
+Helium sparging was used in the Molten Salt Reactor Experiment (MSRE), primarily intended for Xe-135 poison removal but also impacting the tritium distribution\cite{briggs_calculation_1970}.
+
+Look here: sparging in MSRE to remove Xe also showed T removal \cite{robertson_conceptual_1971}
 
 %%%%%%%%%%%%%%%%
 \chapter{Gas sparging model}
@@ -521,7 +523,7 @@ This is a hint that the average concentration and therefore the tritium inventor
 The main assumptions used throughout this work are listed in the following, starting with the most impactful ones:
 \label{sec:sparging_assumptions}
 \begin{itemize}
-    \item \assumption{Tritium is only present as molecular \ce{T2}}: this is equivalent to assuming that the redox of the salt is perfectly controlled, preventing newborn tritium to form highly soluble and poorly mobile tritium fluoride ($TF$). The assumed chemical speciation of tritium greatly determines its mass transfer properties: results based on ab initio molecular dynamics  suggest that the molecular diffusion coefficient of \ce{T2} is 3-5 times higher than that of $TF$\cite{lam_impact_2021}. Note this assumption is not inherently tied to the model, other chemical forms of tritium could be considered simply by changing the transport coefficients used by the model. 
+    \item \assumption{Tritium is only present as molecular \ce{T2}}: this is equivalent to assuming that the redox of the salt is perfectly controlled, preventing newborn tritium to form highly soluble and poorly mobile tritium fluoride ($TF$). The assumed chemical speciation of tritium greatly determines its mass transfer properties: results based on ab initio molecular dynamics  suggest that the molecular diffusion coefficient of \ce{T2} is 3-5 times higher than that of $TF$\cite{lam_impact_2021}. Note this assumption is not inherently tied to the model, other chemical forms of tritium could be considered simply by changing the transport coefficients used by the model. \todo{check stempien 2016 for references regarding TF/T2 speciation}
     \item \assumption{constant bubble rising velocity $v_b$ \label{as:vb_is_constant}}: the terminal velocity is a result of a quasi-static equilibrium between buoyancy forces and drag forces. In wobbling/ellipsoid regimes this equilibrium barely changes with the bubble size\needcite{constant velocity in wobbling regime}. Given that the bubble growth due to decompression varies as $d_b\propto P_l^{-1/3}$, it is already not large, the shift it induces in the forces equilibrium can be considered null;
     \item \assumption{no bubbles coalescence}: at such low superficial gas velocity, void fractions falls below 1\%, we can reasonably expect the bubbles not to interact with other bubbles\cite{taylor_implementation_2022} \todo{compute space between bubbles, compare with bubbles size}
     \item \assumption{no permeation in structural material nor diffusion at free surface}: this is a modeling choice to only retain interaction with gas bubbles as a tritium extraction mechanism, this gives a conservative estimate of the tritium extraction speed. Permeation can be estimated by coupling with a model for tritium transport is solid media, this is done in \cref{sec:LIBRAPi_permeation}; 
@@ -579,7 +581,7 @@ Now let us adapt the single bubble case to a whole swarm of bubbles rising in th
     % \boxed{\Pi(z)\equiv \frac{\langle a\,h_l \rangle\,R\,T\,K_s}{u_g(z)}\,z}
     \boxed{\Pi(z)\equiv \frac{R\,T\,K_s\,a(z)\,h_l(z)}{u_g(z)}\,H}
     \end{equation}
-    $\Pi$ can be volume averaged:
+    It should not be confused as the accumulated saturation at $z$. The physical intuition is: $\Pi(z)$ is the $\Pi$ the column would have if conditions everywhere were those at $z$. It can be volume averaged:
     \begin{equation}
     \langle\Pi\rangle = R\,T\,K_s\,\int_0^H\frac{a(z)\,h_l(z)}{u_g(z)}dz
     \end{equation}
@@ -597,7 +599,7 @@ These assumptions allow to get an analytical expression for the concentration pr
 The now known gas concentration profile can be evaluated at the gas outlet and plugged into the expression of the outgoing tritium flux (\cref{eq:dotNT}) to work out out the evolution of the tritium inventory:
 \begin{equation}
     % \dotNT=-A\,u_g\frac{\PT}{RT}\bigg\rvert_\mathrm{outlet}=-\frac{A\,u_g(H)\,\langle \CT\rangle^l}{R\,T\,K_s}\,(1-e^{-\Pi(H)})
-    \dotNT=-A\,u_g\frac{\PT}{RT}\bigg\rvert_\mathrm{outlet}=-\frac{A\,u_g(H)\,\langle \CT\rangle^l}{R\,T\,K_s}\,\left(1-e^{-\int_0^z\frac{a(s)\,h_l(s)\,R\,T\,K_s}{u_g(s)}\,ds}\right)
+    \dotNT=-A\,u_g\frac{\PT}{RT}\bigg\rvert_\mathrm{outlet}=-\frac{A\,u_g(H)\,\langle \CT\rangle^l}{R\,T\,K_s}\,\left(1-e^{-\int_0^H\frac{a(s)\,h_l(s)\,R\,T\,K_s}{u_g(s)}\,ds}\right)
 \end{equation}
 Given the assumed negligible bubble residence time (\cref{as:short_res_time}), we can consider that every tritium that goes into the gas phase is immediately evacuated out of the system, therefore $\NTg\ll\NTl \Rightarrow \NTl\approx\NT$. Simplifying $\langle \CT\rangle^l=\frac{\NTl}{V_l}=\frac{\NTl}{\langle \varepsilon_l\rangle V_t}$ and expressing in terms of $\Pi$ yields:
 \begin{equation}
@@ -636,7 +638,7 @@ The 1D-ARD equations require as input some tritium transport and fluid dynamics 
 \input{diag_model_overview}
 
 \subsection{Closure relations resolution}
-
+\todo{see Direct Acyclic Graph}
 There are several available correlations in the literature for the same physical quantity, and the choice of which correlation to use is sometimes non-trivial: it changes depending on what parameters are already known and in what range they are. \todo{give an example (bubble size)}
 
 In particular, the topic of gas sparging in molten salts presents large unknowns (\todo{add diffusivity/solubility correlation plots in Background and refer to it here}), and it is the purpose of this model to explore them. It was therefore designed to offer flexibility as to the closure relations used and the assumptions they are built upon. 
@@ -796,10 +798,13 @@ In Li 2026, \cref{as:T2_press_is_negligible} doesn't hold as the tritium concent
 % your project. Mention the core results and why as well as how your system
 % advances the status quo.
 - can be used to optimize design of sparging system: find right H (spare useless height where the bubble is already saturated) 
+- analytical: suitable for integration in 0D fuel cycle models (3D Volume of Fluid (VOF) CFD (see Li2026) prohibitively costly
 
 \section{Outlook}
 - relaxing some assumptions: implement multi-species (TF)
+- accounting for isotopic exchange in the gas (HT) since BABY 1L results suggests T goes out as HT 
 
+- still large uncertainties regarding transport properties, large discrepancies and difficult to replicate experiments \cite{saraswat_permeation_2026}
 \cleardoublepage
 \phantomsection
 \addcontentsline{toc}{chapter}{Bibliography}
