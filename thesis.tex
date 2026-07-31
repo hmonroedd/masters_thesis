@@ -589,37 +589,96 @@ Now let us adapt the single bubble case to a whole swarm of bubbles rising in th
 
 
 
-These assumptions allow to get an analytical expression for the concentration profile in the gas phase:
+% These assumptions allow to get an analytical expression for the concentration profile in the gas phase:
+% \begin{equation}
+% \label{eq:PT_profile}
+%     % \PT(z)=\frac{\langle \CT\rangle^l}{K_s}\,\left(1-e^{-\frac{a_b\,R\,T\,h_l\,K_s}{v_b}\,z}\right)
+%     \PT(z)=\frac{\langle \CT\rangle^l}{K_s}\,\left(1-e^{-\int_0^z\frac{a(s)\,h_l(s)\,R\,T\,K_s}{u_g(s)}\,ds}\right)
+% \end{equation}
+
+% The now known gas concentration profile can be evaluated at the gas outlet and plugged into the expression of the outgoing tritium flux (\cref{eq:dotNT}) to work out out the evolution of the tritium inventory:
+% \begin{equation}
+%     % \dotNT=-A\,u_g\frac{\PT}{RT}\bigg\rvert_\mathrm{outlet}=-\frac{A\,u_g(H)\,\langle \CT\rangle^l}{R\,T\,K_s}\,(1-e^{-\Pi(H)})
+%     \dotNT=-A\,u_g\frac{\PT}{RT}\bigg\rvert_\mathrm{outlet}=-\frac{A\,u_g(H)\,\langle \CT\rangle^l}{R\,T\,K_s}\,\left(1-e^{-\int_0^H\frac{a(s)\,h_l(s)\,R\,T\,K_s}{u_g(s)}\,ds}\right)
+% \end{equation}
+% Given the assumed negligible bubble residence time (\cref{as:short_res_time}), we can consider that every tritium that goes into the gas phase is immediately evacuated out of the system, therefore $\NTg\ll\NTl \Rightarrow \NTl\approx\NT$. Simplifying $\langle \CT\rangle^l=\frac{\NTl}{V_l}=\frac{\NTl}{\langle \varepsilon_l\rangle V_t}$ and expressing in terms of $\Pi$ yields:
+% \begin{equation}
+%     % \dotNT=-\frac{\langle a\,h_l \rangle}{\langle \varepsilon_l \rangle}\,\frac{1-e^{-\Pi(H)}}{\Pi(H)}\,\NT 
+%     \dotNT=-\frac{a(H)\,h_l(H)}{\langle \varepsilon_l \rangle}\,\frac{1-e^{-\langle\Pi\rangle}}{\Pi(H)}\,\NT 
+% \end{equation}
+
+% Solving yields an exponential decay, as obtained previously under the small partial pressure approximation (\cref{sec:extraction_kinetics}), here generalized for any partial pressure regime:
+% \begin{keyresult}
+% \begin{equation}
+%     % \tau =\frac{\langle \varepsilon_l \rangle}{\langle a\,h_l \rangle}\,\frac{\Pi(H)}{1-e^{-\Pi(H)}}
+%     \tau =\frac{\langle \varepsilon_l \rangle}{a(H)\,h_l(H)}\,\frac{\Pi(H)}{1-e^{-\langle\Pi\rangle}}
+%     \label{eq:tau}
+% \end{equation}
+% \end{keyresult}
+
+% If make the assumption that \assumption{the hydrodynamic parameters are well approximated by their spatial average\label{as:hydrodynamic_are_constant}} (\cref{as:hydrodynamic_are_constant}), we can approximate $a(H)\,h_l(H)\approx \langle a\,h_l \rangle$ and $\Pi(H)\approx\langle\Pi\rangle$ and reveal an expression in terms of the SPP extraction time $\tau_\mathrm{SPP}$ (\cref{eq:tau_SPP}):
+% \begin{equation}
+%     \tau \approx \tau_\mathrm{SPP}\,\frac{\langle\Pi\rangle}{1-e^{-\langle\Pi\rangle}}
+% \end{equation}
+
+\Cref{eq:Pi_def_macro} gives the value $\Pi$ would take if the whole column were in the hydrodynamic conditions found at height $z$. What a bubble actually experiences on its way from the sparger up to $z$ is the accumulation of these local contributions, which we write:
 \begin{equation}
-\label{eq:PT_profile}
-    % \PT(z)=\frac{\langle \CT\rangle^l}{K_s}\,\left(1-e^{-\frac{a_b\,R\,T\,h_l\,K_s}{v_b}\,z}\right)
-    \PT(z)=\frac{\langle \CT\rangle^l}{K_s}\,\left(1-e^{-\int_0^z\frac{a(s)\,h_l(s)\,R\,T\,K_s}{u_g(s)}\,ds}\right)
+\label{eq:Pi_cumul}
+    \Pi^\star(z)\equiv\frac{1}{H}\int_0^z\Pi(s)\,ds=R\,T\,K_s\int_0^z\frac{a(s)\,h_l(s)}{u_g(s)}\,ds
+\end{equation}
+so that $\Pi^\star(H)=\langle\Pi\rangle$, and $\Pi^\star(z)=\langle\Pi\rangle\,\frac{z}{H}$ when the hydrodynamic parameters are uniform along the column.
+
+The gas phase profile is then obtained from the gas ARD equation (\cref{eq:ARD_PT}) rather than from the single bubble \cref{eq:Pb_ODE}: the advection term of \cref{eq:ARD_PT} is written in conservative form and therefore accounts for the decompression of the bubbles as they rise, which \cref{eq:Pb_ODE} does not since it holds $V_b$ constant. Two simplifications are made: \assumption{the gas phase is quasi-steady\label{as:quasi_steady}} (\cref{as:quasi_steady}), which is a direct consequence of \cref{as:short_res_time}, and \assumption{gas dispersion is negligible in front of gas advection\label{as:no_gas_dispersion}} (\cref{as:no_gas_dispersion}) \todo{justify with a gas Péclet number}. Using \cref{as:c_is_uniform} for the liquid concentration, \cref{eq:ARD_PT} reduces to:
+\begin{equation}
+\label{eq:PT_steady}
+    \frac{1}{R\,T}\frac{d\,(u_g\,\PT)}{dz}=a\,h_l\,\left(\langle\CT\rangle^l-K_s\,\PT\right)
 \end{equation}
 
-The now known gas concentration profile can be evaluated at the gas outlet and plugged into the expression of the outgoing tritium flux (\cref{eq:dotNT}) to work out out the evolution of the tritium inventory:
+Introducing the tritium molar flux per unit area $G\equiv\frac{u_g\,\PT}{R\,T}$, and recognizing that $\frac{a\,h_l\,K_s\,R\,T}{u_g}=\frac{d\Pi^\star}{dz}$ (\cref{eq:Pi_cumul}), \cref{eq:PT_steady} takes the form of a first order linear ODE:
 \begin{equation}
-    % \dotNT=-A\,u_g\frac{\PT}{RT}\bigg\rvert_\mathrm{outlet}=-\frac{A\,u_g(H)\,\langle \CT\rangle^l}{R\,T\,K_s}\,(1-e^{-\Pi(H)})
-    \dotNT=-A\,u_g\frac{\PT}{RT}\bigg\rvert_\mathrm{outlet}=-\frac{A\,u_g(H)\,\langle \CT\rangle^l}{R\,T\,K_s}\,\left(1-e^{-\int_0^H\frac{a(s)\,h_l(s)\,R\,T\,K_s}{u_g(s)}\,ds}\right)
+    \frac{dG}{dz}+\frac{d\Pi^\star}{dz}\,G=a\,h_l\,\langle\CT\rangle^l
 \end{equation}
-Given the assumed negligible bubble residence time (\cref{as:short_res_time}), we can consider that every tritium that goes into the gas phase is immediately evacuated out of the system, therefore $\NTg\ll\NTl \Rightarrow \NTl\approx\NT$. Simplifying $\langle \CT\rangle^l=\frac{\NTl}{V_l}=\frac{\NTl}{\langle \varepsilon_l\rangle V_t}$ and expressing in terms of $\Pi$ yields:
+which is integrated with the factor $e^{\Pi^\star(z)}$. Gas dispersion being neglected, \cref{eq:BC1} imposes a tritium free sparging gas at the inlet, $G(0)=0$, and it comes:
 \begin{equation}
-    % \dotNT=-\frac{\langle a\,h_l \rangle}{\langle \varepsilon_l \rangle}\,\frac{1-e^{-\Pi(H)}}{\Pi(H)}\,\NT 
-    \dotNT=-\frac{a(H)\,h_l(H)}{\langle \varepsilon_l \rangle}\,\frac{1-e^{-\langle\Pi\rangle}}{\Pi(H)}\,\NT 
+\label{eq:PT_profile}
+    \PT(z)=\frac{R\,T\,\langle\CT\rangle^l}{u_g(z)}\int_0^z a(s)\,h_l(s)\,e^{-\left(\Pi^\star(z)-\Pi^\star(s)\right)}\,ds
+\end{equation}
+The exponential weight of \cref{eq:PT_profile} expresses that the tritium transferred to a bubble at height $s$ is progressively "forgotten" as the bubble keeps rising towards equilibrium with the liquid. Should the hydrodynamic parameters be uniform (\cref{as:hydrodynamic_are_constant}), \cref{eq:PT_profile} reduces to the single bubble result $\PT(z)=\frac{\langle\CT\rangle^l}{K_s}\left(1-e^{-\Pi^\star(z)}\right)$.
+
+\Cref{eq:PT_profile} can be evaluated at the gas outlet and plugged into the expression of the outgoing tritium flux (\cref{eq:dotNT}). The outlet velocity $u_g(H)$ cancels out, leaving the interfacial transfer integrated over the column height, damped by the saturation of the bubbles:
+\begin{equation}
+    \dotNT=-A\,u_g\frac{\PT}{R\,T}\bigg\rvert_\mathrm{outlet}=-A\,\langle\CT\rangle^l\int_0^H a(z)\,h_l(z)\,e^{-\left(\langle\Pi\rangle-\Pi^\star(z)\right)}dz
+\end{equation}
+Given the assumed negligible bubble residence time (\cref{as:short_res_time}), we can consider that every tritium that goes into the gas phase is immediately evacuated out of the system, therefore $\NTg\ll\NTl \Rightarrow \NTl\approx\NT$. Simplifying $\langle \CT\rangle^l=\frac{\NTl}{V_l}=\frac{\NTl}{\langle \varepsilon_l\rangle V_t}$ with $V_t=A\,H$ yields:
+\begin{equation}
+    \dotNT=-\frac{\int_0^H a(z)\,h_l(z)\,e^{-\left(\langle\Pi\rangle-\Pi^\star(z)\right)}dz}{\langle \varepsilon_l \rangle\,H}\,\NT
 \end{equation}
 
 Solving yields an exponential decay, as obtained previously under the small partial pressure approximation (\cref{sec:extraction_kinetics}), here generalized for any partial pressure regime:
 \begin{keyresult}
 \begin{equation}
-    % \tau =\frac{\langle \varepsilon_l \rangle}{\langle a\,h_l \rangle}\,\frac{\Pi(H)}{1-e^{-\Pi(H)}}
-    \tau =\frac{\langle \varepsilon_l \rangle}{a(H)\,h_l(H)}\,\frac{\Pi(H)}{1-e^{-\langle\Pi\rangle}}
+    \tau =\frac{\langle \varepsilon_l \rangle\,H}{\int_0^H a(z)\,h_l(z)\,e^{-\left(\langle\Pi\rangle-\Pi^\star(z)\right)}dz}
     \label{eq:tau}
 \end{equation}
 \end{keyresult}
 
-If make the assumption that \assumption{the hydrodynamic parameters are well approximated by their spatial average\label{as:hydrodynamic_are_constant}} (\cref{as:hydrodynamic_are_constant}), we can approximate $a(H)\,h_l(H)\approx \langle a\,h_l \rangle$ and $\Pi(H)\approx\langle\Pi\rangle$ and reveal an expression in terms of the SPP extraction time $\tau_\mathrm{SPP}$ (\cref{eq:tau_SPP}):
+\Cref{eq:tau} behaves as expected in both limit regimes:
+\begin{itemize}
+    \item $\langle\Pi\rangle\ll1$ (SPP regime): the exponential weight is unity over the whole column, every height contributes equally to the transfer and $\tau\rightarrow\frac{\langle \varepsilon_l \rangle}{\langle a\,h_l \rangle}=\tau_\mathrm{SPP}$, consistently with \cref{eq:tau_SPP} and without requiring any further assumption;
+    \item $\langle\Pi\rangle\gg1$ (PPL regime): the weight collapses onto the top of the column, the bubbles leave saturated at $\PT(H)=\frac{\langle\CT\rangle^l}{K_s}$ and $\tau\rightarrow\frac{\langle \varepsilon_l \rangle\,H\,R\,T\,K_s}{u_g(H)}$, i.e. the extraction is throttled by the gas throughput at the outlet rather than by the interfacial mass transfer.
+\end{itemize}
+
+If we make the assumption that \assumption{the hydrodynamic parameters are well approximated by their spatial average\label{as:hydrodynamic_are_constant}} (\cref{as:hydrodynamic_are_constant}), then $a\,h_l\approx\langle a\,h_l \rangle$ can be taken out of the integral and $\Pi^\star(z)\approx\langle\Pi\rangle\,\frac{z}{H}$, which reveals a compact expression in terms of the SPP extraction time $\tau_\mathrm{SPP}$ (\cref{eq:tau_SPP}):
 \begin{equation}
+\label{eq:tau_approx}
     \tau \approx \tau_\mathrm{SPP}\,\frac{\langle\Pi\rangle}{1-e^{-\langle\Pi\rangle}}
 \end{equation}
+
+% Optional, for the verification chapter: eq:tau reproduces the fitted decay time of
+% the full 1D ARD model to a median relative error of 8e-6 (worst case 3.5e-4) over
+% the 182 samples of the 0D validity study for which the liquid is well mixed
+% (G_mix < 1e-3), spanning G_P from 7e-4 to 1.4 and <Pi> from 2e-5 to 2.6 -- once the
+% +dt/2 discretisation bias of the backward Euler scheme is removed from tau_fitted.
 
 % it can be proven (see "derivation nT2-II") that this expression for P(H) holds even if c_T varies a lot along the height (ie we don't need assumption \label{as:c_is_uniform}) if Pi(H) is small enough (<0.1) -> in the general solution (with integral), we plug c = <c>+c', if the exponential is ~constant in the integration domain (Pi<0.1) then int(exp(pi) * c') = exp(pi)*int(c')=0 
 
