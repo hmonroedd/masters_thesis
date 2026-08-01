@@ -532,6 +532,7 @@ The main assumptions used throughout this work are listed in the following, star
 \end{itemize}
 
 \section{Analytical solution of the ARD equations}
+\label{sec:analytical_solution}
 To be able to understand the numerical results that will be obtained later on, it is insightful to first derive an analytical solution, at the expense of some simplifications.
 
 \paragraph{Premise: case of a single static bubble}
@@ -736,13 +737,83 @@ The \verb|from_parameters()| method of the \verb|SimulationInput| class implemen
 
 \subsection{Verification of the ARD implementation}
 \subsubsection{Numerical error estimate}
+\label{sec:numerical_error}
 % convergence plot: quantify convergence with tau
 
 - Backward euler systematically overestimates tau by dt/2 -> can cancel discretization error by systematically subtracting 
+
 \subsubsection{Comparison with the analytical solution}
-% introduced tau 
-% \subsubsection{Method of manufactured solution}
-% % for later if have time
+
+The analytical solution derived in \cref{sec:analytical_solution} rests on a set of assumptions that the numerical 1D ARD model does not make. A \textbf{virtual} reference case is therefore built in which all of them are satisfied, so that any remaining discrepancy can be attributed to the implementation rather than to the modelling. Its parameters are given in \cref{tab:verification_inputs}. They are those of the LIBRA Pi experiment, except for the tank height which is divided by ten, and for the solubility constant $K_s$ which takes two values in order to probe both partial pressure regimes. The $z$ dependent parameters vary by about one percent over such a short column, so only their value at the sparger ($z=0$) is reported.
+\todo{refine, remove some entrie}
+\begin{table}[htbp]
+    \centering
+    \caption{Parameters of the verification case. The two variants differ only by the solubility constant, which places the system in the small partial pressure regime (SPP) and close to the partial pressure limited regime (PPL). Spatially varying quantities are evaluated at the tank bottom.}
+    \label{tab:verification_inputs}
+    \begin{tabular}{@{}llrrl@{}}
+        \toprule
+         & & SPP & PPL & \\
+        \midrule
+        \multicolumn{5}{@{}l}{\textit{inputs}} \\
+        tank height                 & $H$                     & \multicolumn{2}{c}{$9.30\times10^{-2}$}  & m \\
+        tank base area              & $A$                     & \multicolumn{2}{c}{$1.30\times10^{-1}$}  & m$^2$ \\
+        temperature                 & $T$                     & \multicolumn{2}{c}{$550$}                & $^\circ$C \\
+        solubility constant         & $K_s$                   & $4.75\times10^{-4}$ & $2.14\times10^{-2}$ & mol\,m$^{-3}$\,Pa$^{-1}$ \\
+        liquid density              & $\rho_l$                & \multicolumn{2}{c}{$2.01\times10^{3}$}   & kg\,m$^{-3}$ \\
+        liquid dispersion coeff.    & $E_l$                   & \multicolumn{2}{c}{$1.40\times10^{-2}$}  & m$^2$\,s$^{-1}$ \\
+        gas dispersion coeff.       & $E_g$                   & \multicolumn{2}{c}{$5.25\times10^{-6}$}  & m$^2$\,s$^{-1}$ \\
+        initial concentration       & $\CT(t=0)$              & \multicolumn{2}{c}{$3.00\times10^{-11}$} & mol\,m$^{-3}$ \\
+        \addlinespace
+        \multicolumn{5}{@{}l}{\textit{closure relations at $z=0$}} \\
+        liquid pressure             & $P_l(0)$                & \multicolumn{2}{c}{$1.234\times10^{5}$}  & Pa \\
+        gas fraction                & $\varepsilon_g(0)$      & \multicolumn{2}{c}{$5.97\times10^{-4}$}  & -- \\
+        specific interfacial area   & $a(0)$                  & \multicolumn{2}{c}{$5.76\times10^{-1}$}  & m$^{-1}$ \\
+        superficial gas velocity    & $u_g(0)$                & \multicolumn{2}{c}{$1.59\times10^{-4}$}  & m\,s$^{-1}$ \\
+        mass transfer coeff.        & $h_l(0)$                & \multicolumn{2}{c}{$2.01\times10^{-5}$}  & m\,s$^{-1}$ \\
+        \addlinespace
+        \multicolumn{5}{@{}l}{\textit{dimensionless groups and extraction time}} \\
+        partial pressure number     & $\langle\Pi\rangle$     & $2.19\times10^{-2}$ & $9.88\times10^{-1}$ & -- \\
+        hydrostatic variation       & $G_P$                   & \multicolumn{2}{c}{$1.51\times10^{-2}$}  & -- \\
+        mixing number               & $G_\mathrm{mix}$        & $7.12\times10^{-6}$ & $4.57\times10^{-6}$ & -- \\
+        gas Bodenstein number       & $\mathrm{Bo}$           & \multicolumn{2}{c}{$2.81$}               & -- \\
+        extraction time             & $\tau$                  & $24.19$             & $37.65$             & h \\
+        \addlinespace
+        \multicolumn{5}{@{}l}{\textit{discretisation}} \\
+        time step                   & $\Delta t$              & $435$               & $678$               & s \\
+        mesh size                   & $\Delta x$              & \multicolumn{2}{c}{$4.65\times10^{-3}$}  & m \\
+        \bottomrule
+    \end{tabular}
+\end{table}
+
+Each assumption can be checked against \cref{tab:verification_inputs}.
+\begin{enumerate}
+    \item The liquid concentration is uniform (\cref{as:c_is_uniform}): the dispersive mixing time $H^2/E_l$ is $0.62\ \mathrm{s}$ against an extraction time of the order of a day, i.e. $G_\mathrm{mix}\simeq5\times10^{-6}$, so the liquid homogenises some five orders of magnitude faster than tritium leaves it;
+    \item The hydrodynamic parameters are close to uniform (\cref{as:hydrodynamic_are_constant}): the hydrostatic head over the column is $1.5\ \%$ of the pressure at the top, which is also the order of the variation of $\varepsilon_g$, $a$ and $u_g$ along $z$. Accordingly $\Pi(0)$ and $\langle\Pi\rangle$ agree to within $0.4\ \%$;
+    \item The bubble residence time $H/v_b=0.35\ \mathrm{s}$ is more than five orders of magnitude shorter than $\tau$ (\cref{as:short_res_time}), which justifies both the quasi-steady gas phase and the neglect of the gas inventory in front of the liquid one;
+    \item Finally, although the gas Bodenstein number is only $\mathrm{Bo}=2.8$, gas dispersion is negligible in \cref{eq:ARD_PT}: the dispersive term carries a factor $\varepsilon_g$ that the advective term does not, so their ratio is $\varepsilon_g/\mathrm{Bo}\simeq2\times10^{-4}$ (\cref{as:no_gas_dispersion})
+\end{enumerate}  .
+
+\Cref{fig:verification_profile} compares the tritium partial pressure profile in the gas phase with \cref{eq:PT_profile}, the mean liquid concentration $\langle\CT\rangle^l$ being taken from the simulated inventory at the same instant. The two regimes are clearly distinguished: at $\langle\Pi\rangle\ll1$ the bubbles stay far from equilibrium and \PT grows almost linearly with height, whereas at $\langle\Pi\rangle\simeq1$ the saturation of the bubbles bends the profile. In both cases the model and the analytical solution agree to better than $8\times10^{-3}$ of the peak partial pressure.
+
+\begin{figure}[htbp]
+  \centering
+  \includegraphics[width=\linewidth]{fig/verification_P_T2_profile.pdf}
+  \caption{Tritium partial pressure profile in the gas phase at three instants, computed by the 1D ARD model (solid) and given by the analytical solution \cref{eq:PT_profile} (dotted), in the small partial pressure regime (a) and close to the partial pressure limited regime (b).}
+  \label{fig:verification_profile}
+\end{figure}
+
+\Cref{fig:verification_inventory} compares the decay of the tritium inventory with the exponential law of \cref{eq:tau}. The residual grows linearly with time, as expected of a small error on a decay rate, and reaches $1.2\ \%$ after five extraction times in the SPP case. This residual is numerical, not physical: replacing $\tau$ by $\tau+\Delta t/2$, the decay time that a backward Euler scheme actually reproduces (\cref{eq:tau_delta_expansion}), brings the deviation down to $1.2\times10^{-4}$ over the same interval, a hundredfold reduction. The PPL case behaves the same way up to a residual of $5\times10^{-3}$ at $t=5\tau$, which corresponds to \cref{eq:tau} overestimating the extraction time by $0.11\ \%$, a consequence of the assumptions listed above, and an acceptable one.
+
+\todo{plot abs of the error}
+\begin{figure}[htbp]
+  \centering
+  \includegraphics[width=0.6\linewidth]{fig/verification_inventory.pdf}
+  \caption{Decay of the tritium inventory computed by the 1D ARD model (coloured) and given by \cref{eq:tau} (dotted). Bottom: relative residual against the analytical $\tau$ (solid) and against $\tau+\Delta t/2$ (dashed), the decay time the backward Euler scheme reproduces.}
+  \label{fig:verification_inventory}
+\end{figure}
+
+The implementation therefore reproduces the analytical solution, in both the partial pressure regimes and for both the gas phase profile and the integral quantity of interest, down to the discretisation error quantified in \cref{sec:numerical_error}.
+
 
 \subsection{Summary of the code structure}
 % diagram of the high level structure of the model, showing the workflow, with corresponding file and API
@@ -761,11 +832,18 @@ The API of \verb|libra_sparging| package is synthesized in \cref{fig:code_struct
 The goal of this section is to present what was learned from this model on the topic of gas sparging in molten salts in general, addressing the second question presented in \cref{sec:problem_def}. It is not bound to a specific sparger configuration. 
 \label{sec:sparging_expl}
 % all that was learn by playing around with the model
+
+The system can be characterized by 3 dimensionless parameters, which we can control independently through $K_s$, $H$, and $E_l$ respectively. 
 \subsection{Effect of mixing}
+% see report.md
+
+High Gmix (>0.097) --> non exponential decay, the RMSE is too high
+but correlated with Gp
 \subsubsection{Continuous stirred tank approximation}
 \subsubsection{Plug flow reactor approximation}
 
 \subsection{Limiting regimes}
+In the PPL regime, Pi is an amplifier (tau scales linearly with it) -> if other assumptions are not valid, analytical tau will be even more off as Pi is large 
 \paragraph{Pi number} 
 % It can be interpreted as a measure of "how close the bubble is to reaching equilibrium with the surrounding liquid", given by $\PT=\frac{c_l}{K_s}$ 
 \begin{itemize}
@@ -779,6 +857,7 @@ The goal of this section is to present what was learned from this model on the t
 % sobol at higher Pi -> Ks not negligible
 
 \subsection{Impact of hydrostatic pressure variation}
+% plot signed error: at higher Gp, tau_pred always overestimates -> the bubble expansion improves the mass transfer properties 
 
 Hydrodynamic parameters vary along tank height as a results of hydrostatic pressure variations. Depending on the height of the tank, these variations can impact the extraction performances. The pressure change from bottom to top can be characterized using an other dimensionless number:
 \begin{equation}
@@ -864,6 +943,8 @@ In Li 2026, \cref{as:T2_press_is_negligible} doesn't hold as the tritium concent
 - accounting for isotopic exchange in the gas (HT) since BABY 1L results suggests T goes out as HT 
 
 - still large uncertainties regarding transport properties, large discrepancies and difficult to replicate experiments \cite{saraswat_permeation_2026}
+
+- explore more the closure relations stage: other correlations, implement correlation choice logic based on the properties of the flow rather than let it up to the user 
 \cleardoublepage
 \phantomsection
 \addcontentsline{toc}{chapter}{Bibliography}

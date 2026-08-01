@@ -109,5 +109,4 @@
 \end{tikzpicture}
 \caption{Flowchart of the recursive step of the closure-relation resolution algorithm. Every parameter is either already known, or given by the user as a an input, or computed from a closure relation (default one or chosen by the user if specified). A closure relation can only be evaluated once every parameter it depends on has been resolved, each of them by a recursive application of the same procedure; the search fails only when a parameter is reached that is neither supplied nor covered by a default
 relation. Because a parameter that is already resolved is returned immediately, each one is computed at most once and the recursion is guaranteed to terminate.}
-\label{fig:graph_search}
 \end{figure}
