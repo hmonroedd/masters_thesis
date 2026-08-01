@@ -46,6 +46,8 @@
 \newcommand{\NTg}{\ensuremath{n_\mathrm{T_2,g}}}
 \newcommand{\dotNTg}{\ensuremath{\dot n_\mathrm{T_2,g}}}
 \newcommand{\ST}{\ensuremath{S_\mathrm{T_2}}}
+\newcommand{\Tana}{\ensuremath{\tau_\mathrm{ana}}}
+\newcommand{\Tnum}{\ensuremath{\tau_\mathrm{num}}}
 
 % -- assumption commands -- 
 \newcounter{assumption}[chapter]
@@ -93,7 +95,7 @@ English abstract. For other projects this is optional.
 
 \maketoc
 
-\input{notations}
+\input{tab_notations}
 
 %%%%%%%%%%%%%%%%%%%%%%
 \chapter{Introduction}
@@ -656,30 +658,25 @@ Given the assumed negligible bubble residence time (\cref{as:short_res_time}), w
 \end{equation}
 
 Solving yields an exponential decay, as obtained previously under the small partial pressure approximation (\cref{sec:extraction_kinetics}), here generalized for any partial pressure regime:
-\begin{keyresult}
 \begin{equation}
     \tau =\frac{\langle \varepsilon_l \rangle\,H}{\int_0^H a(z)\,h_l(z)\,e^{-\left(\langle\Pi\rangle-\Pi^\star(z)\right)}dz}
-    \label{eq:tau}
 \end{equation}
-\end{keyresult}
 
-\Cref{eq:tau} behaves as expected in both limit regimes:
+This exact general form behaves as expected in both limit regimes:
 \begin{itemize}
     \item $\langle\Pi\rangle\ll1$ (SPP regime): the exponential weight is unity over the whole column, every height contributes equally to the transfer and $\tau\rightarrow\frac{\langle \varepsilon_l \rangle}{\langle a\,h_l \rangle}=\tau_\mathrm{SPP}$, consistently with \cref{eq:tau_SPP} and without requiring any further assumption;
     \item $\langle\Pi\rangle\gg1$ (PPL regime): the weight collapses onto the top of the column, the bubbles leave saturated at $\PT(H)=\frac{\langle\CT\rangle^l}{K_s}$ and $\tau\rightarrow\frac{\langle \varepsilon_l \rangle\,H\,R\,T\,K_s}{u_g(H)}$, i.e. the extraction is throttled by the gas throughput at the outlet rather than by the interfacial mass transfer.
 \end{itemize}
 
-If we make the assumption that \assumption{the hydrodynamic parameters are well approximated by their spatial average\label{as:hydrodynamic_are_constant}} (\cref{as:hydrodynamic_are_constant}), then $a\,h_l\approx\langle a\,h_l \rangle$ can be taken out of the integral and $\Pi^\star(z)\approx\langle\Pi\rangle\,\frac{z}{H}$, which reveals a compact expression in terms of the SPP extraction time $\tau_\mathrm{SPP}$ (\cref{eq:tau_SPP}):
+If we make the assumption that \assumption{the hydrodynamic parameters are well approximated by their spatial average\label{as:hydrodynamic_are_constant}} (\cref{as:hydrodynamic_are_constant}), then $a\,h_l\approx\langle a\,h_l \rangle$ can be taken out of the integral and $\Pi^\star(z)\approx\langle\Pi\rangle\,\frac{z}{H}$, which reveals a compact expression in terms of the SPP extraction time:
+\begin{keyresult}
 \begin{equation}
-\label{eq:tau_approx}
+\label{eq:tau}
     \tau \approx \tau_\mathrm{SPP}\,\frac{\langle\Pi\rangle}{1-e^{-\langle\Pi\rangle}}
 \end{equation}
+\end{keyresult}
 
-% Optional, for the verification chapter: eq:tau reproduces the fitted decay time of
-% the full 1D ARD model to a median relative error of 8e-6 (worst case 3.5e-4) over
-% the 182 samples of the 0D validity study for which the liquid is well mixed
-% (G_mix < 1e-3), spanning G_P from 7e-4 to 1.4 and <Pi> from 2e-5 to 2.6 -- once the
-% +dt/2 discretisation bias of the backward Euler scheme is removed from tau_fitted.
+This latter form is used as the reference analytical solution in the rest of this work, denoted \Tana in the rest of this work, for distinction with the solution that might be obtained numerically. 
 
 % it can be proven (see "derivation nT2-II") that this expression for P(H) holds even if c_T varies a lot along the height (ie we don't need assumption \label{as:c_is_uniform}) if Pi(H) is small enough (<0.1) -> in the general solution (with integral), we plug c = <c>+c', if the exponential is ~constant in the integration domain (Pi<0.1) then int(exp(pi) * c') = exp(pi)*int(c')=0 
 
@@ -740,50 +737,72 @@ The \verb|from_parameters()| method of the \verb|SimulationInput| class implemen
 \label{sec:numerical_error}
 % convergence plot: quantify convergence with tau
 
-- Backward euler systematically overestimates tau by dt/2 -> can cancel discretization error by systematically subtracting 
+% - Backward euler systematically overestimates tau by dt/2 -> can cancel discretization error by systematically subtracting 
+
+\begin{figure}[htbp]
+  \centering
+  \includegraphics[width=\linewidth]{fig/convergence_refinement.pdf}
+  \caption{Convergence study}
+  \label{fig:convergence}
+\end{figure}
+\todo{change to express in terms of gas peclet}
+
+\todo{insert convergence table once convergence study is satisfactory}
+
+
+The extraction time is not read directly from the simulated inventory but obtained by fitting an exponential decay to $\NT(t)$ over the window $[0,2\tau]$. The fitted value carries a systematic error inherited from the time discretisation, which can be derived in closed form and is worth quantifying since it sets the resolution of any comparison made against $\tau$.
+
+The ARD equations being linear, once the initial transient has died out the space-discretised inventory relaxes along its slowest eigenmode:
+\begin{equation}
+\label{eq:slow_mode}
+    \dotNT = -\frac{\NT}{\tau}
+\end{equation}
+Advancing \cref{eq:slow_mode} with the backward Euler scheme of the solver, with a time step $\Delta t$ and writing $\NT^k \equiv \NT(k\,\Delta t)$:
+\begin{equation}
+\label{eq:backward_euler}
+    \frac{\NT^{k+1}-\NT^{k}}{\Delta t}=-\frac{\NT^{k+1}}{\tau}
+    \qquad \Longrightarrow \qquad
+    \NT^{k}=\frac{\NT^{0}}{\left(1+\Delta t/\tau\right)^{k}}
+\end{equation}
+The discrete solution is thus still \emph{exactly} exponential -- a geometric sequence sampled at $t_k = k\,\Delta t$ -- but it decays with a modified time constant $\tau_\Delta$:
+\begin{equation}
+\label{eq:tau_delta}
+    \NT^{k}=\NT^{0}\,e^{-t_k/\tau_\Delta},
+    \qquad
+    \frac{1}{\tau_\Delta}=\frac{\ln\left(1+\Delta t/\tau\right)}{\Delta t}
+\end{equation}
+Expanding \cref{eq:tau_delta} for $x\equiv\Delta t/\tau\ll1$ gives the discretised extraction time:
+\begin{equation}
+\label{eq:tau_delta_expansion}
+    \frac{\tau_\Delta}{\tau}=\frac{x}{\ln(1+x)}=1+\frac{x}{2}-\frac{x^{2}}{12}+O(x^{3})
+    \qquad \Longrightarrow \qquad
+    \tau_\Delta \simeq \tau+\frac{\Delta t}{2}
+\end{equation}
+
+\Cref{eq:tau_delta_expansion} explains why the discretisation error on $\tau$ is systematic rather than statistical. The fit itself contributes no scatter: the numerical inventory is an exact exponential, so the fit returns $\tau_\Delta$ instead of an estimate of it. And $x/\ln(1+x)>1$ for all $x>0$, so the sign is fixed: backward Euler under-estimates the decay rate and therefore always over-estimates the extraction time, by
+\begin{equation}
+\label{eq:e_delta}
+    e_\Delta \equiv \frac{\tau_\Delta-\tau}{\tau}\simeq\frac{\Delta t}{2\,\tau}
+\end{equation}
+This relative error is first order in $\Delta t$, and independent of the operating point since it only involves the ratio of the time step to the extraction time being measured.
+\todo{shrink the dt/2 bias explanation to a single small paragraph, not the main point here}
+
+The convergence study of \cref{fig:convergence} confirms both the order and the prefactor. The observed order of convergence is $0.998$ in time and $1.999$ in space, as expected of a backward Euler scheme and of P1 elements, and the measured ratio $e_\Delta/(\Delta t/\tau)$ is $0.501$. On the finest discretisations the Roache grid convergence index is $0.157\ \%$ in time and $1.2\times10^{-6}\ \%$ in space: the total discretisation error on $\tau$ is entirely set by the time step through \cref{eq:e_delta}, and the mesh contributes nothing.
+
+That the mesh contributes nothing deserves a justification, since the criterion that sets $\Delta x$ is built on the gas phase alone -- it fixes the mesh Péclet number $u_g\,\Delta x/E_g$. The liquid phase has no advective term (\cref{eq:ARD_CT}), so no Péclet number can be defined for it; it is a reaction--diffusion equation, whose length scale is the Thiele length $\ell_l=\sqrt{E_l\,\tau}$. Remarkably this is the mixing number in disguise, since $G_\mathrm{mix}=(H^2/E_l)/\tau=(H/\ell_l)^2$: $\sqrt{G_\mathrm{mix}}$ counts the reaction--diffusion lengths that fit across the column. The liquid never sets the requirement, for a reason that does not depend on the value of $E_l$: dispersion only smooths, so the concentration profile can never be sharper than the interfacial source term $a\,h_l\,(\langle\CT\rangle^l-K_s\PT)$ that forces it, and that term carries the gas phase length scales -- the saturation length $H/\langle\Pi\rangle$ and the hydrostatic length $H$. The limiting case $E_l\rightarrow0$, where each height decouples and the liquid simply inherits the gas profile, is therefore the worst case, and it is still governed by the gas.
+
+The numbers bear this out over the whole sampled space of \todo{ref model exploration section}: the liquid Thiele length is resolved by at least $300$ cells in every sample (median $2900$), whereas the gas saturation length falls to $0.35$ cell in the most extreme ones. Even there the extraction time is unaffected -- refining the mesh sixteenfold changes $\tau_\mathrm{fitted}$ by $1.4\times10^{-5}$ at $\langle\Pi\rangle=61$ and by $3\times10^{-7}$ at $\langle\Pi\rangle=2.6$ -- because $\tau$ is an integral of the outlet flux and, in the partial pressure limited regime, does not depend on the shape of the profile at all. The gas Péclet criterion is thus sufficient for the extraction time; only a figure showing $\PT(z)$ itself at large $\langle\Pi\rangle$ would call for a finer mesh.
+
+Two consequences are worth keeping in mind when reading the results that follow. First, with $\Delta t = 10^{-2}\,\tau$, \cref{eq:tau_delta_expansion} gives $e_\Delta=+0.499\,\%$: any deviation between a simulated and a predicted extraction time smaller than half a percent is numerics, not physics. Second, because $e_\Delta$ is known analytically rather than merely bounded, it can simply be removed by reporting $\tau_\Delta-\Delta t/2$ instead of the raw fitted value; the residual is then the next term of \cref{eq:tau_delta_expansion}, $-x^{2}/12 \approx -8\times10^{-6}$, which is negligible against the spatial error.
+
+
 
 \subsubsection{Comparison with the analytical solution}
 
-The analytical solution derived in \cref{sec:analytical_solution} rests on a set of assumptions that the numerical 1D ARD model does not make. A \textbf{virtual} reference case is therefore built in which all of them are satisfied, so that any remaining discrepancy can be attributed to the implementation rather than to the modelling. Its parameters are given in \cref{tab:verification_inputs}. They are those of the LIBRA Pi experiment, except for the tank height which is divided by ten, and for the solubility constant $K_s$ which takes two values in order to probe both partial pressure regimes. The $z$ dependent parameters vary by about one percent over such a short column, so only their value at the sparger ($z=0$) is reported.
-\todo{refine, remove some entrie}
-\begin{table}[htbp]
-    \centering
-    \caption{Parameters of the verification case. The two variants differ only by the solubility constant, which places the system in the small partial pressure regime (SPP) and close to the partial pressure limited regime (PPL). Spatially varying quantities are evaluated at the tank bottom.}
-    \label{tab:verification_inputs}
-    \begin{tabular}{@{}llrrl@{}}
-        \toprule
-         & & SPP & PPL & \\
-        \midrule
-        \multicolumn{5}{@{}l}{\textit{inputs}} \\
-        tank height                 & $H$                     & \multicolumn{2}{c}{$9.30\times10^{-2}$}  & m \\
-        tank base area              & $A$                     & \multicolumn{2}{c}{$1.30\times10^{-1}$}  & m$^2$ \\
-        temperature                 & $T$                     & \multicolumn{2}{c}{$550$}                & $^\circ$C \\
-        solubility constant         & $K_s$                   & $4.75\times10^{-4}$ & $2.14\times10^{-2}$ & mol\,m$^{-3}$\,Pa$^{-1}$ \\
-        liquid density              & $\rho_l$                & \multicolumn{2}{c}{$2.01\times10^{3}$}   & kg\,m$^{-3}$ \\
-        liquid dispersion coeff.    & $E_l$                   & \multicolumn{2}{c}{$1.40\times10^{-2}$}  & m$^2$\,s$^{-1}$ \\
-        gas dispersion coeff.       & $E_g$                   & \multicolumn{2}{c}{$5.25\times10^{-6}$}  & m$^2$\,s$^{-1}$ \\
-        initial concentration       & $\CT(t=0)$              & \multicolumn{2}{c}{$3.00\times10^{-11}$} & mol\,m$^{-3}$ \\
-        \addlinespace
-        \multicolumn{5}{@{}l}{\textit{closure relations at $z=0$}} \\
-        liquid pressure             & $P_l(0)$                & \multicolumn{2}{c}{$1.234\times10^{5}$}  & Pa \\
-        gas fraction                & $\varepsilon_g(0)$      & \multicolumn{2}{c}{$5.97\times10^{-4}$}  & -- \\
-        specific interfacial area   & $a(0)$                  & \multicolumn{2}{c}{$5.76\times10^{-1}$}  & m$^{-1}$ \\
-        superficial gas velocity    & $u_g(0)$                & \multicolumn{2}{c}{$1.59\times10^{-4}$}  & m\,s$^{-1}$ \\
-        mass transfer coeff.        & $h_l(0)$                & \multicolumn{2}{c}{$2.01\times10^{-5}$}  & m\,s$^{-1}$ \\
-        \addlinespace
-        \multicolumn{5}{@{}l}{\textit{dimensionless groups and extraction time}} \\
-        partial pressure number     & $\langle\Pi\rangle$     & $2.19\times10^{-2}$ & $9.88\times10^{-1}$ & -- \\
-        hydrostatic variation       & $G_P$                   & \multicolumn{2}{c}{$1.51\times10^{-2}$}  & -- \\
-        mixing number               & $G_\mathrm{mix}$        & $7.12\times10^{-6}$ & $4.57\times10^{-6}$ & -- \\
-        gas Bodenstein number       & $\mathrm{Bo}$           & \multicolumn{2}{c}{$2.81$}               & -- \\
-        extraction time             & $\tau$                  & $24.19$             & $37.65$             & h \\
-        \addlinespace
-        \multicolumn{5}{@{}l}{\textit{discretisation}} \\
-        time step                   & $\Delta t$              & $435$               & $678$               & s \\
-        mesh size                   & $\Delta x$              & \multicolumn{2}{c}{$4.65\times10^{-3}$}  & m \\
-        \bottomrule
-    \end{tabular}
-\end{table}
+The analytical solution derived in \cref{sec:analytical_solution} rests on a set of assumptions that the numerical 1D ARD model does not make. A \textbf{virtual} reference case is therefore built in which all of them are satisfied, so that any remaining discrepancy can be attributed to the implementation rather than to the modelling. Its parameters are given in \cref{tab:verification_inputs}. They are those of the LIBRA Pi experiment (see \cref{tab:libra_pi_inputs}), except for the tank height which is divided by ten, and for the solubility constant $K_s$ which takes two values in order to probe both partial pressure regimes. The $z$ dependent parameters vary by about one percent over such a short column, so only their value at the sparger ($z=0$) is reported.
+
+\todo{remove most of the entrie, only keep what really changes from libra pi input and the info needed for the purpose of the verification case (i.e. the info to argue that the assumptions are satisfied)}
+\input{tab_verf_inputs}
 
 Each assumption can be checked against \cref{tab:verification_inputs}.
 \begin{enumerate}
@@ -808,9 +827,12 @@ Each assumption can be checked against \cref{tab:verification_inputs}.
 \begin{figure}[htbp]
   \centering
   \includegraphics[width=0.6\linewidth]{fig/verification_inventory.pdf}
-  \caption{Decay of the tritium inventory computed by the 1D ARD model (coloured) and given by \cref{eq:tau} (dotted). Bottom: relative residual against the analytical $\tau$ (solid) and against $\tau+\Delta t/2$ (dashed), the decay time the backward Euler scheme reproduces.}
+  \caption{Decay of the tritium inventory computed by the 1D ARD model (colored) and given by \cref{eq:tau} (dotted). Bottom: relative residual against the analytical $\tau$ (solid) and against $\tau+\Delta t/2$ (dashed), the decay time the backward Euler scheme reproduces.}
   \label{fig:verification_inventory}
 \end{figure}
+
+\paragraph{Relaxing the assumptions} \todo{adapt with the new analytical study data}
+Once the +dt/2 discretisation bias of the backward Euler scheme is removed from $\tau_\mathrm{fitted}$, \Tana (\cref{eq:tau}) reproduces the fitted decay time of the full 1D ARD model to a median relative error of 8e-6 (worst case 3.5e-4) over the 182 samples of the 0D validity study for which the liquid is well mixed ($G_\mathrm{mix}$ < 1e-3), spanning $G_P$ from 7e-4 to 1.4 and $\langle\Pi\rangle$ from 2e-5 to 2.6.
 
 The implementation therefore reproduces the analytical solution, in both the partial pressure regimes and for both the gas phase profile and the integral quantity of interest, down to the discretisation error quantified in \cref{sec:numerical_error}.
 
@@ -829,13 +851,28 @@ The API of \verb|libra_sparging| package is synthesized in \cref{fig:code_struct
 \input{diag_code_structure}
 
 \section{Model exploration}
-The goal of this section is to present what was learned from this model on the topic of gas sparging in molten salts in general, addressing the second question presented in \cref{sec:problem_def}. It is not bound to a specific sparger configuration. 
 \label{sec:sparging_expl}
+
+This section presents what can be learned from the ARD model on the topic of gas sparging in general, with the dual purpose to: (1) explore the design space; (2) characterize the model's limits. 
+
+The analytical solution \Tana derived in \cref{sec:analytical_solution} gives 
+a reference value for sparger performance, but several assumptions were made 
+to obtain it. The numerical model does not make such assumptions, and can 
+therefore be compared against it to quantify the impact of relaxing them. 
+The ARD numerical model being computationally inexpensive, it is especially 
+suited for a Monte Carlo-like approach.
+% addressing the second question presented in \cref{sec:problem_def}. It is . 
 % all that was learn by playing around with the model
 
+
+
+
 The system can be characterized by 3 dimensionless parameters, which we can control independently through $K_s$, $H$, and $E_l$ respectively. 
+Gmix alone doesn't change tau, but it changes the quality of the fit (i.e. it is not really exponential) when both Gmix and Gp are high enough \todo{run sample with high Gmix and Gp and export profiles}
+
+
 \subsection{Effect of mixing}
-% see report.md
+% see report.md: G_mix has no effect on the value of τ, it only destroys the exponential character of the decay, and only when G_P is also large
 
 High Gmix (>0.097) --> non exponential decay, the RMSE is too high
 but correlated with Gp
@@ -867,6 +904,24 @@ Hydrodynamic parameters vary along tank height as a results of hydrostatic press
 \chapter{Application to the LIBRA Pi tritium breeding experiment}
 %%%%%%%%%%%%%%%%%%%%%%%%
 \label{sec:LIBRAPi_app}
+
+The sparger design isn't decided yet. The number of nozzles in particular dictates the gas volumetric flow rate through each nozzle for a given total mass flow rate. In this work, it is assumed that the sparger is made of 4 nozzles, so that the volumetric flow rate at each nozzle stays within $3-10\ \mathrm{cm^3/s}$ which is the validity range of the correlation used for the initial bubble diameter\cite{kanai_establishment_2017}. 
+
+The nominal operating point of LIBRA Pi is given in \cref{tab:libra_pi_inputs}. The salt volume is described as an equivalent cylinder of base area $A$ and height $H$, so that the 1D model applies to the actual quarter-annulus geometry. Only four quantities are actually set by the experiment: the temperature, the gas molar flow, the headspace pressure and the sparger nozzle geometry. Everything else comes from the closure relations of \cref{sec:closure_relations}, evaluated on the FLiBe properties used as a surrogate for the real breeder.
+
+Unlike the verification case, the column is now tall enough for the hydrostatic head to matter: $G_P=0.15$, so the pressure at the sparger is $15\ \%$ above the headspace pressure. The $z$ dependent parameters therefore vary by about ten percent along the column, and both ends are reported.
+
+\input{tab_libra_pi}
+\todo{move some values as orders of magnitude of correlations}
+
+Three features of \cref{tab:libra_pi_inputs} drive the rest of the chapter:
+\begin{itemize}
+    \item $\langle\Pi\rangle=0.23$ places LIBRA Pi at the entrance of the partial pressure limited regime. The bubbles leave the column about $20\ \%$ saturated, which costs a factor $\Pi/(1-e^{-\Pi})=1.12$ on the extraction time. The nominal case is therefore neither fully SPP nor fully PPL, and the corrected $\tau$ of \cref{eq:tau} is needed;
+    \item $G_\mathrm{mix}=6.5\times10^{-4}$: the salt homogenises in about a minute against an extraction time of $28\ \mathrm{h}$, so the liquid stays uniform and the 0D description of the salt inventory holds;
+    \item $G_P=0.15$ is non negligible: the gas expands by $15\ \%$ from the sparger to the free surface, so $\varepsilon_g$, $a$ and $u_g$ grow along $z$ while $\Pi$ decreases. This is the main reason the 1D model is kept rather than a single set of column averaged parameters.
+\end{itemize}
+
+The gas Bodenstein number is $\mathrm{Bo}=28$, and the dispersive term of \cref{eq:ARD_PT} carries an extra factor $\varepsilon_g$, so gas dispersion contributes at the $2\times10^{-5}$ level and stays negligible (\cref{as:no_gas_dispersion}). The bubble residence time is $3.6\ \mathrm{s}$ against $\tau=28\ \mathrm{h}$, i.e. a ratio of $3\times10^{4}$, which justifies the quasi-steady gas phase (\cref{as:short_res_time}).
 
 \section{Prediction of the extraction time}
 \label{sec:LIBRAPi_extraction}
