@@ -1,0 +1,32 @@
+
+% These assumptions allow to get an analytical expression for the concentration profile in the gas phase:
+% \begin{equation}
+% \label{eq:PT_profile}
+%     % \PT(z)=\frac{\langle \CT\rangle^l}{K_s}\,\left(1-e^{-\frac{a_b\,R\,T\,h_l\,K_s}{v_b}\,z}\right)
+%     \PT(z)=\frac{\langle \CT\rangle^l}{K_s}\,\left(1-e^{-\int_0^z\frac{a(s)\,h_l(s)\,R\,T\,K_s}{u_g(s)}\,ds}\right)
+% \end{equation}
+
+% The now known gas concentration profile can be evaluated at the gas outlet and plugged into the expression of the outgoing tritium flux (\cref{eq:dotNT}) to work out out the evolution of the tritium inventory:
+% \begin{equation}
+%     % \dotNT=-A\,u_g\frac{\PT}{RT}\bigg\rvert_\mathrm{outlet}=-\frac{A\,u_g(H)\,\langle \CT\rangle^l}{R\,T\,K_s}\,(1-e^{-\Pi(H)})
+%     \dotNT=-A\,u_g\frac{\PT}{RT}\bigg\rvert_\mathrm{outlet}=-\frac{A\,u_g(H)\,\langle \CT\rangle^l}{R\,T\,K_s}\,\left(1-e^{-\int_0^H\frac{a(s)\,h_l(s)\,R\,T\,K_s}{u_g(s)}\,ds}\right)
+% \end{equation}
+% Given the assumed negligible bubble residence time (\cref{as:short_res_time}), we can consider that every tritium that goes into the gas phase is immediately evacuated out of the system, therefore $\NTg\ll\NTl \Rightarrow \NTl\approx\NT$. Simplifying $\langle \CT\rangle^l=\frac{\NTl}{V_l}=\frac{\NTl}{\langle \varepsilon_l\rangle V_t}$ and expressing in terms of $\Pi$ yields:
+% \begin{equation}
+%     % \dotNT=-\frac{\langle a\,h_l \rangle}{\langle \varepsilon_l \rangle}\,\frac{1-e^{-\Pi(H)}}{\Pi(H)}\,\NT 
+%     \dotNT=-\frac{a(H)\,h_l(H)}{\langle \varepsilon_l \rangle}\,\frac{1-e^{-\langle\Pi\rangle}}{\Pi(H)}\,\NT 
+% \end{equation}
+
+% Solving yields an exponential decay, as obtained previously under the small partial pressure approximation (\cref{sec:extraction_kinetics}), here generalized for any partial pressure regime:
+% \begin{keyresult}
+% \begin{equation}
+%     % \tau =\frac{\langle \varepsilon_l \rangle}{\langle a\,h_l \rangle}\,\frac{\Pi(H)}{1-e^{-\Pi(H)}}
+%     \tau =\frac{\langle \varepsilon_l \rangle}{a(H)\,h_l(H)}\,\frac{\Pi(H)}{1-e^{-\langle\Pi\rangle}}
+%     \label{eq:tau}
+% \end{equation}
+% \end{keyresult}
+
+% If make the assumption that \assumption{the hydrodynamic parameters are well approximated by their spatial average\label{as:hydrodynamic_are_constant}} (\cref{as:hydrodynamic_are_constant}), we can approximate $a(H)\,h_l(H)\approx \langle a\,h_l \rangle$ and $\Pi(H)\approx\langle\Pi\rangle$ and reveal an expression in terms of the SPP extraction time $\tau_\mathrm{SPP}$ (\cref{eq:tau_SPP}):
+% \begin{equation}
+%     \tau \approx \tau_\mathrm{SPP}\,\frac{\langle\Pi\rangle}{1-e^{-\langle\Pi\rangle}}
+% \end{equation}

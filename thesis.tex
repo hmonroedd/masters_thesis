@@ -193,6 +193,8 @@ The fusion fuel cycle is the set of processes that supplies tritium to the plasm
 \subsection{Self-sufficiency}
 % definition of the scientific and engineering TBR, tritium self-sufficiency of a FPP
 % include doubling time considerations, achievable and required TBR ? (Ferry 2023, Abdou 2020)
+\todo{rathre use terminology "neutronics" and "real" TBR} % similarity with fusion gain is too farfelu 
+
 For the fusion power industry to be able to scale, individual FPPs have to produces at least as much tritium as they consumes, i.e. optimize their outer fuel cycle to achieve a sufficiently high TBR. For explanatory purposes. a distinction can be made between the "scientific" TBR (\cref{eq:TBR_sci}), which only measures tritium being born in the breeding material, and the "engineering" TBR (\cref{eq:TBR_eng}) which measures the tritium that is actually retrieved and can be injected in the fusion core. 
 \begin{align}
     \mathrm{TBR_{sci}}&= \frac{\mathrm{T_{bred}}}{\mathrm{T_{burnt}}} \label{eq:TBR_sci} \\
@@ -370,6 +372,9 @@ Where $\delta V_\alpha$ is the volume of phase $\alpha$ contained in $\delta V_t
 \end{equation}
 
  \subsubsection{Governing differential equations}
+
+ \todo{if time: include quick derivation of the differential form by considering mass conservation in a small value (reuse a section of sparging schematic)}
+ 
 Bringing mass transfer and fluid dynamics together, the equations for tritium transport in a two-phase mixture of liquid and gas can be adapted from the existing literature on transport in a porous media. Except when needed, the space ($z$) and time ($t$) dependences are implicit throughout this work for clarity. 
 \begin{itemize}
     \item Liquid: 
@@ -537,7 +542,7 @@ The main assumptions used throughout this work are listed in the following, star
 \label{sec:analytical_solution}
 To be able to understand the numerical results that will be obtained later on, it is insightful to first derive an analytical solution, at the expense of some simplifications.
 
-\paragraph{Premise: case of a single static bubble}
+\subsection{Premise: case of a single static bubble}
 Let us consider the virtual case of a single He bubble $b$, immersed in a static liquid of tritium concentration \CT. The evolution of the tritium inventory $n_{\mathrm{T_2},b}$ in the bubble is governed by:
 \begin{equation}
 \label{eq:nb}
@@ -569,73 +574,54 @@ Eventually, the bubble is removed of the liquid after a residence time $t_{res}$
 
 It can be interpreted as a measure of "how close the bubble is to reaching equilibrium with the surrounding liquid", the equilibrium being $\PT=\frac{c_l}{K_s}$. 
 
-\paragraph{Solution for a sparging system}
+\subsection{Solution for a sparging system}
 Now let us adapt the single bubble case to a whole swarm of bubbles rising in the liquid and eventually escaping it (i.e. a sparging system). The reasoning is as follows: 
 \begin{itemize}
     \item The speed $v_b$ of the bubble, assumed constant (\cref{as:vb_is_constant}), allows the change of variable $t=\frac{z}{v_b}$ and yields a bubble residence time $t_{res}=\frac{H}{v_b}$. 
+    \item Bubble's properties now vary with pressure as bubbles rise:
+    \begin{itemize}
+        \item $V_b$ becomes $V_b=V_g=\varepsilon_g(z)\,V_t$ which is not constant, mass conservation applied to the bubble must account for that. Changing variable, substituting $a=\frac{A_b}{V_t}$ and $u_g=\varepsilon_g\,v_b$, \cref{eq:Pb_ODE} is re-written:
+        \begin{align}
+            \label{eq:Pb_ODE_sparger}
+            &\frac{1}{RT}\frac{d(V_b\,\PT)}{dt} = A_b\,h_l\,(\CT-K_s\PT) \nonumber\\
+            \Leftrightarrow &\frac{1}{RT}\frac{d(u_g\,\PT)}{dz} = a\,h_l\,(\CT-K_s\PT) 
+        \end{align}
+        \item $\Pi$ becomes a function of position. The definition given in \cref{eq:Pi_def_micro} involves microscopic scale (bubble specific) quantities considered constant. In the case of a sparging system, using same substitutions as above yields an expression in terms of macroscopic scale quantities:
+        \begin{equation}
+        \label{eq:Pi_def_macro}
+        \boxed{\Pi(z) = \frac{R\,T\,K_s\,a(z)\,h_l(z)}{u_g(z)}\,H}
+        \end{equation}
+    \end{itemize}
+    
     \item \Cref{as:c_is_constant} has two implications:
     \begin{itemize}
         \item \CT(z) seen by the bubble as it rises is well approximated by $\langle \CT\rangle^l$, i.e. \assumption{the concentration in the liquid phase can be considered uniform \label{as:c_is_uniform}} (\cref{as:c_is_uniform})
         \item $\langle \CT\rangle^l$ itself can be considered constant during the bubble's life, i.e. \assumption{the residence time of the bubble in the system is much shorter than the extraction timescale \label{as:short_res_time}} (\cref{as:short_res_time}): $\frac{H}{v_b}\ll\tau$
     \end{itemize}
-    \item The definition of $\Pi$ given in \cref{eq:Pi_def_micro} involves microscopic scale (bubble specific) quantities ($a_b=\frac{6}{d_b}$) considered constant. In the case of a macroscopic sparging system, bubble's properties vary with pressure as they rise, $\Pi$ therefore becomes a function of position. Recalling that $a(z)=\varepsilon_g(z)\,a_b(z)$ and $u_g(z)=\varepsilon_g(z)\,v_b$ yields an expression in terms of macroscopic scale quantities:
-    \begin{equation}
-    \label{eq:Pi_def_macro}
-    % \boxed{\Pi(z)\equiv \frac{\langle a\,h_l \rangle\,R\,T\,K_s}{u_g(z)}\,z}
-    \boxed{\Pi(z)\equiv \frac{R\,T\,K_s\,a(z)\,h_l(z)}{u_g(z)}\,H}
-    \end{equation}
-    It should not be confused as the accumulated saturation at $z$. The physical intuition is: $\Pi(z)$ is the $\Pi$ the column would have if conditions everywhere were those at $z$. It can be volume averaged:
-    \begin{equation}
-    \langle\Pi\rangle = R\,T\,K_s\,\int_0^H\frac{a(z)\,h_l(z)}{u_g(z)}dz
-    \end{equation}
 \end{itemize}
 
+\paragraph{Note on $\Pi$ and definition}
 
-
-% These assumptions allow to get an analytical expression for the concentration profile in the gas phase:
-% \begin{equation}
-% \label{eq:PT_profile}
-%     % \PT(z)=\frac{\langle \CT\rangle^l}{K_s}\,\left(1-e^{-\frac{a_b\,R\,T\,h_l\,K_s}{v_b}\,z}\right)
-%     \PT(z)=\frac{\langle \CT\rangle^l}{K_s}\,\left(1-e^{-\int_0^z\frac{a(s)\,h_l(s)\,R\,T\,K_s}{u_g(s)}\,ds}\right)
-% \end{equation}
-
-% The now known gas concentration profile can be evaluated at the gas outlet and plugged into the expression of the outgoing tritium flux (\cref{eq:dotNT}) to work out out the evolution of the tritium inventory:
-% \begin{equation}
-%     % \dotNT=-A\,u_g\frac{\PT}{RT}\bigg\rvert_\mathrm{outlet}=-\frac{A\,u_g(H)\,\langle \CT\rangle^l}{R\,T\,K_s}\,(1-e^{-\Pi(H)})
-%     \dotNT=-A\,u_g\frac{\PT}{RT}\bigg\rvert_\mathrm{outlet}=-\frac{A\,u_g(H)\,\langle \CT\rangle^l}{R\,T\,K_s}\,\left(1-e^{-\int_0^H\frac{a(s)\,h_l(s)\,R\,T\,K_s}{u_g(s)}\,ds}\right)
-% \end{equation}
-% Given the assumed negligible bubble residence time (\cref{as:short_res_time}), we can consider that every tritium that goes into the gas phase is immediately evacuated out of the system, therefore $\NTg\ll\NTl \Rightarrow \NTl\approx\NT$. Simplifying $\langle \CT\rangle^l=\frac{\NTl}{V_l}=\frac{\NTl}{\langle \varepsilon_l\rangle V_t}$ and expressing in terms of $\Pi$ yields:
-% \begin{equation}
-%     % \dotNT=-\frac{\langle a\,h_l \rangle}{\langle \varepsilon_l \rangle}\,\frac{1-e^{-\Pi(H)}}{\Pi(H)}\,\NT 
-%     \dotNT=-\frac{a(H)\,h_l(H)}{\langle \varepsilon_l \rangle}\,\frac{1-e^{-\langle\Pi\rangle}}{\Pi(H)}\,\NT 
-% \end{equation}
-
-% Solving yields an exponential decay, as obtained previously under the small partial pressure approximation (\cref{sec:extraction_kinetics}), here generalized for any partial pressure regime:
-% \begin{keyresult}
-% \begin{equation}
-%     % \tau =\frac{\langle \varepsilon_l \rangle}{\langle a\,h_l \rangle}\,\frac{\Pi(H)}{1-e^{-\Pi(H)}}
-%     \tau =\frac{\langle \varepsilon_l \rangle}{a(H)\,h_l(H)}\,\frac{\Pi(H)}{1-e^{-\langle\Pi\rangle}}
-%     \label{eq:tau}
-% \end{equation}
-% \end{keyresult}
-
-% If make the assumption that \assumption{the hydrodynamic parameters are well approximated by their spatial average\label{as:hydrodynamic_are_constant}} (\cref{as:hydrodynamic_are_constant}), we can approximate $a(H)\,h_l(H)\approx \langle a\,h_l \rangle$ and $\Pi(H)\approx\langle\Pi\rangle$ and reveal an expression in terms of the SPP extraction time $\tau_\mathrm{SPP}$ (\cref{eq:tau_SPP}):
-% \begin{equation}
-%     \tau \approx \tau_\mathrm{SPP}\,\frac{\langle\Pi\rangle}{1-e^{-\langle\Pi\rangle}}
-% \end{equation}
-
-\Cref{eq:Pi_def_macro} gives the value $\Pi$ would take if the whole column were in the hydrodynamic conditions found at height $z$. What a bubble actually experiences on its way from the sparger up to $z$ is the accumulation of these local contributions, which we write:
+The physical intuition is: $\Pi(z)$ gives the outlet saturation a bubble would have if the \textbf{whole column} were in the hydrodynamic conditions found at height $z$. it is distinct from what a bubble actually experiences on its way from the sparger up to $z$ is the \textbf{accumulation} of these local contributions, which we write:
 \begin{equation}
 \label{eq:Pi_cumul}
     \Pi^\star(z)\equiv\frac{1}{H}\int_0^z\Pi(s)\,ds=R\,T\,K_s\int_0^z\frac{a(s)\,h_l(s)}{u_g(s)}\,ds
 \end{equation}
-so that $\Pi^\star(H)=\langle\Pi\rangle$, and $\Pi^\star(z)=\langle\Pi\rangle\,\frac{z}{H}$ when the hydrodynamic parameters are uniform along the column.
+so that $\Pi^\star(H)= R\,T\,K_s\,\int_0^H\frac{a(z)\,h_l(z)}{u_g(z)}dz=\langle\Pi\rangle$, and $\Pi^\star(z)=\langle\Pi\rangle\,\frac{z}{H}$ when the hydrodynamic parameters are uniform along the column.
 
-The gas phase profile is then obtained from the gas ARD equation (\cref{eq:ARD_PT}) rather than from the single bubble \cref{eq:Pb_ODE}: the advection term of \cref{eq:ARD_PT} is written in conservative form and therefore accounts for the decompression of the bubbles as they rise, which \cref{eq:Pb_ODE} does not since it holds $V_b$ constant. Two simplifications are made: \assumption{the gas phase is quasi-steady\label{as:quasi_steady}} (\cref{as:quasi_steady}), which is a direct consequence of \cref{as:short_res_time}, and \assumption{gas dispersion is negligible in front of gas advection\label{as:no_gas_dispersion}} (\cref{as:no_gas_dispersion}) \todo{justify with a gas Péclet number}. Using \cref{as:c_is_uniform} for the liquid concentration, \cref{eq:ARD_PT} reduces to:
+\begin{keyresult}
+    $\langle\Pi\rangle$ describes the \textbf{bubble saturation} as it leaves the tank, resulting from all the conditions $\Pi(z)$ encountered along its way
+\end{keyresult} 
+
+
+\paragraph{Derivation}
+
+Using the uniform \CT assumption (\cref{as:c_is_uniform}), \cref{eq:Pb_ODE_sparger} reduces to:
 \begin{equation}
 \label{eq:PT_steady}
     \frac{1}{R\,T}\frac{d\,(u_g\,\PT)}{dz}=a\,h_l\,\left(\langle\CT\rangle^l-K_s\,\PT\right)
 \end{equation}
+Note this lands to the gas ARD equation (\cref{eq:ARD_PT}) in steady state and without the dispersion term. The fact that the gas phase is in (quasi-)steady state here is a consequence of the assumption of a short bubble residence time (\cref{as:short_res_time}). We also don't account for a possible spread in the bubble's velocity, assuming that \assumption{gas dispersion is negligible in front of gas advection\label{as:no_gas_dispersion}}(\cref{as:no_gas_dispersion}) \todo{justify with a gas Péclet number}. 
 
 Introducing the tritium molar flux per unit area $G\equiv\frac{u_g\,\PT}{R\,T}$, and recognizing that $\frac{a\,h_l\,K_s\,R\,T}{u_g}=\frac{d\Pi^\star}{dz}$ (\cref{eq:Pi_cumul}), \cref{eq:PT_steady} takes the form of a first order linear ODE:
 \begin{equation}
@@ -676,7 +662,7 @@ If we make the assumption that \assumption{the hydrodynamic parameters are well 
 \end{equation}
 \end{keyresult}
 
-This latter form is used as the reference analytical solution in the rest of this work, denoted \Tana in the rest of this work, for distinction with the solution that might be obtained numerically. 
+This latter form is used as the reference analytical solution in the rest of this work, denoted \Tana for distinction with values that might be obtained numerically. 
 
 % it can be proven (see "derivation nT2-II") that this expression for P(H) holds even if c_T varies a lot along the height (ie we don't need assumption \label{as:c_is_uniform}) if Pi(H) is small enough (<0.1) -> in the general solution (with integral), we plug c = <c>+c', if the exponential is ~constant in the integration domain (Pi<0.1) then int(exp(pi) * c') = exp(pi)*int(c')=0 
 
@@ -807,9 +793,9 @@ The analytical solution derived in \cref{sec:analytical_solution} rests on a set
 Each assumption can be checked against \cref{tab:verification_inputs}.
 \begin{enumerate}
     \item The liquid concentration is uniform (\cref{as:c_is_uniform}): the dispersive mixing time $H^2/E_l$ is $0.62\ \mathrm{s}$ against an extraction time of the order of a day, i.e. $G_\mathrm{mix}\simeq5\times10^{-6}$, so the liquid homogenises some five orders of magnitude faster than tritium leaves it;
-    \item The hydrodynamic parameters are close to uniform (\cref{as:hydrodynamic_are_constant}): the hydrostatic head over the column is $1.5\ \%$ of the pressure at the top, which is also the order of the variation of $\varepsilon_g$, $a$ and $u_g$ along $z$. Accordingly $\Pi(0)$ and $\langle\Pi\rangle$ agree to within $0.4\ \%$;
     \item The bubble residence time $H/v_b=0.35\ \mathrm{s}$ is more than five orders of magnitude shorter than $\tau$ (\cref{as:short_res_time}), which justifies both the quasi-steady gas phase and the neglect of the gas inventory in front of the liquid one;
     \item Finally, although the gas Bodenstein number is only $\mathrm{Bo}=2.8$, gas dispersion is negligible in \cref{eq:ARD_PT}: the dispersive term carries a factor $\varepsilon_g$ that the advective term does not, so their ratio is $\varepsilon_g/\mathrm{Bo}\simeq2\times10^{-4}$ (\cref{as:no_gas_dispersion})
+    \item The hydrodynamic parameters are close to uniform (\cref{as:hydrodynamic_are_constant}): the hydrostatic head over the column is $1.5\ \%$ of the pressure at the top, which is also the order of the variation of $\varepsilon_g$, $a$ and $u_g$ along $z$. Accordingly $\Pi(0)$ and $\langle\Pi\rangle$ agree to within $0.4\ \%$;
 \end{enumerate}  .
 
 \Cref{fig:verification_profile} compares the tritium partial pressure profile in the gas phase with \cref{eq:PT_profile}, the mean liquid concentration $\langle\CT\rangle^l$ being taken from the simulated inventory at the same instant. The two regimes are clearly distinguished: at $\langle\Pi\rangle\ll1$ the bubbles stay far from equilibrium and \PT grows almost linearly with height, whereas at $\langle\Pi\rangle\simeq1$ the saturation of the bubbles bends the profile. In both cases the model and the analytical solution agree to better than $8\times10^{-3}$ of the peak partial pressure.
@@ -863,8 +849,6 @@ The ARD numerical model being computationally inexpensive, it is especially
 suited for a Monte Carlo-like approach.
 % addressing the second question presented in \cref{sec:problem_def}. It is . 
 % all that was learn by playing around with the model
-
-
 
 
 The system can be characterized by 3 dimensionless parameters, which we can control independently through $K_s$, $H$, and $E_l$ respectively. 
