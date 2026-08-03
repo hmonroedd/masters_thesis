@@ -21,6 +21,7 @@
 \usepackage{booktabs}
 \usepackage{xltabular}
 \usepackage[version=4]{mhchem}
+\usepackage{xfrac} % for small fractions
 \usepackage[colorinlistoftodos]{todonotes} % for the citing todo
 \usepackage{tikz}
 \usetikzlibrary{positioning, fit, backgrounds, arrows.meta, shapes.geometric}
@@ -48,6 +49,9 @@
 \newcommand{\ST}{\ensuremath{S_\mathrm{T_2}}}
 \newcommand{\Tana}{\ensuremath{\tau_\mathrm{ana}}}
 \newcommand{\Tnum}{\ensuremath{\tau_\mathrm{num}}}
+\newcommand{\Gmix}{\ensuremath{G_\mathrm{mix}}}
+\newcommand{\Gp}{\ensuremath{G_P}}
+\newcommand{\PI}{\ensuremath{\langle \Pi \rangle}}
 
 % -- assumption commands -- 
 \newcounter{assumption}[chapter]
@@ -295,7 +299,7 @@ A schematic of the problem at hand along with the main quantities of interest is
 \begin{figure}[ht]
   \centering
   \includegraphics[width=0.5\linewidth]{fig/sparging schematic.pdf}
-  \caption{Schematic of a static liquid containing tank equipped with a gas sparging system. Gas bubbles induce mixing in the initially static liquid (blue dashed arrows) as they rise through it}
+  \caption{Schematic of the system: a static liquid with sparged gas contained in a tank. Gas bubbles induce a recirculation motion to the initially static liquid (blue dashed arrows) as they rise through it}
   \label{fig:sparging_tank}
 \end{figure}
 
@@ -331,7 +335,7 @@ In \cref{eq:JT2}, \JT and \PT are the unknown to be solved in the 1D-ARD model; 
 
 \subsection{Fluid dynamics}
 % expose correlations
-Advective transport through fluid motion is expected to influence, if not dominate, the tritium concentration and partial pressure profiles in the liquid and gas phases respectively. In a 2D or 3D model, it would require to solve for the velocity field of both phases. Because this work's purpose is to be exploratory, a good pragmatic choice is the simpler one-dimensional axial dispersion model presented by Levenspiel \cite{levenspiel_chemical_1999}, broadly used in chemical reactors modeling \cite{schluter_modeling_1992}. The gas upward velocity is described by the bubble's terminal velocity $u_g \:\mathrm{[m/s]}$, and the liquid and gas mixing effects are described by empirical dispersion coefficients $E_l$ and $E_g$ ($\mathrm{[m^2/s]}$)\textbf{}. The temperature $T$ is assumed constant in time and space. 
+Advective transport through fluid motion is expected to influence, if not dominate, the tritium concentration and partial pressure profiles in the liquid and gas phases respectively. In a 2D or 3D model, it would require to solve for the velocity field of both phases. Because this work's purpose is to be exploratory, a good pragmatic choice is the simpler one-dimensional axial dispersion model presented by Levenspiel \cite{levenspiel_chemical_1999}, broadly used in chemical reactors modeling \cite{schluter_modeling_1992}. The gas upward velocity is described by the bubble's terminal velocity $u_g \:\mathrm{[m/s]}$, and the liquid and gas mixing effects are described by empirical dispersion coefficients $E_l$ and $E_g$ ($\mathrm{[m^2/s]}$)\textbf{}. The temperature $T$ is assumed constant in time and space. $E_l$ is the single liquid transport mechanism, it carries the recirculation physics illustrated in \cref{fig:sparging_tank} and is therefore expected to be large; $E_g$ expresses as spread in the rise velocity of individual bubbles (e.g. due to a spread in bubble sizes), expected to be secondary. 
 \par
 
 The net bubble velocity gives rise to an advective term, while phases mixing translates into a dispersion term. Mixing is expressed by a "dispersion" term that resembles molecular diffusion, as both phenomena have a Fickian behavior which tends to flatten the concentration profiles. They are however inherently different from a physical point of view and shouldn't be mixed up, as transport caused by phases mixing largely dominates molecular diffusion at macroscopic scales. This translates in dispersion coefficients being order of magnitude larger than diffusion coefficients. 
@@ -600,7 +604,7 @@ Now let us adapt the single bubble case to a whole swarm of bubbles rising in th
     \end{itemize}
 \end{itemize}
 
-\paragraph{Note on $\Pi$ and definition}
+\paragraph{Note on $\Pi$}
 
 The physical intuition is: $\Pi(z)$ gives the outlet saturation a bubble would have if the \textbf{whole column} were in the hydrodynamic conditions found at height $z$. it is distinct from what a bubble actually experiences on its way from the sparger up to $z$ is the \textbf{accumulation} of these local contributions, which we write:
 \begin{equation}
@@ -610,7 +614,7 @@ The physical intuition is: $\Pi(z)$ gives the outlet saturation a bubble would h
 so that $\Pi^\star(H)= R\,T\,K_s\,\int_0^H\frac{a(z)\,h_l(z)}{u_g(z)}dz=\langle\Pi\rangle$, and $\Pi^\star(z)=\langle\Pi\rangle\,\frac{z}{H}$ when the hydrodynamic parameters are uniform along the column.
 
 \begin{keyresult}
-    $\langle\Pi\rangle$ describes the \textbf{bubble saturation} as it leaves the tank, resulting from all the conditions $\Pi(z)$ encountered along its way
+    The saturation number $\langle\Pi\rangle$ describes the \textbf{bubble saturation} as it leaves the tank, resulting from all the conditions $\Pi(z)$ encountered along its way
 \end{keyresult} 
 
 
@@ -632,7 +636,7 @@ which is integrated with the factor $e^{\Pi^\star(z)}$. Gas dispersion being neg
 \label{eq:PT_profile}
     \PT(z)=\frac{R\,T\,\langle\CT\rangle^l}{u_g(z)}\int_0^z a(s)\,h_l(s)\,e^{-\left(\Pi^\star(z)-\Pi^\star(s)\right)}\,ds
 \end{equation}
-The exponential weight of \cref{eq:PT_profile} expresses that the tritium transferred to a bubble at height $s$ is progressively "forgotten" as the bubble keeps rising towards equilibrium with the liquid. Should the hydrodynamic parameters be uniform (\cref{as:hydrodynamic_are_constant}), \cref{eq:PT_profile} reduces to the single bubble result $\PT(z)=\frac{\langle\CT\rangle^l}{K_s}\left(1-e^{-\Pi^\star(z)}\right)$.
+The exponential weight of \cref{eq:PT_profile} expresses that the tritium transferred to a bubble at height $s$ is progressively "forgotten" as the bubble keeps rising towards equilibrium with the liquid. Should the hydrodynamic parameters be uniform (\cref{as:uniform_hydrodynamic}), \cref{eq:PT_profile} reduces to the single bubble result $\PT(z)=\frac{\langle\CT\rangle^l}{K_s}\left(1-e^{-\Pi^\star(z)}\right)$.
 
 \Cref{eq:PT_profile} can be evaluated at the gas outlet and plugged into the expression of the outgoing tritium flux (\cref{eq:dotNT}). The outlet velocity $u_g(H)$ cancels out, leaving the interfacial transfer integrated over the column height, damped by the saturation of the bubbles:
 \begin{equation}
@@ -654,10 +658,10 @@ This exact general form behaves as expected in both limit regimes:
     \item $\langle\Pi\rangle\gg1$ (PPL regime): the weight collapses onto the top of the column, the bubbles leave saturated at $\PT(H)=\frac{\langle\CT\rangle^l}{K_s}$ and $\tau\rightarrow\frac{\langle \varepsilon_l \rangle\,H\,R\,T\,K_s}{u_g(H)}$, i.e. the extraction is throttled by the gas throughput at the outlet rather than by the interfacial mass transfer.
 \end{itemize}
 
-If we make the assumption that \assumption{the hydrodynamic parameters are well approximated by their spatial average\label{as:hydrodynamic_are_constant}} (\cref{as:hydrodynamic_are_constant}), then $a\,h_l\approx\langle a\,h_l \rangle$ can be taken out of the integral and $\Pi^\star(z)\approx\langle\Pi\rangle\,\frac{z}{H}$, which reveals a compact expression in terms of the SPP extraction time:
+If we make the assumption that \assumption{the hydrodynamic parameters are well approximated by their spatial average\label{as:uniform_hydrodynamic}} (\cref{as:uniform_hydrodynamic}), then $a\,h_l\approx\langle a\,h_l \rangle$ can be taken out of the integral and $\Pi^\star(z)\approx\langle\Pi\rangle\,\frac{z}{H}$, which reveals a compact expression in terms of the SPP extraction time:
 \begin{keyresult}
 \begin{equation}
-\label{eq:tau}
+\label{eq:tau_ana}
     \tau \approx \tau_\mathrm{SPP}\,\frac{\langle\Pi\rangle}{1-e^{-\langle\Pi\rangle}}
 \end{equation}
 \end{keyresult}
@@ -775,7 +779,7 @@ This relative error is first order in $\Delta t$, and independent of the operati
 
 The convergence study of \cref{fig:convergence} confirms both the order and the prefactor. The observed order of convergence is $0.998$ in time and $1.999$ in space, as expected of a backward Euler scheme and of P1 elements, and the measured ratio $e_\Delta/(\Delta t/\tau)$ is $0.501$. On the finest discretisations the Roache grid convergence index is $0.157\ \%$ in time and $1.2\times10^{-6}\ \%$ in space: the total discretisation error on $\tau$ is entirely set by the time step through \cref{eq:e_delta}, and the mesh contributes nothing.
 
-That the mesh contributes nothing deserves a justification, since the criterion that sets $\Delta x$ is built on the gas phase alone -- it fixes the mesh Péclet number $u_g\,\Delta x/E_g$. The liquid phase has no advective term (\cref{eq:ARD_CT}), so no Péclet number can be defined for it; it is a reaction--diffusion equation, whose length scale is the Thiele length $\ell_l=\sqrt{E_l\,\tau}$. Remarkably this is the mixing number in disguise, since $G_\mathrm{mix}=(H^2/E_l)/\tau=(H/\ell_l)^2$: $\sqrt{G_\mathrm{mix}}$ counts the reaction--diffusion lengths that fit across the column. The liquid never sets the requirement, for a reason that does not depend on the value of $E_l$: dispersion only smooths, so the concentration profile can never be sharper than the interfacial source term $a\,h_l\,(\langle\CT\rangle^l-K_s\PT)$ that forces it, and that term carries the gas phase length scales -- the saturation length $H/\langle\Pi\rangle$ and the hydrostatic length $H$. The limiting case $E_l\rightarrow0$, where each height decouples and the liquid simply inherits the gas profile, is therefore the worst case, and it is still governed by the gas.
+That the mesh contributes nothing deserves a justification, since the criterion that sets $\Delta x$ is built on the gas phase alone -- it fixes the mesh Péclet number $u_g\,\Delta x/E_g$. The liquid phase has no advective term (\cref{eq:ARD_CT}), so no Péclet number can be defined for it; it is a reaction--diffusion equation, whose length scale is the Thiele length $\ell_l=\sqrt{E_l\,\tau}$. Remarkably this is the mixing number in disguise, since $\Gmix=(H^2/E_l)/\tau=(H/\ell_l)^2$: $\sqrt{\Gmix}$ counts the reaction--diffusion lengths that fit across the column. The liquid never sets the requirement, for a reason that does not depend on the value of $E_l$: dispersion only smooths, so the concentration profile can never be sharper than the interfacial source term $a\,h_l\,(\langle\CT\rangle^l-K_s\PT)$ that forces it, and that term carries the gas phase length scales -- the saturation length $H/\langle\Pi\rangle$ and the hydrostatic length $H$. The limiting case $E_l\rightarrow0$, where each height decouples and the liquid simply inherits the gas profile, is therefore the worst case, and it is still governed by the gas.
 
 The numbers bear this out over the whole sampled space of \todo{ref model exploration section}: the liquid Thiele length is resolved by at least $300$ cells in every sample (median $2900$), whereas the gas saturation length falls to $0.35$ cell in the most extreme ones. Even there the extraction time is unaffected -- refining the mesh sixteenfold changes $\tau_\mathrm{fitted}$ by $1.4\times10^{-5}$ at $\langle\Pi\rangle=61$ and by $3\times10^{-7}$ at $\langle\Pi\rangle=2.6$ -- because $\tau$ is an integral of the outlet flux and, in the partial pressure limited regime, does not depend on the shape of the profile at all. The gas Péclet criterion is thus sufficient for the extraction time; only a figure showing $\PT(z)$ itself at large $\langle\Pi\rangle$ would call for a finer mesh.
 
@@ -792,10 +796,10 @@ The analytical solution derived in \cref{sec:analytical_solution} rests on a set
 
 Each assumption can be checked against \cref{tab:verification_inputs}.
 \begin{enumerate}
-    \item The liquid concentration is uniform (\cref{as:c_is_uniform}): the dispersive mixing time $H^2/E_l$ is $0.62\ \mathrm{s}$ against an extraction time of the order of a day, i.e. $G_\mathrm{mix}\simeq5\times10^{-6}$, so the liquid homogenises some five orders of magnitude faster than tritium leaves it;
+    \item The liquid concentration is uniform (\cref{as:c_is_uniform}): the dispersive mixing time $H^2/E_l$ is $0.62\ \mathrm{s}$ against an extraction time of the order of a day, i.e. $\Gmix\simeq5\times10^{-6}$, so the liquid homogenises some five orders of magnitude faster than tritium leaves it;
     \item The bubble residence time $H/v_b=0.35\ \mathrm{s}$ is more than five orders of magnitude shorter than $\tau$ (\cref{as:short_res_time}), which justifies both the quasi-steady gas phase and the neglect of the gas inventory in front of the liquid one;
     \item Finally, although the gas Bodenstein number is only $\mathrm{Bo}=2.8$, gas dispersion is negligible in \cref{eq:ARD_PT}: the dispersive term carries a factor $\varepsilon_g$ that the advective term does not, so their ratio is $\varepsilon_g/\mathrm{Bo}\simeq2\times10^{-4}$ (\cref{as:no_gas_dispersion})
-    \item The hydrodynamic parameters are close to uniform (\cref{as:hydrodynamic_are_constant}): the hydrostatic head over the column is $1.5\ \%$ of the pressure at the top, which is also the order of the variation of $\varepsilon_g$, $a$ and $u_g$ along $z$. Accordingly $\Pi(0)$ and $\langle\Pi\rangle$ agree to within $0.4\ \%$;
+    \item The hydrodynamic parameters are close to uniform (\cref{as:uniform_hydrodynamic}): the hydrostatic head over the column is $1.5\ \%$ of the pressure at the top, which is also the order of the variation of $\varepsilon_g$, $a$ and $u_g$ along $z$. Accordingly $\Pi(0)$ and $\langle\Pi\rangle$ agree to within $0.4\ \%$;
 \end{enumerate}  .
 
 \Cref{fig:verification_profile} compares the tritium partial pressure profile in the gas phase with \cref{eq:PT_profile}, the mean liquid concentration $\langle\CT\rangle^l$ being taken from the simulated inventory at the same instant. The two regimes are clearly distinguished: at $\langle\Pi\rangle\ll1$ the bubbles stay far from equilibrium and \PT grows almost linearly with height, whereas at $\langle\Pi\rangle\simeq1$ the saturation of the bubbles bends the profile. In both cases the model and the analytical solution agree to better than $8\times10^{-3}$ of the peak partial pressure.
@@ -807,18 +811,18 @@ Each assumption can be checked against \cref{tab:verification_inputs}.
   \label{fig:verification_profile}
 \end{figure}
 
-\Cref{fig:verification_inventory} compares the decay of the tritium inventory with the exponential law of \cref{eq:tau}. The residual grows linearly with time, as expected of a small error on a decay rate, and reaches $1.2\ \%$ after five extraction times in the SPP case. This residual is numerical, not physical: replacing $\tau$ by $\tau+\Delta t/2$, the decay time that a backward Euler scheme actually reproduces (\cref{eq:tau_delta_expansion}), brings the deviation down to $1.2\times10^{-4}$ over the same interval, a hundredfold reduction. The PPL case behaves the same way up to a residual of $5\times10^{-3}$ at $t=5\tau$, which corresponds to \cref{eq:tau} overestimating the extraction time by $0.11\ \%$, a consequence of the assumptions listed above, and an acceptable one.
+\Cref{fig:verification_inventory} compares the decay of the tritium inventory with the exponential law of \cref{eq:tau_ana}. The residual grows linearly with time, as expected of a small error on a decay rate, and reaches $1.2\ \%$ after five extraction times in the SPP case. This residual is numerical, not physical: replacing $\tau$ by $\tau+\Delta t/2$, the decay time that a backward Euler scheme actually reproduces (\cref{eq:tau_delta_expansion}), brings the deviation down to $1.2\times10^{-4}$ over the same interval, a hundredfold reduction. The PPL case behaves the same way up to a residual of $5\times10^{-3}$ at $t=5\tau$, which corresponds to \cref{eq:tau_ana} overestimating the extraction time by $0.11\ \%$, a consequence of the assumptions listed above, and an acceptable one.
 
 \todo{plot abs of the error}
 \begin{figure}[htbp]
   \centering
   \includegraphics[width=0.6\linewidth]{fig/verification_inventory.pdf}
-  \caption{Decay of the tritium inventory computed by the 1D ARD model (colored) and given by \cref{eq:tau} (dotted). Bottom: relative residual against the analytical $\tau$ (solid) and against $\tau+\Delta t/2$ (dashed), the decay time the backward Euler scheme reproduces.}
+  \caption{Decay of the tritium inventory computed by the 1D ARD model (colored) and given by \cref{eq:tau_ana} (dotted). Bottom: relative residual against the analytical $\tau$ (solid) and against $\tau+\Delta t/2$ (dashed), the decay time the backward Euler scheme reproduces.}
   \label{fig:verification_inventory}
 \end{figure}
 
 \paragraph{Relaxing the assumptions} \todo{adapt with the new analytical study data}
-Once the +dt/2 discretisation bias of the backward Euler scheme is removed from $\tau_\mathrm{fitted}$, \Tana (\cref{eq:tau}) reproduces the fitted decay time of the full 1D ARD model to a median relative error of 8e-6 (worst case 3.5e-4) over the 182 samples of the 0D validity study for which the liquid is well mixed ($G_\mathrm{mix}$ < 1e-3), spanning $G_P$ from 7e-4 to 1.4 and $\langle\Pi\rangle$ from 2e-5 to 2.6.
+Once the +dt/2 discretisation bias of the backward Euler scheme is removed from $\tau_\mathrm{fitted}$, \Tana (\cref{eq:tau_ana}) reproduces the fitted decay time of the full 1D ARD model to a median relative error of 8e-6 (worst case 3.5e-4) over the 182 samples of the 0D validity study for which the liquid is well mixed ($\Gmix$ < 1e-3), spanning $G_P$ from 7e-4 to 1.4 and $\langle\Pi\rangle$ from 2e-5 to 2.6.
 
 The implementation therefore reproduces the analytical solution, in both the partial pressure regimes and for both the gas phase profile and the integral quantity of interest, down to the discretisation error quantified in \cref{sec:numerical_error}.
 
@@ -839,21 +843,50 @@ The API of \verb|libra_sparging| package is synthesized in \cref{fig:code_struct
 \section{Model exploration}
 \label{sec:sparging_expl}
 
-This section presents what can be learned from the ARD model on the topic of gas sparging in general, with the dual purpose to: (1) explore the design space; (2) characterize the model's limits. 
+This section presents what can be learned from the ARD model on the topic of gas sparging in general, and in which conditions the numerical ARD model is needed over its analytical counterpart. 
 
-The analytical solution \Tana derived in \cref{sec:analytical_solution} gives 
-a reference value for sparger performance, but several assumptions were made 
-to obtain it. The numerical model does not make such assumptions, and can 
-therefore be compared against it to quantify the impact of relaxing them. 
-The ARD numerical model being computationally inexpensive, it is especially 
-suited for a Monte Carlo-like approach.
-% addressing the second question presented in \cref{sec:problem_def}. It is . 
-% all that was learn by playing around with the model
+The analytical solution \Tana (\cref{eq:tau_ana}) is a foundational expression that gives a direct insight on the parameters that affect sparger performance. It was obtained by approximating the liquid phase as a continuous stirred-tank reactor (CSTR) and approximating a perfect plug-flow for the gas. The numerical model does not make such assumptions, and can therefore be compared against it to: (1) characterize the conditions under which the analytical solution is valid; (2) investigate the change of performance when sparging systems operate outside of the validity region of the analytical solution. 
+
+\subsection{Design of the study}
+
+Each assumption made when deriving \Tana in \cref{sec:analytical_solution} can be characterized by a dimensionless group:
+\begin{itemize}
+    \item \cref{as:c_is_uniform} "\CT is uniform": characterized by the ratio of liquid mixing timescale to extraction timescale: $\Gmix\equiv\frac{\sfrac{H^2}{E_l}}{\tau}$ \todo{counter intuitive that Gmix increases as mixing decreases, should be defined the other way}
+    \item \cref{as:short_res_time} "the residence time of bubbles is negligible": characterized by $\frac{\sfrac{H}{v_b}}{\tau}$
+    \item \cref{as:no_gas_dispersion} "Gas dispersion is negligible in front of advection": characterized by the ratio of convective to dispersion transport, namely the Bodenstein number: $\mathrm{Bo}\equiv \frac{\sfrac{H^2}{E_g}}{\sfrac{H}{v_b}}=\frac{H\,v_b}{E_g}$
+    \item \cref{as:uniform_hydrodynamic} "Hydrodynamic parameters are constant along tank height": characterized by the pressure change ratio across the tank: $\Gp \equiv \frac{P_\mathrm{bot}-P_\mathrm{top}}{P_\mathrm{top}}=\frac{\rho_l\,g\,H}{P_\mathrm{top}}$
+\end{itemize}
+
+\paragraph{Excluded from the study}
+The bubble speed is expected to stay within $0.2$-$0.3\ \mathrm{m/s}$ no matter its size \cite{chavez_experimental_2021}. Considering that gas sparging columns are of the order of few meters high at most and that the gas dispersion coefficient in the LIBRA Pi experiment $E_g\propto D_t^2\,u_g$ sits around $10^{-6}\ \mathrm{m^2/s}$, we get in most pessimistic cases: $\frac{H}{v_b}=\frac{10\ \mathrm{m}}{0.2 \ \mathrm{m/s}}=50\ \mathrm{s}\ll \tau$ and $\mathrm{Bo}=\frac{(1 \ \mathrm{m}\cdot 0.3 \ \mathrm{m/s})}{(10^{-6} \ \mathrm{m^2/s})\cdot 10^{-1}\cdot 10^{-2}}=300\gg 1$. We can therefore confidently state that \cref{as:short_res_time,as:no_gas_dispersion} are always verified, studying their effect is therefore excluded from this study. 
+
+\todo{change Dt to dt to avoid confusion with diffusion coeff, consistent with db bubble diameter}
+
+\paragraph{Included in the study}
+
+\Gmix sits around $10^{-3} \ \mathrm{m^2/s}$ for LIBRA Pi, with $E_l\propto D_t^{1.4}\,u_g^{0.3} \approx 10^{-2} \ \mathrm{m^2/s}$. Assuming a 20-fold decrease of the diameter (a thin and tall column of aspect ratio 1:100) the liquid mixing timescale becomes $\tau_\mathrm{mix}=\frac{(1 \ \mathrm{m})^2}{(10^{-2} \ \mathrm{m^2/s})\cdot0.05^{1.4}}\approx 2\cdot10^3 \ \mathrm{s}$ which might be comparable to very optimistic extraction timescales. Non-uniformity of the liquid concentration could potentially be significant is some cases and should be studied.  
+
+As for \Gp, it is 15\% in LIBRA Pi, and we could imagine scenarios where it is much more, e.g. a tall 5 m column would lead to a 100\% increase in pressure as bubbles rise. We can also consider the possibility of pulling vacuum at the top head space and investigate the effect the large bubble decompression will have on extraction kinetics. 
+
+Also, even though no assumptions were made related to \PI, it appears as a fundamental parameter in the expression of \Tana, and might reveal unpredicted behaviors, especially when bubbles leave the tank saturated (high \PI cases). The study should therefore include it.
+
+\paragraph{Sampling scheme}
+Non-uniformity on \CT and hydrodynamic parameters and their impact on the extraction time are investigated through \Gmix, \Gp and \PI. These 3 dimensionless groups can be controlled by varying any parameter that appears in their definition, but the retained parameters should be independent from each other, so that the effect of each dimensionless group can be isolated and quantified. In this study, we vary $K_s$ (for \PI), $E_l$ (for \Gmix) and $P_\mathrm{top}$ (for \Gp). As can be seen in \todo{ref closure dependencies}, $K_s$ is independent; $E_l$ is linked to $P_\mathrm{top}$ by $E_l\propto u_g^{0.3}$ which is weak enough not to have a strong correlation between \Gmix and \Gp in the study. 
 
 
-The system can be characterized by 3 dimensionless parameters, which we can control independently through $K_s$, $H$, and $E_l$ respectively. 
+The numerical ARD model being computationally inexpensive, it is especially suited for a Monte Carlo-like approach. 300 cases were simulated, starting from the LIBRA Pi input (\cref{tab:libra_pi_inputs}) and varying the above mentioned parameters by a random multiplier in a log-uniform distribution, chosen broad enough to include all plausible cases of sparging systems:
+\begin{itemize}
+    \item $K_{s,\mathrm{sample}}=K_{s,\mathrm{LIBRA Pi}}\cdot10^{\mathcal{U}(-2,2)}$
+    \item $E_{l,\mathrm{sample}}=E_{l,\mathrm{LIBRA Pi}}\cdot10^{\mathcal{U}(-6,0)}$
+    \item $P_{\mathrm{top},\mathrm{sample}}=P_{\mathrm{top},\mathrm{LIBRA Pi}}\cdot10^{\mathcal{U}(-2,2)}$
+    \item All other ARD inputs = unchanged from nominal LIBRA Pi case
+\end{itemize}
+% addressing the second question presented in \cref{sec:problem_def}
+
+
 Gmix alone doesn't change tau, but it changes the quality of the fit (i.e. it is not really exponential) when both Gmix and Gp are high enough \todo{run sample with high Gmix and Gp and export profiles}
 
+\todo{input parity plot, with the "analytical validity" filter to show that all samples land in the +-10 range using this filter, maybe put at the end ?}
 
 \subsection{Effect of mixing}
 % see report.md: G_mix has no effect on the value of τ, it only destroys the exponential character of the decay, and only when G_P is also large
@@ -861,7 +894,14 @@ Gmix alone doesn't change tau, but it changes the quality of the fit (i.e. it is
 High Gmix (>0.097) --> non exponential decay, the RMSE is too high
 but correlated with Gp
 \subsubsection{Continuous stirred tank approximation}
-\subsubsection{Plug flow reactor approximation}
+When conditions on $\Gmix$ are met for the "well-mixed" assumption, the \CT ARD equation (\cref{eq:ARD_CT}) can be reduced to 0D:
+\begin{equation}
+\label{eq:CT_CSTR}
+    \langle\varepsilon_l\rangle\frac{\partial\langle\CT\rangle}{\partial t}=\langle\ST\rangle-\int_0^Ha\,h_l\,(\langle\CT\rangle-K_s\,\PT)\,dz
+\end{equation}
+
+\subsubsection{Plug flow case}
+In the case of very low $E_l$ (plot sample), the extraction time is actually faster than \Tana that assumes a perfectly mixed liquid, meaning that \textbf{poor liquid mixing enhances  extraction}. This matches the classic chemical-engineering results that plug-flow contactors beat stirred tank whenever the process is equilibrium limited \needcite{PFR faster than CSTR} 
 
 \subsection{Limiting regimes}
 In the PPL regime, Pi is an amplifier (tau scales linearly with it) -> if other assumptions are not valid, analytical tau will be even more off as Pi is large 
@@ -884,6 +924,11 @@ Hydrodynamic parameters vary along tank height as a results of hydrostatic press
 \begin{equation}
     G_P\equiv \frac{P_l(0)-P_l(H)}{P_l(H)}=\frac{\rho_l\,g\,H}{P_\mathrm{top}}
 \end{equation}
+
+\subsection{Validity of the analytical model}
+% **G_P ≲ 0.1 AND (Π ≲ 1 OR G_mix ≲ 1)** — the analytical τ needs the liquid to be well mixed only once the bubbles saturate.
+
+
 %%%%%%%%%%%%%%%%%%%%%%%%
 \chapter{Application to the LIBRA Pi tritium breeding experiment}
 %%%%%%%%%%%%%%%%%%%%%%%%
@@ -900,8 +945,8 @@ Unlike the verification case, the column is now tall enough for the hydrostatic 
 
 Three features of \cref{tab:libra_pi_inputs} drive the rest of the chapter:
 \begin{itemize}
-    \item $\langle\Pi\rangle=0.23$ places LIBRA Pi at the entrance of the partial pressure limited regime. The bubbles leave the column about $20\ \%$ saturated, which costs a factor $\Pi/(1-e^{-\Pi})=1.12$ on the extraction time. The nominal case is therefore neither fully SPP nor fully PPL, and the corrected $\tau$ of \cref{eq:tau} is needed;
-    \item $G_\mathrm{mix}=6.5\times10^{-4}$: the salt homogenises in about a minute against an extraction time of $28\ \mathrm{h}$, so the liquid stays uniform and the 0D description of the salt inventory holds;
+    \item $\langle\Pi\rangle=0.23$ places LIBRA Pi at the entrance of the partial pressure limited regime. The bubbles leave the column about $20\ \%$ saturated, which costs a factor $\Pi/(1-e^{-\Pi})=1.12$ on the extraction time. The nominal case is therefore neither fully SPP nor fully PPL, and the corrected $\tau$ of \cref{eq:tau_ana} is needed;
+    \item $\Gmix=6.5\times10^{-4}$: the salt homogenises in about a minute against an extraction time of $28\ \mathrm{h}$, so the liquid stays uniform and the 0D description of the salt inventory holds;
     \item $G_P=0.15$ is non negligible: the gas expands by $15\ \%$ from the sparger to the free surface, so $\varepsilon_g$, $a$ and $u_g$ grow along $z$ while $\Pi$ decreases. This is the main reason the 1D model is kept rather than a single set of column averaged parameters.
 \end{itemize}
 
