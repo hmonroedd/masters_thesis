@@ -1,3 +1,5 @@
+% -- HEADER --
+% { 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % EPFL report package, main thesis file
 % Goal: provide formatting for theses and project reports
@@ -26,6 +28,8 @@
 \usepackage{tikz}
 \usetikzlibrary{positioning, fit, backgrounds, arrows.meta, shapes.geometric}
 \newcommand{\needcite}[1]{\todo[color=red!40]{CITE: #1}}
+\usepackage{graphicx}
+\usepackage{subcaption}
 
 \title{Tritium extraction and transport from molten salt breeding experiments}
 \author{Hippolyte Monroe}
@@ -67,6 +71,8 @@
 \newenvironment{keyresult}
   {\begin{tcolorbox}[colback=blue!5, colframe=blue!50!black, boxrule=0.5pt, arc=2pt]}
   {\end{tcolorbox}}
+
+% }
 
 \begin{document}
 \maketitle
@@ -535,11 +541,11 @@ The main assumptions used throughout this work are listed in the following, star
 \label{sec:sparging_assumptions}
 \begin{itemize}
     \item \assumption{Tritium is only present as molecular \ce{T2}}: this is equivalent to assuming that the redox of the salt is perfectly controlled, preventing newborn tritium to form highly soluble and poorly mobile tritium fluoride ($TF$). The assumed chemical speciation of tritium greatly determines its mass transfer properties: results based on ab initio molecular dynamics  suggest that the molecular diffusion coefficient of \ce{T2} is 3-5 times higher than that of $TF$\cite{lam_impact_2021}. Note this assumption is not inherently tied to the model, other chemical forms of tritium could be considered simply by changing the transport coefficients used by the model. \todo{check stempien 2016 for references regarding TF/T2 speciation}
+    \item \assumption{the temperature field is uniform\label{as:uniform_temp}}: often we don't have spatial resolution for the salt temperature, it is the case in the LIBRA Pi experiment. It is the only model input that can't be controlled nor measured precisely in the experiment. The approach then is to repeat the simulation for a large distribution of possible temperatures, which should give lower and upper bounds on the predicted extraction performance. As a consequence, bubbles and liquid are considered always at thermal equilibrium, which implies that the liquid brings some heat to the bubbles as they expand toward the top of the tank, i.e. the bubbles expansion is non-adiabatic. We can then write for a bubble: $P_bV_b=n_bRT=\mathrm{constant}$ thus $V_b(z)=V_{b0} \frac{P_{b0}}{P_b(z)}$
     \item \assumption{constant bubble rising velocity $v_b$ \label{as:vb_is_constant}}: the terminal velocity is a result of a quasi-static equilibrium between buoyancy forces and drag forces. In wobbling/ellipsoid regimes this equilibrium barely changes with the bubble size\needcite{constant velocity in wobbling regime}. Given that the bubble growth due to decompression varies as $d_b\propto P_l^{-1/3}$, it is already not large, the shift it induces in the forces equilibrium can be considered null;
-    \item \assumption{no bubbles coalescence}: at such low superficial gas velocity, void fractions falls below 1\%, we can reasonably expect the bubbles not to interact with other bubbles\cite{taylor_implementation_2022} \todo{compute space between bubbles, compare with bubbles size}
-    \item \assumption{no permeation in structural material nor diffusion at free surface}: this is a modeling choice to only retain interaction with gas bubbles as a tritium extraction mechanism, this gives a conservative estimate of the tritium extraction speed. Permeation can be estimated by coupling with a model for tritium transport is solid media, this is done in \cref{sec:LIBRAPi_permeation}; 
+    \item \assumption{no bubbles coalescence\label{as:no_coalescence}}: at such low superficial gas velocity, void fractions falls below 1\%, we can reasonably expect the bubbles not to interact with other bubbles\cite{taylor_implementation_2022} \todo{compute space between bubbles, compare with bubbles size}
+    \item \assumption{no permeation in structural material nor diffusion at free surface\label{as:no_permeation}}: this is a modeling choice to only retain interaction with gas bubbles as a tritium extraction mechanism, this gives a conservative estimate of the tritium extraction speed. Permeation can be estimated by coupling with a model for tritium transport is solid media, this is done in \cref{sec:LIBRAPi_permeation}; 
     \item \assumption{the contribution of \ce{T2} to bubble pressure is negligible\label{as:T2_press_is_negligible}}: the He pressure in a bubble is of the order of $10^5 \ \mathrm{Pa}$, the amount of tritium that can be present in the system using the neutron source of the LIBRA Pi experiment is of the order of $0.1\ \mathrm{T/neutron}\cdot10^9\ \mathrm{neutron/s}\cdot10 \ \mathrm{hours}\approx 6\cdot10^{-11}\ \mathrm{molT}$, which if it were to be transferred all at once on the gas phase would results in a \ce{T2} pressure of $\frac{(3\cdot10^{-11}\ \mathrm{molT_2})\,R\,(873\ \mathrm{K})}{10^{-4}\cdot (0.1 \ \mathrm{m^3})}=0.2 \ \mathrm{Pa}\ll 10^5 \ \mathrm{Pa}$;
-    \item \assumption{the temperature field is uniform}: often we don't have spatial resolution for the salt temperature, it is the case in the LIBRA Pi experiment. It is the only model input that can't be controlled nor measured precisely in the experiment. The approach then is to repeat the simulation for a large distribution of possible temperatures, which should give lower and upper bounds on the predicted extraction performance. As a consequence, bubbles and liquid are considered always at thermal equilibrium, which implies that the liquid brings some heat to the bubbles as they expand toward the top of the tank, i.e. the bubbles expansion is non-adiabatic. We can then write for a bubble: $P_bV_b=n_bRT=\mathrm{constant}$ thus $V_b(z)=V_{b0} \frac{P_{b0}}{P_b(z)}$
 \end{itemize}
 
 \section{Analytical solution of the ARD equations}
@@ -840,14 +846,15 @@ The API of \verb|libra_sparging| package is synthesized in \cref{fig:code_struct
 
 \input{diag_code_structure}
 
-\section{Model exploration}
+
+\chapter{Model exploration}
 \label{sec:sparging_expl}
 
-This section presents what can be learned from the ARD model on the topic of gas sparging in general, and in which conditions the numerical ARD model is needed over its analytical counterpart. 
+This chapter presents what can be learned from the ARD model on the topic of gas sparging in general, and in which conditions the numerical ARD model is needed over its analytical counterpart. 
 
 The analytical solution \Tana (\cref{eq:tau_ana}) is a foundational expression that gives a direct insight on the parameters that affect sparger performance. It was obtained by approximating the liquid phase as a continuous stirred-tank reactor (CSTR) and approximating a perfect plug-flow for the gas. The numerical model does not make such assumptions, and can therefore be compared against it to: (1) characterize the conditions under which the analytical solution is valid; (2) investigate the change of performance when sparging systems operate outside of the validity region of the analytical solution. 
 
-\subsection{Design of the study}
+\section{Design of the study}
 
 Each assumption made when deriving \Tana in \cref{sec:analytical_solution} can be characterized by a dimensionless group:
 \begin{itemize}
@@ -883,16 +890,62 @@ The numerical ARD model being computationally inexpensive, it is especially suit
 \end{itemize}
 % addressing the second question presented in \cref{sec:problem_def}
 
-
-Gmix alone doesn't change tau, but it changes the quality of the fit (i.e. it is not really exponential) when both Gmix and Gp are high enough \todo{run sample with high Gmix and Gp and export profiles}
+Each simulation was run over a time $2\cdot\Tana$ and the resulting \NT curve was fitted with an exponential to obtain the extraction time estimated by the numerical ARD model \Tnum. The discretization bias of $\sfrac{dt}{2}$ mentioned in \cref{sec:numerical_error} is then subtracted from \Tnum to ease the comparison with \Tana. 
+The signed relative error $e=\frac{\Tnum-\Tana}{\Tana}$ can give informations about whether the analytical model over/under-estimates performance, it can be plotted on a symmetric logarithmic y-scale to handle negative values. 
 
 \todo{input parity plot, with the "analytical validity" filter to show that all samples land in the +-10 range using this filter, maybe put at the end ?}
 
-\subsection{Effect of mixing}
+\section{Results}
+\subsection{Impact of mixing}
+\label{sec:mixing}
 % see report.md: G_mix has no effect on the value of τ, it only destroys the exponential character of the decay, and only when G_P is also large
 
-High Gmix (>0.097) --> non exponential decay, the RMSE is too high
-but correlated with Gp
+\begin{figure}[htbp]
+  \centering
+  \includegraphics[width=0.6\linewidth]{fig/validity_error_vs_Gmix_nodisc.pdf}
+  \caption{Signed error of the analytical \Tana compared to the reference \Tnum, as a function of \Gmix. Blue filling indicates samples where the analytical assumptions are expected to hold. Red circled dots indicate samples where \Tana is obtained from a bad quality fit.}
+  \label{fig:error_vs_Gmix}
+\end{figure}
+
+\textit{The liquid dispersion coefficient doesn't appear in the expression of \Tana, but is there a point where non-uniform mixing affects extraction time ?}
+
+As shown in \cref{fig:error_vs_Gmix}, large \Gmix alone isn't sufficient to impact \Tnum: all the samples where the other analytical assumptions hold sit on the zero error line, even at $\Gmix=10^2$ where mixing is much slower than the extraction time and the liquid concentration can't be considered uniform at all. This suggests that \textbf{the analytical model \Tana might hold even when relaxing the "good liquid mixing" assumption}.
+
+Toward high \Gmix however, many samples exhibit a normalized Root Mean Square Error (RMSE) of the fit indicating that the inventory decay is no longer well fitted by an exponential. This can indeed be verified by examining one of these high-RMSE cases: sample 191 shows that the tritium inventory decay is faster than exponential (\cref{fig:nonexp_inventory}), suggesting that in this case the time constant in the exponential decreases with time. From \cref{fig:error_vs_Gmix}, \Gmix<0.1 seems to be a sufficient condition to ensure that \Tnum is actually representative of the sparger performance. 
+
+ Other samples from this study exhibit high \Gmix comparable to sample 191 and still follow an exponential decay that is well predicted by \Tana. Sample 139, with \Gmix=25, \Gp=0.032, \PI=0.095, differs only significantly by its \PI, and is well fitted (normalized RMSE = $2.7\cdot10^{-5}$) and gives a good prediction ($e=4.3\cdot10^{-3}$). This indicates that the non-exponential nature of sample 191 comes from the high \PI: bubbles saturate soon after being generated, as shown by the spike in the reaction rate $a\,\JT$ in \cref{fig:nonexp_profiles}, moving up the column as the lower part gets stripped of its tritium. At the end of the simulated time, the liquid phase is near fully depleted of its tritium ($\CT(2\Tana)<6\%\cdot\CT(0)$ everywhere), where there should still be 13\% tritium remaining according to the "perfect mixing" result: the extraction is faster, meaning that \textbf{poor liquid mixing enhances extraction when operating in a highly saturated regime}. This matches the classic chemical-engineering results that plug-flow contactors beat stirred tank whenever the process is equilibrium limited \needcite{PFR faster than CSTR}. 
+
+\begin{figure}[htbp]
+    \centering
+    \begin{subfigure}[t]{0.48\linewidth}
+        \centering
+        \includegraphics[width=\linewidth]{fig/nonexp_profiles.pdf}
+        \caption{}
+        \label{fig:nonexp_profiles}
+    \end{subfigure}
+    \hfill
+    \begin{subfigure}[t]{0.48\linewidth}
+        \centering
+        \includegraphics[width=\linewidth]{fig/nonexp_inventory_fit.pdf}
+        \caption{}
+        \label{fig:nonexp_inventory}
+    \end{subfigure}
+    \caption{Sample 191 of the study \big(\Gmix=25, \Gp=0.032, \PI=16\big):(a) concentration profiles are non-uniform, showing a mass transfer front traveling up the column; (b) the decay of the tritium inventory is not well fitted by an exponential (normalized RMSE = $2.7\cdot 10^{-2}$)}
+    \label{fig:nonexp}
+\end{figure}
+\todo{redo plot to include labels a and b, and plot times 0.2*tau}
+
+\todo{run sample with high Gmix and Gp and export profiles}
+
+\begin{keyresult}
+    \centering
+    non-exponential decay $\Rightarrow \Gmix>0.1$ \\
+    \PI<0.1 AND \Gp<0.1 $\Rightarrow$ \Tana is accurate (even if $\Gmix\gg0.1$)
+\end{keyresult}
+
+
+\todo{plot RMSE vs Gmix, and maybe with Gp and Pi on a 2D plot to find sufficient condition for non-exponential}
+
 \subsubsection{Continuous stirred tank approximation}
 When conditions on $\Gmix$ are met for the "well-mixed" assumption, the \CT ARD equation (\cref{eq:ARD_CT}) can be reduced to 0D:
 \begin{equation}
@@ -901,9 +954,22 @@ When conditions on $\Gmix$ are met for the "well-mixed" assumption, the \CT ARD 
 \end{equation}
 
 \subsubsection{Plug flow case}
-In the case of very low $E_l$ (plot sample), the extraction time is actually faster than \Tana that assumes a perfectly mixed liquid, meaning that \textbf{poor liquid mixing enhances  extraction}. This matches the classic chemical-engineering results that plug-flow contactors beat stirred tank whenever the process is equilibrium limited \needcite{PFR faster than CSTR} 
+In the case of very low $E_l$ (plot sample),
 
 \subsection{Limiting regimes}
+
+\begin{figure}[htbp]
+  \centering
+  \includegraphics[width=0.6\linewidth]{fig/validity_error_vs_Pi_nodisc.pdf}
+  \caption{Signed error against \PI, with the red disc (imperfect fit) being symptomatic of a large \Gmix as shown in \cref{sec:mixing}}
+  \label{fig:error_vs_Pi}
+\end{figure}
+
+\Cref{fig:error_vs_Pi} gives us the \PI dimension that was missing in the high \Gmix region of \cref{fig:error_vs_Gmix}. What was noticed in \cref{sec:mixing} by comparing 2 samples can now be proven: when mixing becomes insufficient (large \Gmix, indicated by the imperfect fit) and bubbles are saturated (large \PI), the system is similar to a plug flow contactor and extraction kinetics are improved, as shown by the systematically overestimated extraction time. 
+
+Conversely, lack of mixing seems to impair extraction in the SPP regime, as shown by the positive relative error of the high \Gmix samples in the upper left part of the same \cref{fig:error_vs_Pi}. 
+
+
 In the PPL regime, Pi is an amplifier (tau scales linearly with it) -> if other assumptions are not valid, analytical tau will be even more off as Pi is large 
 \paragraph{Pi number} 
 % It can be interpreted as a measure of "how close the bubble is to reaching equilibrium with the surrounding liquid", given by $\PT=\frac{c_l}{K_s}$ 
@@ -911,23 +977,51 @@ In the PPL regime, Pi is an amplifier (tau scales linearly with it) -> if other 
     \item When $1-e^{-\Pi(z)}\approx0$: the bubble can be considered free of any tritium, the driving force for tritium exchange \JT is therefore maximal, limited only by the liquid side mass transfer $h_l$, i.e. the ability of tritium to diffuse down the concentration gradient, through the liquid film up to the gas phase. 
     \item When $1-e^{-\Pi(z)}\approx1$: the bubble is saturated with tritium, the interfacial flux \JT drops as there is no concentration gradient through the liquid film to drive it, since the mass transfer process is throttled by the partial pressure in the bubble being at equilibrium with the liquid phase.
 \end{itemize}
+
+\begin{keyresult}
+    \centering
+    $\Gmix> 0.1$ AND $\PI>0.1 \Rightarrow$ faster extraction (plug-flow contactor)
+    $\Gmix> 0.1$ AND $\PI<0.1 \Rightarrow$ slower extraction 
+\end{keyresult}
 % plot error vs Pi 
 \subsubsection{Mass transfer limited}
 % sobol at low Pi -> Ks negligible
 \subsubsection{Partial pressure limited}
 % sobol at higher Pi -> Ks not negligible
 
-\subsection{Impact of hydrostatic pressure variation}
+\subsection{Impact of pressure variation}
 % plot signed error: at higher Gp, tau_pred always overestimates -> the bubble expansion improves the mass transfer properties 
 
-Hydrodynamic parameters vary along tank height as a results of hydrostatic pressure variations. Depending on the height of the tank, these variations can impact the extraction performances. The pressure change from bottom to top can be characterized using an other dimensionless number:
-\begin{equation}
-    G_P\equiv \frac{P_l(0)-P_l(H)}{P_l(H)}=\frac{\rho_l\,g\,H}{P_\mathrm{top}}
-\end{equation}
+When considering variations of \Gp, the comparison between \cref{fig:error_vs_Gp}(a) and (b) shows that it is important to take into account hydrostatic pressure variations when modelling gas sparging experiments: even at relatively small $\Gp=0.2$ (typically LIBRA Pi case), ignoring pressure variations can result in a 5\% overestimation extraction time, which gets worse at higher \Gp. Despite of yielding a conservative estimate, this represents added error which is always undesirable\todo{do we care about that ?}. 
+
+As shown in \cref{fig:error_vs_Gp}(b), using spatially averaged quantities as derived in \cref{sec:analytical_solution} yields an analytical prediction that matches well the numerical results when the underlying assumptions are valid. Interestingly, it can be seen that around $\Gp> 5$, the analytical model starts to break down and overestimates the extraction time. This is a hint that bubble's expansion is beneficial to mass transfer. 
+
+To look at it more closely, we can isolate the impact of \Gp on the extraction time by considering only the small \PI samples. Here, the SPP approximation is valid and $\tau$ becomes only a function of $\langle a\,h_l\rangle$ and $\langle\varepsilon_l\rangle$ (\cref{eq:tau_SPP}), which neither $K_s$ nor $E_l$ vary. This allows to isolate the effect of varying $P_\mathrm{top}$, to reveal a clear positive correlation shown in \cref{fig:tau_vs_Ptop}: $\tau\propto P_\mathrm{top}^{0.50}$. This suggests that \textbf{pumping the top head space to a low pressure could be used as a mechanism to accelerate tritium extraction}, at least when operating in the SPP regime (the $\PI>0.1$ samples also seem to follow this trend, although less clearly). This might however hit a limit when bubble's expansion make them coalesce, which reduces the specific interfacial area $a$ but is not caught by this model, as per \cref{as:no_coalescence}.
+
+
+\begin{figure}[htbp]
+  \centering
+  \includegraphics[width=0.6\linewidth]{fig/validity_error_vs_GP_nodisc.pdf}
+  \caption{Comparison of the signed error on (a) the \Tana obtained when approximating the hydrodynamic conditions everywhere at the ones evaluated at the bottom of the tank; (b) the \Tana evaluated from spatially averaged hydrodynamic parameters}
+  \label{fig:error_vs_Gp}
+\end{figure}
+
+\begin{figure}[htbp]
+  \centering
+  \includegraphics[width=0.6\linewidth]{fig/design_tau_vs_Ptop.pdf}
+  \caption{Correlation of the extraction time with the head space pressure when operating in the SPP regime}
+  \label{fig:tau_vs_Ptop}
+\end{figure}
+
+\begin{keyresult}
+    \centering
+    Lower head space pressure (=higher \Gp) $\Rightarrow$ faster extraction
+\end{keyresult}
 
 \subsection{Validity of the analytical model}
 % **G_P ≲ 0.1 AND (Π ≲ 1 OR G_mix ≲ 1)** — the analytical τ needs the liquid to be well mixed only once the bubbles saturate.
 
+insert truth table 
 
 %%%%%%%%%%%%%%%%%%%%%%%%
 \chapter{Application to the LIBRA Pi tritium breeding experiment}
