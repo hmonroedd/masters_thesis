@@ -297,7 +297,7 @@ The viability of gas sparging as a tritium extraction system for LIBRA Pi has no
         \caption{}
         \label{fig:diffusivity}
     \end{subfigure}
-    \caption{Overview of (a) Henry's law solubility constant and (b) diffusivity constant for hydrogen species in molten salts as a function of temperature. Experimental datapoints are shown as shapes. Taken from \textcite{humrickhouse_tritium_2020}}
+    \caption{Overview of (a) Henry's law solubility constant and (b) diffusivity constant for hydrogen species in molten salts as a function of temperature. Experimental datapoints are shown as shapes. Self diffusion of free fluorines (\ce{F^-}) in FLiBe is included as a reference. \textcite{briggs_calculation_1970} was calculated from results of the MSRE based on mass transport and diffusion relationships. Taken from \textcite{humrickhouse_tritium_2020}}
     \label{fig:transport_params}
 \end{figure}
 %%%%%%%%%%%%%%%%%%%%
@@ -1190,6 +1190,13 @@ Considering the range of attainable operating parameters presented in \cref{tab:
 
 This places LIBRA Pi in case 4 of \cref{tab:design_map}, where the analytical model underestimates the extration speed. It must therefore be simulated using the numerical ARD model. 
 
+The current state of literature on ClLiF doesn't contain correlations for its tritium transport properties. This makes the extraction time estimate inherently uncertain. Then, the best that can be done is to enclose the extraction time estimate between upper and lower bounds, corresponding to pessimistic and optimistic scenarios derived from the currently available correlations for tritium transport in molten salt presented in \cref{fig:transport_params}):
+\begin{itemize}
+    \item \textit{pessimistic scenario} = high solubility (the salt tends to retain tritium) and low diffusivity: $K_s$ and $D_l$ are both given by the correlations derived by \textcite{calderoni_measurement_2008} for \ce{T2} in \ce{FLiBe};
+    \item \textit{optimistic scenario} = low solubility and high diffusivity: $K_s$ is given by the \textcite{malinauskas_solubilities_1974} correlation for \ce{D_2} in \ce{FLiBe}, $D_l$ is given by the \textcite{fukada_hydrogen_2006} correlation for \ce{H2} in \ce{FLiNaK}. 
+\end{itemize}
+
+It should be noted that the Calderoni solubility was derived for temperatures greater than 550°C, the temperature range we consider here goes below that. Nevertheless extrapolating this correlation constitutes the highest upper bound that can be obtained for tritium solubility at lower temperatures, since the correlations by Field and Shaffer concern fluorides \ce{HF} and \ce{DF} and are thus discarded. 
 
 \subsection{Dependence on operating parameters}
 \subsubsection{Sensitivity analysis}
