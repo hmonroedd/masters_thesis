@@ -57,6 +57,9 @@
 \newcommand{\Gmix}{\ensuremath{G_\mathrm{mix}}}
 \newcommand{\Gp}{\ensuremath{G_P}}
 \newcommand{\PI}{\ensuremath{\langle \Pi \rangle}}
+\newcommand{\ndotg}{\ensuremath{\dot n_g}}
+\newcommand{\dnoz}{\ensuremath{d_\mathrm{noz}}}
+\newcommand{\Ptop}{\ensuremath{P_\mathrm{top}}}
 
 % -- assumption commands -- 
 \newcounter{assumption}[chapter]
@@ -1045,7 +1048,6 @@ The findings of the design study are summarized in \cref{tab:design_map}, coveri
 
 The parity plot of \cref{fig:parity} shows that \textbf{$\Gmix>0.1$ and $Gp<0.1$ are sufficient conditions for the analytical model to hold}: xxx \% \todo{put the actual value, should be 100\%, otherwise refine the conditions on Gp and Gmix} of the predicted \Tana fall within the reference $\Tnum\pm10\%$ under those conditions, regardless of the value of \PI. This study also provides the insight that \textbf{these are not necessary conditions}: the "good-mixing" assumption can be relaxed ($\Gmix \nless 0.1$) and the analytical model still hold, under the conditions that the bubbles are in the MTL regime ($\PI<0.1$), as found in \cref{sec:impact_of_mixing}.  
 
-
 %%%%%%%%%%%%%%%%%%%%%%%%
 \chapter{Application to the LIBRA Pi tritium breeding experiment}
 %%%%%%%%%%%%%%%%%%%%%%%%
@@ -1055,30 +1057,69 @@ The parity plot of \cref{fig:parity} shows that \textbf{$\Gmix>0.1$ and $Gp<0.1$
 % -> 2 parameters are secondary -> 2D operating point map
 % -> T and ndot being the most important, uncertainty on them should be minimized: thermocouples
 
+This chapter uses the model developed in this work to get an estimate of the attainable extraction time in the operating conditions of the foreseen LIBRA Pi sparging system. The consequences of sparger performances on tritium permeation through the tank walls is then simulated using the open-source hydrogen transport code FESTIM. 
+
+\section{Estimation of the tritium extraction time}
+\label{sec:LIBRAPi_extraction}
+
+\subsection{LIBRA Pi model input}
+
+The model input corresponding to the LIBRA Pi experiment is reported in \cref{tab:libra_pi_inputs}. The quarter-annulus geometry of LIBRA Pi (see \todo{ref to image if LIBRA Pi}) containing a salt volume of $\sim120$ L is described by a cylinder of height 0.93 m and equivalent base area $A=0.13$ m chosen to conserve salt volume. 
+
+LIBRA Pi will run in ClLiF molten salt, which is a convenient experimental breeder as it doesn't have Be toxicity problem, but which tritium transport properties are nowhere to be found in the literature. This last point motivates the choice of rather using FLiBe in this model, as a ClLiF proxy with known transport properties.
+
 The sparger design isn't decided yet. The number of nozzles in particular dictates the gas volumetric flow rate through each nozzle for a given total mass flow rate. In this work, it is assumed that the sparger is made of 4 nozzles, so that the volumetric flow rate at each nozzle stays within $3-10\ \mathrm{cm^3/s}$ which is the validity range of the correlation used for the initial bubble diameter\cite{kanai_establishment_2017}. 
 
-The nominal operating point of LIBRA Pi is given in \cref{tab:libra_pi_inputs}. The salt volume is described as an equivalent cylinder of base area $A$ and height $H$, so that the 1D model applies to the actual quarter-annulus geometry. Only four quantities are actually set by the experiment: the temperature, the gas molar flow, the headspace pressure and the sparger nozzle geometry. Everything else comes from the closure relations of \cref{sec:closure_relations}, evaluated on the FLiBe properties used as a surrogate for the real breeder.
+Beside the already fixed geometry, only four quantities can be controlled by the experiment: the temperature ($T$), the gas molar flow rate (\ndotg), the headspace pressure (\Ptop) and the sparger nozzle diameter (\dnoz). Their range is reported in \cref{tab:model_input}. Everything else comes from the closure relations of \cref{sec:closure_relations}. 
 
-Unlike the verification case, the column is now tall enough for the hydrostatic head to matter: $G_P=0.15$, so the pressure at the sparger is $15\ \%$ above the headspace pressure. The $z$ dependent parameters therefore vary by about ten percent along the column, and both ends are reported.
+The initial tritium inventory is fixed to $3.6\cdot10^{-12} \ \mathrm{molT2}$ (or $\langle\CT\rangle =3.0\cdot10^{-11} \ \mathrm{molT2/m^3}$) to correspond to an irradiation of $2\cdot10^{-9} \ \mathrm{n/s}$ (the available 14 MeV neutron source) for 6 hours and a TBR=0.1 (calculated for the LIBRA Pi geometry using OpenMC). That being said, as long as the "negligible contribution of \PT to bubble pressure" (\cref{as:T2_press_is_negligible}) holds, it could take any value this would not change the extraction time since the ARD equations are linear.
 
+\todo{rerun study with the specified range}
+\todo{add "fixed parameters" and "varied parameters" table sections}
+\begin{table}[t]
+\label{tab:model_input}
+\centering
+\caption{LIBRA Pi model input with attainable parameters range during operation}
+\begin{tabular}{@{}l c@{}}
+\toprule
+\textbf{Parameter} & \textbf{Value} \\
+\midrule
+Salt height, $H$                 & 0.93 m\\
+Salt volume                      & 0.12 $\mathrm{m^3}$ \\
+Equivalent salt base area, $A$   & 0.13 $\mathrm{m^2}$ \\
+Salt temperature, $T$            &450-650 °C \\
+Gas flow rate, \ndotg        &  100-1000 sccm \\
+Nozzle diameter, \dnoz           & 1-4 mm \\
+Headspace pressure, \Ptop         & 1-2 atm \\
+Number of nozzles, $N_n$         & 4 \\
+Initial $T_2$ concentration, $c_{T_2,init}$   & $3\cdot10^{-11} \mathrm{molT_2/m^3}$ \\
+
+\bottomrule
+\end{tabular}
+\end{table}
+
+
+\paragraph{Sparging regime}
+
+\todo{remove this table ? replaces by tab:model\_input ?}
 \input{tab_libra_pi}
-\todo{move some values as orders of magnitude of correlations}
+\todo{don't specify all the values here, for some values we only care about the orders of magnitude, put that in a dedicated column of the table presenting the used correlations}
 
-Three features of \cref{tab:libra_pi_inputs} drive the rest of the chapter:
+The three dimensionless groups that characterize the sparging system are as follows:
 \begin{itemize}
-    \item $\langle\Pi\rangle=0.23$ places LIBRA Pi at the entrance of the partial pressure limited regime. The bubbles leave the column about $20\ \%$ saturated, which costs a factor $\Pi/(1-e^{-\Pi})=1.12$ on the extraction time. The nominal case is therefore neither fully SPP nor fully PPL, and the corrected $\tau$ of \cref{eq:tau_ana} is needed;
+    \item $\langle\Pi\rangle=0.23$ places LIBRA Pi at the entrance of the partial pressure limited regime. The bubbles leave the column about $20\ \%$ saturated, which costs a factor $\Pi/(1-e^{-\Pi})=1.12$ on the extraction time. The nominal case is therefore neither fully MTL nor fully PPL.
     \item $\Gmix=6.5\times10^{-4}$: the salt homogenises in about a minute against an extraction time of $28\ \mathrm{h}$, so the liquid stays uniform and the 0D description of the salt inventory holds;
-    \item $G_P=0.15$ is non negligible: the gas expands by $15\ \%$ from the sparger to the free surface, so $\varepsilon_g$, $a$ and $u_g$ grow along $z$ while $\Pi$ decreases. This is the main reason the 1D model is kept rather than a single set of column averaged parameters.
+    \item $G_P=0.15$ is non negligible: the gas expands by $15\ \%$ from the sparger to the free surface, so $\varepsilon_g$, $a$ and $u_g$ grow along $z$ while $\Pi$ decreases. 
 \end{itemize}
 
-The gas Bodenstein number is $\mathrm{Bo}=28$, and the dispersive term of \cref{eq:ARD_PT} carries an extra factor $\varepsilon_g$, so gas dispersion contributes at the $2\times10^{-5}$ level and stays negligible (\cref{as:no_gas_dispersion}). The bubble residence time is $3.6\ \mathrm{s}$ against $\tau=28\ \mathrm{h}$, i.e. a ratio of $3\times10^{4}$, which justifies the quasi-steady gas phase (\cref{as:short_res_time}).
+This places LIBRA Pi in case 4 of \cref{tab:design_map}, where the analytical model underestimates the extration speed. It must therefore be simulated using the numerical ARD model. 
 
-\section{Prediction of the extraction time}
-\label{sec:LIBRAPi_extraction}
+
 \subsection{Dependence on operating parameters}
 \subsubsection{Sensitivity analysis}
 % sobol plot of operating parameters
 \todo{sobol plot: don't use color bared (not an extensive quantity), instead show box plot like: nominal value and error, for both S1 and ST side to side; remove useless elements on the plot that add noise (vertical grid)}
+
 \subsubsection{Operating point}
 % tau vs (n,T) map
 \todo{abaque: change tau to tau99, use even spacing between isolines to express true topography, make it a 2 panel figure with pessimistic and optimistic case (same color scale)}
