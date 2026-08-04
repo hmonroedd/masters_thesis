@@ -1,0 +1,98 @@
+% ---- correlations table ---:
+\begin{table*}[p]
+\centering
+\caption{Closure relations used in the 1D ARD model. Auxiliary definitions: $\Delta\rho = \rho_l - \rho_g$ is the liquid--gas density difference, $\nu_l = \mu_l/\rho_l$ is the kinematic viscosity, $\mathrm{Sc} = \nu_l/D_l$ is the Schmidt number, $\mathrm{Eo} = \dfrac{g\,\Delta\rho\, d_b^{2}}{\sigma_l}$ is the Eötvös number, $\mathrm{Mo} = \dfrac{g\,\Delta\rho\, \mu_l^{4}}{\rho_l^{2}\, \sigma_l^{3}}$ is the Morton number, $\mathrm{Re} = \dfrac{\rho_l\, u_{g0}\, d_b}{\mu_l}$ is the Reynolds number, $P_\mathrm{bot} = P_\mathrm{top} + \rho_l\, g\, H$ is the hydrostatic pressure at the bottom of the tank, $A$ is the tank base area, $N_n$ is the number of sparger nozzles}
+\label{tab:correlations}
+\small
+\renewcommand{\arraystretch}{2.5}
+\begin{tabularx}{\textwidth}{@{}p{5.4cm} >{$\displaystyle}X<{$} p{4.0cm}@{}}
+\toprule
+\textbf{Physical quantity} & \textbf{\normalsize Relation} & \textbf{Reference} \\
+\midrule
+
+\multicolumn{3}{@{}l}{\textit{\textbf{Material properties (FLiBe and helium gas)}}} \\
+\midrule
+
+Liquid density $\rho_l$ [kg/m$^3$] &
+\rho_l = 2245 - 0.424\, T_{[^\circ\mathrm{C}]} &
+Vidrio 2022 \\
+
+Dynamic viscosity $\mu_l$ [Pa$\cdot$s] &
+\mu_l = 1.16\!\times\!10^{-4}\, \exp\!\left(\dfrac{3755}{T_{[\mathrm{K}]}}\right) &
+Cantor 1968 \\
+
+Surface tension $\sigma_l$ [N/m] &
+\sigma_l = (260 - 0.12\, T_{[^\circ\mathrm{C}]})\times 10^{-3} &
+Cantor 1968 \\
+
+Tritium diffusivity $D_l$ [m$^2$/s] &
+D_l = 9.3\!\times\!10^{-7}\, \exp\!\left(\dfrac{-42\,000}{R\, T_{[\mathrm{K}]}}\right) &
+Calderoni 2008 \\
+
+Tritium solubility $K_s$ [mol/(m$^3\cdot$Pa)] &
+K_s = 7.9\!\times\!10^{-2}\, \exp\!\left(\dfrac{-35\,000}{R\, T_{[\mathrm{K}]}}\right) &
+Calderoni 2008 \\
+
+Gas density $\rho_g$ [kg/m$^3$] &
+\rho_g = \dfrac{P\, M_{\mathrm{He}}}{R\, T} &
+ideal gas law \\
+
+\midrule
+\multicolumn{3}{@{}l}{\textit{\textbf{Hydrodynamic and mass-transfer correlations}}} \\
+\midrule
+
+Bubble diameter $d_b$ [cm] &
+d_b = 0.54\left(\dfrac{Q_{g,[\mathrm{cm^3/s}]}}{N_n}\sqrt{\dfrac{d_{n,[\mathrm{cm}]}}{2}}\right)^{0.289} &
+Kanai 2017 \\
+
+Bubble terminal velocity $u_{g0}$ [m/s] &
+\begin{aligned}
+H &= \tfrac{4}{3}\,\mathrm{Eo}\,\mathrm{Mo}^{-0.149}\!\left(\dfrac{\mu_{l,[\mathrm{Pa\cdot s}]}}{9\!\times\!10^{-4}}\right)^{-0.14} \\
+J &= \begin{cases} 3.42\, H^{0.441} & H > 59.3 \\ 0.94\, H^{0.757} & 2 < H \le 59.3 \end{cases} \\
+u_{g0} &= \dfrac{\mu_l}{\rho_l\, d_b}\,\mathrm{Mo}^{-0.149}(J - 0.857)
+\end{aligned} &
+Clift 1978 \\
+
+Gas void fraction $\varepsilon_g$ [--] &
+\varepsilon_g = \dfrac{R\, T}{P_0 + 4\sigma_l/d_b}\,\dfrac{\dot n_g}{A \, u_{g0}} &
+ideal gas law (\ref{app:eps_g}) \\
+
+Mass transfer coefficient $h_l$ [m/s] &
+h_l = \dfrac{\mathrm{Sh}\, D_l}{d_b},\quad \mathrm{Sh} = 0.089\,\mathrm{Re}^{0.69}\,\mathrm{Sc}^{0.33} &
+Briggs 1970 \\
+
+Liquid axial dispersion $E_l$ [m$^2$/s] &
+E_l = 0.678\, D_{t,[\mathrm{m}]}^{1.4}\, u_{g0,[\mathrm{m/s}]}^{0.3} &
+Deckwer 1974 \\
+
+Gas axial dispersion $E_g$ [m$^2$/s] &
+E_g = 0.2\, D_{t,[\mathrm{m}]}^{2}\, u_{g0,[\mathrm{m/s}]} &
+Malara 1995 \\
+
+\midrule
+\multicolumn{3}{@{}l}{\textit{\textbf{Definitions and algebraic relations}}} \\
+\midrule
+
+% Eötvös number $\mathrm{Eo}$ [--] &
+% \mathrm{Eo} = \dfrac{g\,\Delta\rho\, d_b^{2}}{\sigma_l} &
+% -- \\
+
+% Morton number $\mathrm{Mo}$ [--] &
+% \mathrm{Mo} = \dfrac{g\,\Delta\rho\, \mu_l^{4}}{\rho_l^{2}\, \sigma_l^{3}} &
+% -- \\
+
+% Reynolds number $\mathrm{Re}$ [--] &
+% \mathrm{Re} = \dfrac{\rho_l\, u_{g0}\, d_b}{\mu_l} &
+% -- \\
+
+Volumetric gas flow $\dot V_g$ [m$^3$/s] &
+\dot V_g = \dfrac{\dot n_g\, R\, T}{P_\mathrm{bot}} &
+ideal gas law \\
+
+Specific interfacial area $a$ [1/m] &
+a = \dfrac{6\, \varepsilon_g}{d_b} &
+spherical bubbles \\
+
+\bottomrule
+\end{tabularx}
+\end{table*}

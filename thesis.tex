@@ -31,6 +31,7 @@
 \newcommand{\needcite}[1]{\todo[color=red!40]{CITE: #1}}
 \usepackage{graphicx}
 \usepackage{subcaption}
+% \usepackage[style=authoryear]{biblatex} % already included in the .sty, to display author name and year when citing: \textcite{}
 
 \title{Tritium extraction and transport from molten salt breeding experiments}
 \author{Hippolyte Monroe}
@@ -279,6 +280,26 @@ The viability of gas sparging as a tritium extraction system for LIBRA Pi has no
 
 %%%%%%%%%%%%%%%%%%%%
 \chapter{Background: gas sparging in molten salts}
+
+\todo{adjust/crop so that they are well aligned}
+\begin{figure}[htbp]
+    \centering
+    \begin{subfigure}[t]{0.48\linewidth}
+        \centering
+        \includegraphics[width=\linewidth]{fig/solubility.png}
+        \caption{}
+        \label{fig:solubility}
+    \end{subfigure}
+    \hfill
+    \begin{subfigure}[t]{0.48\linewidth}
+        \centering
+        \includegraphics[width=\linewidth]{fig/diffusivity.png}
+        \caption{}
+        \label{fig:diffusivity}
+    \end{subfigure}
+    \caption{Overview of (a) Henry's law solubility constant and (b) diffusivity constant for hydrogen species in molten salts as a function of temperature. Experimental datapoints are shown as shapes. Taken from \textcite{humrickhouse_tritium_2020}}
+    \label{fig:transport_params}
+\end{figure}
 %%%%%%%%%%%%%%%%%%%%
 \label{sec:background}
 % The background section introduces the necessary background to understand your
@@ -322,9 +343,15 @@ Transport through the liquid-gas interface created by bubbles is what directly a
 It relies primarily on diffusion, where the density gradient occurring at the interface drives a particle flux $\JT \:\mathrm{[mol/m^2/s]}$ from the tritium-rich liquid to the tritium-poor gas, hereafter the \textit{interfacial flux}. On top of pure diffusion, turbulence at the liquid-gas interface tends to promote mass exchange between phases. 
 % It depends on two fundamental properties of the solute-solvant couple (here tritium-molten salt): diffusivity $D_T \:\mathrm{[m^2/s]}$ and solubility $K_s$  ($\mathrm{[mol/m^3/Pa]}$ or $\mathrm{[mol/m^3/Pa^{0.5}]}$ depending on the solubility law).
 \\
-Transport of solute gases through liquid-gas interfaces is commonly described by the the Lewis-Whitman two-film model \cite{lewis_principles_1924}. In molten salts, \ce{H_2} has a very low solubility \needcite{H2 low solubility}, so mass transfer through the interface is limited by the liquid film, the interfacial flux is therefore expressed using the liquid side mass transfer coefficient $h_l \:\mathrm{[m/s]}$ which characterized both molecular diffusion and turbulent transport through the liquid film. The interfacial flux is expressed as:
+Transport of solute gases through liquid-gas interfaces is commonly described by the the Lewis-Whitman two-film model\cite{lewis_principles_1924} illustrated in \cref{fig:boundary_layer}. In molten salts, \ce{H_2} has a very low solubility \needcite{H2 low solubility}, so mass transfer through the interface is limited by the liquid film, the interfacial flux is therefore expressed using the liquid side mass transfer coefficient $h_l \:\mathrm{[m/s]}$ which characterized both molecular diffusion and turbulent transport through the liquid film. The interfacial flux is expressed as:
 
-\todo{insert illustration of two fluid model}
+\todo{can I just copy/paste a figure like that ?}
+\begin{figure}[ht]
+  \centering
+  \includegraphics[width=0.5\linewidth]{fig/boundary_layer.png}
+  \caption{Illustration of the Lewis-Whitman two-film mass transfer model for a bubble in a liquid, taken from \textcite{evans_physics_2026}.}
+  \label{fig:sparging_tank}
+\end{figure}
 
 \begin{equation*}
     \JT = h_l \,(\CT-c_\mathrm{T_2,i})
@@ -539,6 +566,11 @@ This is a hint that the average concentration and therefore the tritium inventor
     \label{eq:tau_SPP}
 \end{equation}
 
+\subsection{Closure relations and correlations}
+
+\todo{short introduction, explain briefly the choices of correlations}
+\todo{update this table with the modifications made in correlations.py (eg include superficial velocity), add columns "order of magnitude" and "validity" (give the validity range/assumptions needed)}
+\input{tab_correlations}
 
 \subsection{Assumptions of the model}
 The main assumptions used throughout this work are listed in the following, starting with the most impactful ones:
@@ -546,7 +578,7 @@ The main assumptions used throughout this work are listed in the following, star
 \begin{itemize}
     \item \assumption{Tritium is only present as molecular \ce{T2}}: this is equivalent to assuming that the redox of the salt is perfectly controlled, preventing newborn tritium to form highly soluble and poorly mobile tritium fluoride ($TF$). The assumed chemical speciation of tritium greatly determines its mass transfer properties: results based on ab initio molecular dynamics  suggest that the molecular diffusion coefficient of \ce{T2} is 3-5 times higher than that of $TF$\cite{lam_impact_2021}. Note this assumption is not inherently tied to the model, other chemical forms of tritium could be considered simply by changing the transport coefficients used by the model. \todo{check stempien 2016 for references regarding TF/T2 speciation}
     \item \assumption{the temperature field is uniform\label{as:uniform_temp}}: often we don't have spatial resolution for the salt temperature, it is the case in the LIBRA Pi experiment. It is the only model input that can't be controlled nor measured precisely in the experiment. The approach then is to repeat the simulation for a large distribution of possible temperatures, which should give lower and upper bounds on the predicted extraction performance. As a consequence, bubbles and liquid are considered always at thermal equilibrium, which implies that the liquid brings some heat to the bubbles as they expand toward the top of the tank, i.e. the bubbles expansion is non-adiabatic. We can then write for a bubble: $P_bV_b=n_bRT=\mathrm{constant}$ thus $V_b(z)=V_{b0} \frac{P_{b0}}{P_b(z)}$
-    \item \assumption{constant bubble rising velocity $v_b$ \label{as:vb_is_constant}}: the terminal velocity is a result of a quasi-static equilibrium between buoyancy forces and drag forces. In wobbling/ellipsoid regimes this equilibrium barely changes with the bubble size\needcite{constant velocity in wobbling regime}. Given that the bubble growth due to decompression varies as $d_b\propto P_l^{-1/3}$, it is already not large, the shift it induces in the forces equilibrium can be considered null;
+    \item \assumption{constant bubble rising velocity $v_b$ \label{as:vb_is_constant}}: the terminal velocity is a result of a quasi-static equilibrium between buoyancy forces and drag forces. In wobbling/ellipsoid regimes this equilibrium barely changes with the bubble size, it stays within $0.25\pm0.05 \ \mathrm{m/s}$\cite{chavez_experimental_2021}. Bubble size varies as $d_b\propto P_l^{-1/3}$, so growth due to decompression is already not large and the shift it induces in the forces equilibrium can be neglected;
     \item \assumption{no bubbles coalescence\label{as:no_coalescence}}: at such low superficial gas velocity, void fractions falls below 1\%, we can reasonably expect the bubbles not to interact with other bubbles\cite{taylor_implementation_2022} \todo{compute space between bubbles, compare with bubbles size}
     \item \assumption{no permeation in structural material nor diffusion at free surface\label{as:no_permeation}}: this is a modeling choice to only retain interaction with gas bubbles as a tritium extraction mechanism, this gives a conservative estimate of the tritium extraction speed. Permeation can be estimated by coupling with a model for tritium transport is solid media, this is done in \cref{sec:LIBRAPi_permeation}; 
     \item \assumption{the contribution of \ce{T2} to bubble pressure is negligible\label{as:T2_press_is_negligible}}: the He pressure in a bubble is of the order of $10^5 \ \mathrm{Pa}$, the amount of tritium that can be present in the system using the neutron source of the LIBRA Pi experiment is of the order of $0.1\ \mathrm{T/neutron}\cdot10^9\ \mathrm{neutron/s}\cdot10 \ \mathrm{hours}\approx 6\cdot10^{-11}\ \mathrm{molT}$, which if it were to be transferred all at once on the gas phase would results in a \ce{T2} pressure of $\frac{(3\cdot10^{-11}\ \mathrm{molT_2})\,R\,(873\ \mathrm{K})}{10^{-4}\cdot (0.1 \ \mathrm{m^3})}=0.2 \ \mathrm{Pa}\ll 10^5 \ \mathrm{Pa}$;
@@ -554,7 +586,7 @@ The main assumptions used throughout this work are listed in the following, star
 
 \section{Analytical solution of the ARD equations}
 \label{sec:analytical_solution}
-To be able to understand the numerical results that will be obtained later on, it is insightful to first derive an analytical solution, at the expense of some simplifications.
+To be able to understand the numerical results that will be obtained later on, it is insightful to first derive an analytical solution, at the expense of some simplifications. The assumptions made here will be discussed and characterized in \cref{sec:sparging_expl}. 
 
 \subsection{Premise: case of a single static bubble}
 Let us consider the virtual case of a single He bubble $b$, immersed in a static liquid of tritium concentration \CT. The evolution of the tritium inventory $n_{\mathrm{T_2},b}$ in the bubble is governed by:
@@ -806,7 +838,7 @@ Two consequences are worth keeping in mind when reading the results that follow.
 
 The analytical solution derived in \cref{sec:analytical_solution} rests on a set of assumptions that the numerical 1D ARD model does not make. A \textbf{virtual} reference case is therefore built in which all of them are satisfied, so that any remaining discrepancy can be attributed to the implementation rather than to the modelling. Its parameters are given in \cref{tab:verification_inputs}. They are those of the LIBRA Pi experiment (see \cref{tab:libra_pi_inputs}), except for the tank height which is divided by ten, and for the solubility constant $K_s$ which takes two values in order to probe both partial pressure regimes. The $z$ dependent parameters vary by about one percent over such a short column, so only their value at the sparger ($z=0$) is reported.
 
-\todo{remove most of the entrie, only keep what really changes from libra pi input and the info needed for the purpose of the verification case (i.e. the info to argue that the assumptions are satisfied)}
+\todo{remove this table, rather reference the LIBRA Pi input table and briefly state what is changed to satisfy the assumptions, then use the closure relations output to argue that the assumptions are satisfied}
 \input{tab_verf_inputs}
 
 Each assumption can be checked against \cref{tab:verification_inputs}.
@@ -928,7 +960,7 @@ When $\PI\ll1 \Rightarrow 1-e^{-\PI}\approx0$: bubbles can be considered free of
 \begin{equation}
     \boxed{\tau_\mathrm{MTL}=\tau_\mathrm{SPP}=\frac{\langle\varepsilon_l\rangle}{\langle a \, h_l\rangle}}
 \end{equation}
-It is coupled to tritium diffusivity in the liquid phase through $h_l$ and \textbf{independent of tritium solubility $K_s$}.
+It is coupled to tritium diffusivity in the liquid phase through $h_l$ and \textbf{independent of tritium solubility $K_s$}. Among the operating parameters that drive $\tau_\mathrm{MTL}$, temperature is expected to have the greatest impact as it is exponentially correlated to the tritium diffusivity $D_l$ and the liquid viscosity $\mu_l$ by Arrhenius laws (see \cref{tab:correlations}), both governing $h_l$. Therefore, \textbf{increasing temperature greatly improves the extraction performances in MTL}. Increasing the sparging gas flow rate \ndotg also helps, by maximizing the available interfacial area for mass transfer ($a$). 
 
 (Note on semantic: MTL is a regime, SPP is an approximation first made in \cref{sec:extraction_kinetics}. It turns out the SPP approximation is valid under the \PI<0.1 condition, i.e. in the MTL regime)
 
@@ -940,12 +972,13 @@ In this regime, the extraction time follows $\tau\approx \tau_\mathrm{SPP}\cdot\
     \boxed{\tau_\mathrm{PPL}=\frac{\langle\varepsilon_l\rangle R\,T\,K_s\,H}{u_g(H)}}
 \end{equation}
 
-The mass transfer process is throttled by the gas throughput at the outlet, \textbf{extraction time increases with tritium solubility and becomes independent of tritium diffusivity}. 
+The mass transfer process is throttled by the gas throughput at the outlet, \textbf{extraction time increases with tritium solubility and becomes independent of tritium diffusivity}. Here, temperature primarily drives $K_s$ (exponentially, see \cref{tab:correlations}), thus \textbf{increasing $T$ is counter-productive in PPL}. \textbf{Extraction performances is mainly driven by the sparging gas flow rate \ndotg}, mediated by $u_g$. 
 
 \begin{keyresult}
     \centering
-    \PI<0.1 (MTL regime) = most efficient extraction \\
-    \PI>0.1 = extraction throttled by bubble saturation
+    \PI<0.1 (MTL) $\Rightarrow$ most efficient extraction, high $T$ desirable \\
+    \PI>5 (PPL)  $\Rightarrow$ extraction throttled by saturation, need low $T$ and high \ndotg \\
+    in-between $\Rightarrow$ sub-optimal extraction, operating parameters compete with each other
 \end{keyresult}
 
 \subsection{Impact of mixing}
@@ -1058,8 +1091,9 @@ To look at it more closely, we can isolate the impact of \Gp on the extraction t
 \subsection{Summary}
 
 \input{tab_design_map}
+\todo{make this basic table publication grade quality, replace \Tnum vs \Tana column with a column that tells what formula can be used for tau (or just "<\Tana") when the extraction is faster than the analytical model. The information of "where can we use \Tana" will be relegated to the venn diagram}
+\todo{IMPORTANT FIGURE: add a venn diagram out of this truth table. Use the 1-complement of each proposition, e.g. Pi>0.1, so that the center of the diagram is where none of the assumptions hold. Color the =,faster and slower regions in different colors, intensity of the color informing how much different it is, and dash regions of non-exponential decay.}
 
-\todo{make a venn diagram out of this truth table. Use the 1-complement of each proposition, e.g. Pi>0.1, so that the center of the diagram is where none of the assumptions hold. Color =,faster and slower regions in different colors, intensity of the color informing how much different it is, and dash regions of non-exponential decay}
 
 \begin{figure}[htbp]
   \centering
@@ -1072,11 +1106,21 @@ To look at it more closely, we can isolate the impact of \Gp on the extraction t
 \paragraph{The design space is made of 8 distinct regions}
 The findings of the design study are summarized in \cref{tab:design_map}, covering the 8 possible cases a sparging system might fall in. Case 7 (MTL regime where none of the "good mixing" and "uniform hydrodynamic" holds) shouldn't be misread: in this case the analytical reference under-predicts the extraction time, nevertheless decreasing $P_\mathrm{top}$ still overall improves the extraction dynamics as stated in \cref{sec:impact_of_pressure}. 
 
-\paragraph{When can we use the analytical model ?}
+\paragraph{When can one use the analytical model ?}
 The parity plot of \cref{fig:parity} shows that \textbf{$\Gmix>0.1$ and $Gp<0.1$ are sufficient conditions for the analytical model to hold}: xxx \% \todo{put the actual value, should be 100\%, otherwise refine the conditions on Gp and Gmix} of the predicted \Tana fall within the reference $\Tnum\pm10\%$ under those conditions, regardless of the value of \PI. This study also provides the insight that \textbf{these are not necessary conditions}: the "good-mixing" assumption can be relaxed ($\Gmix \nless 0.1$) and the analytical model still hold, under the conditions that the bubbles are in the MTL regime ($\PI<0.1$), as found in \cref{sec:impact_of_mixing}.
 
 \paragraph{The optimal sparger design}
+
 \todo{does it actually make sense to talk about PFC ? In a PFC the reactant is introduced by "plugs" in the moving phase. The only similary with PFC here is that mixing is neglible}
+
+\todo{IMPORTANT FIGURE: violin diagram of the normalized fitted extraction time (\Tnum-tau\_nominal)/tau\_nominal for each 8 regimes with superimposed box plot, with the z=0 horizontal line indicating the baseline extraction time tau\_nominal (LIBRA Pi input), and using the same red circling for high RMSE samples. Should show clearly where each regime performs, and which regime is fastest. Print the number of samples in each group in the x-axis tick label (like "Group 1 (linebreak) n= 23")}
+
+In a design problem, the tritium transport properties are not controlled directly, the optimal design depends on the constraints. Beside the obvious extraction time goal, there might be cases when the tritium concentration of the outlet gas also constitutes a strong constraint. For instance in the LIBRA Pi experiment, after being extracted from the vessel, tritium is stripped from its carrying gas by water bubblers (ready to be counted using a liquid scintillator), and the gas rate drives evaporation in those bubblers, it is thus desirable that the tritium concentration in the gas is maximized so that the gas flow rate itself can be kept low enough, eventually enabling a higher tritium concentration in the water samples to be counted. 
+
+\begin{itemize}
+    \item case "optimize for the extraction time no matter what": the sparger should be operated in the MTL regime; \Gp should be maximized by pulling vacuum on the head space ($\Ptop \searrow$) and making the column taller (while still ensuring \PI<0.1); mixing is irrelevant (no constraint on \Gmix). During operation, the extraction time can be reduced by increasing $T$ and \ndotg and decreasing \Ptop. 
+    \item case "optimize for tritium concentration in the outlet gas": 
+\end{itemize}
 
 The study showed that a PFC-like sparger yields the best performances, with a super-exponential decay of the tritium inventory. 
 
@@ -1096,21 +1140,22 @@ This chapter uses the model developed in this work to get an estimate of the att
 
 \subsection{LIBRA Pi model input}
 
-The model input corresponding to the LIBRA Pi experiment is reported in \cref{tab:libra_pi_inputs}. The quarter-annulus geometry of LIBRA Pi (see \todo{ref to image if LIBRA Pi}) containing a salt volume of $\sim120$ L is described by a cylinder of height 0.93 m and equivalent base area $A=0.13$ m chosen to conserve salt volume. 
+The model input corresponding to the LIBRA Pi experiment is reported in \cref{tab:libra_pi_inputs}. The quarter-annulus geometry of LIBRA Pi (see \todo{ref to image of LIBRA Pi}) containing a salt volume of $\sim120$ L is described by a cylinder of height 0.93 m and equivalent base area $A=0.13 \ \mathrm{m^2}$ chosen to conserve salt volume. 
 
 LIBRA Pi will run in ClLiF molten salt, which is a convenient experimental breeder as it doesn't have Be toxicity problem, but which tritium transport properties are nowhere to be found in the literature. This last point motivates the choice of rather using FLiBe in this model, as a ClLiF proxy with known transport properties.
 
 The sparger design isn't decided yet. The number of nozzles in particular dictates the gas volumetric flow rate through each nozzle for a given total mass flow rate. In this work, it is assumed that the sparger is made of 4 nozzles, so that the volumetric flow rate at each nozzle stays within $3-10\ \mathrm{cm^3/s}$ which is the validity range of the correlation used for the initial bubble diameter\cite{kanai_establishment_2017}. 
 
-Beside the already fixed geometry, only four quantities can be controlled by the experiment: the temperature ($T$), the gas molar flow rate (\ndotg), the headspace pressure (\Ptop) and the sparger nozzle diameter (\dnoz). Their range is reported in \cref{tab:model_input}. Everything else comes from the closure relations of \cref{sec:closure_relations}. 
+Beside the already fixed geometry, only four quantities can be controlled by the experiment: the temperature ($T$), the gas molar flow rate (\ndotg), the headspace pressure (\Ptop) and the sparger nozzle diameter (\dnoz). Their range is reported in \cref{tab:model_input}. Everything else comes from the closure relations of \cref{tab:correlations}. 
 
-The initial tritium inventory is fixed to $3.6\cdot10^{-12} \ \mathrm{molT2}$ (or $\langle\CT\rangle =3.0\cdot10^{-11} \ \mathrm{molT2/m^3}$) to correspond to an irradiation of $2\cdot10^{-9} \ \mathrm{n/s}$ (the available 14 MeV neutron source) for 6 hours and a TBR=0.1 (calculated for the LIBRA Pi geometry using OpenMC). That being said, as long as the "negligible contribution of \PT to bubble pressure" (\cref{as:T2_press_is_negligible}) holds, it could take any value this would not change the extraction time since the ARD equations are linear.
+The initial tritium inventory is fixed to $3.6\cdot10^{-12} \ \mathrm{molT2}$ (equivalent to $\langle\CT\rangle =3.0\cdot10^{-11} \ \mathrm{molT2/m^3}$) to correspond to an irradiation of $2\cdot10^{-9} \ \mathrm{n/s}$ (the available 14 MeV neutron source) for 6 hours and a TBR=0.1 (calculated for the LIBRA Pi geometry using OpenMC). That being said, in the case of the sparging model itself, as long as the "negligible contribution of \PT to bubble pressure" (\cref{as:T2_press_is_negligible}) holds, it could take any value this would not change the extraction time since the ARD equations are linear. This will however become relevant in \cref{sec:LIBRAPi_permeation} where the boundary condition for the concentration at the salt-metal interface is non-linear. 
 
 \todo{rerun study with the specified range}
-\todo{add "fixed parameters" and "varied parameters" table sections}
+\todo{add "fixed parameters" and "varied parameters" separations in the table}
+\todo{fix the label: refers to the section and not the table for some reason}
 \begin{table}[t]
-\label{tab:model_input}
 \centering
+\label{tab:model_input}
 \caption{LIBRA Pi model input with attainable parameters range during operation}
 \begin{tabular}{@{}l c@{}}
 \toprule
@@ -1125,7 +1170,6 @@ Nozzle diameter, \dnoz           & 1-4 mm \\
 Headspace pressure, \Ptop         & 1-2 atm \\
 Number of nozzles, $N_n$         & 4 \\
 Initial $T_2$ concentration, $c_{T_2,init}$   & $3\cdot10^{-11} \mathrm{molT_2/m^3}$ \\
-
 \bottomrule
 \end{tabular}
 \end{table}
@@ -1137,7 +1181,7 @@ Initial $T_2$ concentration, $c_{T_2,init}$   & $3\cdot10^{-11} \mathrm{molT_2/m
 \input{tab_libra_pi}
 \todo{don't specify all the values here, for some values we only care about the orders of magnitude, put that in a dedicated column of the table presenting the used correlations}
 
-The three dimensionless groups that characterize the sparging system are as follows:
+Considering the range of attainable operating parameters presented in \cref{tab:model_input}, the three dimensionless groups that characterize the sparging system are as follows:
 \begin{itemize}
     \item $\langle\Pi\rangle=0.23$ places LIBRA Pi at the entrance of the partial pressure limited regime. The bubbles leave the column about $20\ \%$ saturated, which costs a factor $\Pi/(1-e^{-\Pi})=1.12$ on the extraction time. The nominal case is therefore neither fully MTL nor fully PPL.
     \item $\Gmix=6.5\times10^{-4}$: the salt homogenises in about a minute against an extraction time of $28\ \mathrm{h}$, so the liquid stays uniform and the 0D description of the salt inventory holds;
