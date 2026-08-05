@@ -1229,7 +1229,7 @@ It should be noted that the width of the sampling space for each parameter condi
 \begin{figure}[htbp]
   \centering
   \includegraphics[width=0.6\linewidth]{fig/operating_point_map.pdf}
-  \caption{Estimate of the time to extract 99\% of the tritium, denoted $\tau_{99}$, as a function of the reduced 2D operational parameters space for (a) the optimistic scenario; (b) the pessimistic scenario. The smoothing is obtained by fitting the random samples with a surface $\tau_{99}\propto$... ($R^2=0.99$)} 
+  \caption{Estimate of the time to extract 99\% of the tritium, denoted $\tau_{99}$, as a function of the reduced 2D operational parameters space for (a) the optimistic scenario; (b) the pessimistic scenario. The smoothing is obtained by fitting 768 operating points with a surface $\tau_{99}\propto$... ($R^2=0.99$). The \textcite{kanai_establishment_2017} correlation for the bubble size is extrapolated from its 3-10 $\mathrm{cm^3/s}$ validity range for $\ndotg\lesssim 350$ sccm.} 
   \label{fig:abaque}
 \end{figure}
 \todo{abaque: change tau to tau99, use even spacing between isolines to express true topography, make it a 2 panel figure with pessimistic and optimistic case (same color scale)}
@@ -1246,9 +1246,14 @@ The prediction of the numerical ARD model for each scenario are presented in \cr
 
 % presentation of FESTIM: see file:///C:/Users/hippo/OneDrive/temp/Estimations%20of%20tritium%20retention%20through%20DT1%20in%20a%20full%20tungsten%20ITER.pdf
 
+Tritium is expected to permeate through structural materials in general. This is accounted for in the BABY and LIBRA experiments as one of the removal pathways, competing with other extraction mechanisms such as sparging in LIBRA Pi. As part of the robust accountancy goal, the permeated tritium is collected using a double-walled vessel. However, the design of the LIBRA Pi vessel also opens some pathways for tritium to leak to the environment, challenging the robust accountancy goal. 
+
+The purpose of this section is therefore to evaluate the amount of tritium that permeates and quantify what portion of it leaks out during a run, in light of the sparging extraction dynamics predicted above. 
+
 
 \label{sec:LIBRAPi_permeation}
 \todo{study considers we are in diffusion-limited regime, but check W>>1 from Abdou 2020}
+
 \subsection{Tritium transport model}
 \subsubsection{Geometry}
 \subsubsection{Numerical scheme}
@@ -1262,6 +1267,7 @@ The prediction of the numerical ARD model for each scenario are presented in \cr
 
 \subsection{Results}
 \subsubsection{Impact of sweep gas composition}
+\todo{}
 \subsubsection{Impact of recombination constant}
 \subsubsection{Effect of tritium extraction kinetics}
 
