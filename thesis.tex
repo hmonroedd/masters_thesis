@@ -297,7 +297,7 @@ The viability of gas sparging as a tritium extraction system for LIBRA Pi has no
         \caption{}
         \label{fig:diffusivity}
     \end{subfigure}
-    \caption{Overview of (a) Henry's law solubility constant and (b) diffusivity constant for hydrogen species in molten salts as a function of temperature. Experimental datapoints are shown as shapes. Self diffusion of free fluorines (\ce{F^-}) in FLiBe is included as a reference. \textcite{briggs_calculation_1970} was calculated from results of the MSRE based on mass transport and diffusion relationships. Taken from \textcite{humrickhouse_tritium_2020}}
+    \caption{Overview of (a) Henry's law solubility constant and (b) diffusivity constant for hydrogen species in molten salts as a function of temperature. Experimental datapoints are shown as shapes. Self diffusion of free fluorines (\ce{F^-}) in FLiBe is included as a reference. \textcite{briggs_calculation_1970} was calculated from results of the MSRE based on mass transport and diffusion relationships. In (b) the plotted correlation doesn't match the original formula of \textcite{fukada_hydrogen_2006}, the literature seems to agree on the fact that the pre-exponential factor given in the original paper is too low by 4 orders of magnitude. Taken from \textcite{humrickhouse_tritium_2020}}
     \label{fig:transport_params}
 \end{figure}
 %%%%%%%%%%%%%%%%%%%%
@@ -576,7 +576,7 @@ This is a hint that the average concentration and therefore the tritium inventor
 The main assumptions used throughout this work are listed in the following, starting with the most impactful ones:
 \label{sec:sparging_assumptions}
 \begin{itemize}
-    \item \assumption{Tritium is only present as molecular \ce{T2}}: this is equivalent to assuming that the redox of the salt is perfectly controlled, preventing newborn tritium to form highly soluble and poorly mobile tritium fluoride ($TF$). The assumed chemical speciation of tritium greatly determines its mass transfer properties: results based on ab initio molecular dynamics  suggest that the molecular diffusion coefficient of \ce{T2} is 3-5 times higher than that of $TF$\cite{lam_impact_2021}. Note this assumption is not inherently tied to the model, other chemical forms of tritium could be considered simply by changing the transport coefficients used by the model. \todo{check stempien 2016 for references regarding TF/T2 speciation}
+    \item \assumption{Tritium is only present as molecular \ce{T2}}: this is equivalent to assuming that the redox of the salt is perfectly controlled, preventing newborn tritium to form tritium fluoride ($TF$). Assuming \ce{T2} as the dominating species is compatible with the recent results of the BABY 1L tritium breeding experiment in \ce{ClLiF}, where more than 96\% of the tritium was collected as \ce{T2} and \ce{HT}\cite{delaporte-mathurin_baby_2026}. The assumed chemical speciation of tritium greatly determines its mass transfer properties: results based on ab initio molecular dynamics  suggest that the molecular diffusion coefficient of \ce{T2} is 3-5 times higher than that of $TF$ and it is less soluble\cite{lam_impact_2021}. Note this assumption is not inherently tied to the model, other chemical forms of tritium could be considered simply by changing the transport coefficients used by the model. \todo{check stempien 2016 for references regarding TF/T2 speciation}
     \item \assumption{the temperature field is uniform\label{as:uniform_temp}}: often we don't have spatial resolution for the salt temperature, it is the case in the LIBRA Pi experiment. It is the only model input that can't be controlled nor measured precisely in the experiment. The approach then is to repeat the simulation for a large distribution of possible temperatures, which should give lower and upper bounds on the predicted extraction performance. As a consequence, bubbles and liquid are considered always at thermal equilibrium, which implies that the liquid brings some heat to the bubbles as they expand toward the top of the tank, i.e. the bubbles expansion is non-adiabatic. We can then write for a bubble: $P_bV_b=n_bRT=\mathrm{constant}$ thus $V_b(z)=V_{b0} \frac{P_{b0}}{P_b(z)}$
     \item \assumption{constant bubble rising velocity $v_b$ \label{as:vb_is_constant}}: the terminal velocity is a result of a quasi-static equilibrium between buoyancy forces and drag forces. In wobbling/ellipsoid regimes this equilibrium barely changes with the bubble size, it stays within $0.25\pm0.05 \ \mathrm{m/s}$\cite{chavez_experimental_2021}. Bubble size varies as $d_b\propto P_l^{-1/3}$, so growth due to decompression is already not large and the shift it induces in the forces equilibrium can be neglected;
     \item \assumption{no bubbles coalescence\label{as:no_coalescence}}: at such low superficial gas velocity, void fractions falls below 1\%, we can reasonably expect the bubbles not to interact with other bubbles\cite{taylor_implementation_2022} \todo{compute space between bubbles, compare with bubbles size}
@@ -1107,7 +1107,8 @@ To look at it more closely, we can isolate the impact of \Gp on the extraction t
 The findings of the design study are summarized in \cref{tab:design_map}, covering the 8 possible cases a sparging system might fall in. Case 7 (MTL regime where none of the "good mixing" and "uniform hydrodynamic" holds) shouldn't be misread: in this case the analytical reference under-predicts the extraction time, nevertheless decreasing $P_\mathrm{top}$ still overall improves the extraction dynamics as stated in \cref{sec:impact_of_pressure}. 
 
 \paragraph{When can one use the analytical model ?}
-The parity plot of \cref{fig:parity} shows that \textbf{$\Gmix>0.1$ and $Gp<0.1$ are sufficient conditions for the analytical model to hold}: xxx \% \todo{put the actual value, should be 100\%, otherwise refine the conditions on Gp and Gmix} of the predicted \Tana fall within the reference $\Tnum\pm10\%$ under those conditions, regardless of the value of \PI. This study also provides the insight that \textbf{these are not necessary conditions}: the "good-mixing" assumption can be relaxed ($\Gmix \nless 0.1$) and the analytical model still hold, under the conditions that the bubbles are in the MTL regime ($\PI<0.1$), as found in \cref{sec:impact_of_mixing}.
+The parity plot of \cref{fig:parity} shows that \textbf{$\Gmix<0.1$ and $Gp<0.1$ are sufficient conditions for the analytical model to hold}: xxx of the predicted \Tana fall within the reference $\Tnum\pm10\%$ under those conditions, regardless of the value of \PI. This study also provides the insight that \textbf{these are not necessary conditions}: the "good-mixing" assumption can be relaxed ($\Gmix \nless 0.1$) and the analytical model still hold, under the conditions that the bubbles are in the MTL regime ($\PI<0.1$), as found in \cref{sec:impact_of_mixing}.
+\todo{put the actual value, should be 100 percent, otherwise refine the conditions on Gp and Gmix, maybe Gp is rather <0.02 as fig errorvsGp could suggest (where tau0 crosses the zero error)}
 
 \paragraph{The optimal sparger design}
 
@@ -1124,6 +1125,7 @@ In a design problem, the tritium transport properties are not controlled directl
 
 The study showed that a PFC-like sparger yields the best performances, with a super-exponential decay of the tritium inventory. 
 
+
 %%%%%%%%%%%%%%%%%%%%%%%%
 \chapter{Application to the LIBRA Pi tritium breeding experiment}
 %%%%%%%%%%%%%%%%%%%%%%%%
@@ -1138,11 +1140,18 @@ This chapter uses the model developed in this work to get an estimate of the att
 \section{Estimation of the tritium extraction time}
 \label{sec:LIBRAPi_extraction}
 
-\subsection{LIBRA Pi model input}
+\subsection{Design of the study}
+\subsubsection{LIBRA Pi model input}
 
 The model input corresponding to the LIBRA Pi experiment is reported in \cref{tab:libra_pi_inputs}. The quarter-annulus geometry of LIBRA Pi (see \todo{ref to image of LIBRA Pi}) containing a salt volume of $\sim120$ L is described by a cylinder of height 0.93 m and equivalent base area $A=0.13 \ \mathrm{m^2}$ chosen to conserve salt volume. 
 
-LIBRA Pi will run in ClLiF molten salt, which is a convenient experimental breeder as it doesn't have Be toxicity problem, but which tritium transport properties are nowhere to be found in the literature. This last point motivates the choice of rather using FLiBe in this model, as a ClLiF proxy with known transport properties.
+LIBRA Pi will run in ClLiF molten salt, which is a convenient experimental breeder as it doesn't have Be toxicity problem. The current state of literature on ClLiF doesn't contain correlations for its tritium transport properties. This last point motivates the choice of rather using the properties of other molten salts as a ClLiF proxy. The physical properties (density, surface tension, viscosity) were taken for \ce{FLiBe}, they are expected to have a secondary impact on kinetics prediction. \todo{should try to find CLiF properties}. Regarding the tritium transport properties, this makes the extraction time estimate inherently uncertain. Then, the best that can be done is to enclose the extraction time estimate between upper and lower bounds, corresponding to pessimistic and optimistic scenarios derived from the currently available correlations for tritium transport in molten salt presented in \cref{fig:transport_params}):
+\begin{itemize}
+    \item \textit{pessimistic scenario} = high solubility (the salt tends to retain tritium) and low diffusivity: $K_s$ and $D_l$ are both given by the correlations derived by \textcite{calderoni_measurement_2008} for \ce{T2} in \ce{FLiBe};
+    \item \textit{optimistic scenario} = low solubility and high diffusivity: $K_s$ is given by the \textcite{malinauskas_solubilities_1974} correlation for \ce{D_2} in \ce{FLiBe}, $D_l$ is given by the \textcite{fukada_hydrogen_2006} correlation for \ce{H2} in \ce{FLiNaK}. 
+\end{itemize}
+
+It should be noted that those correlations were derived for temperatures greater than 550°C, the temperature range we consider here goes below that. Nevertheless extrapolating these correlations constitutes the broadest upper/lower bounds that can be derived, ensuring the actual extraction time is well enclosed between the pessimistic and optimistic estimates. 
 
 The sparger design isn't decided yet. The number of nozzles in particular dictates the gas volumetric flow rate through each nozzle for a given total mass flow rate. In this work, it is assumed that the sparger is made of 4 nozzles, so that the volumetric flow rate at each nozzle stays within $3-10\ \mathrm{cm^3/s}$ which is the validity range of the correlation used for the initial bubble diameter\cite{kanai_establishment_2017}. 
 
@@ -1153,6 +1162,7 @@ The initial tritium inventory is fixed to $3.6\cdot10^{-12} \ \mathrm{molT2}$ (e
 \todo{rerun study with the specified range}
 \todo{add "fixed parameters" and "varied parameters" separations in the table}
 \todo{fix the label: refers to the section and not the table for some reason}
+
 \begin{table}[t]
 \centering
 \label{tab:model_input}
@@ -1175,42 +1185,62 @@ Initial $T_2$ concentration, $c_{T_2,init}$   & $3\cdot10^{-11} \mathrm{molT_2/m
 \end{table}
 
 
-\paragraph{Sparging regime}
+\subsubsection{Sparging regimes}
 
 \todo{remove this table ? replaces by tab:model\_input ?}
 \input{tab_libra_pi}
 \todo{don't specify all the values here, for some values we only care about the orders of magnitude, put that in a dedicated column of the table presenting the used correlations}
 
-Considering the range of attainable operating parameters presented in \cref{tab:model_input}, the three dimensionless groups that characterize the sparging system are as follows:
+Considering the range of attainable operating parameters presented in \cref{tab:model_input}, the LIBRA Pi sparging system is characterized by the following ranges on its dimensionless groups:
 \begin{itemize}
-    \item $\langle\Pi\rangle=0.23$ places LIBRA Pi at the entrance of the partial pressure limited regime. The bubbles leave the column about $20\ \%$ saturated, which costs a factor $\Pi/(1-e^{-\Pi})=1.12$ on the extraction time. The nominal case is therefore neither fully MTL nor fully PPL.
-    \item $\Gmix=6.5\times10^{-4}$: the salt homogenises in about a minute against an extraction time of $28\ \mathrm{h}$, so the liquid stays uniform and the 0D description of the salt inventory holds;
-    \item $G_P=0.15$ is non negligible: the gas expands by $15\ \%$ from the sparger to the free surface, so $\varepsilon_g$, $a$ and $u_g$ grow along $z$ while $\Pi$ decreases. 
+    \item $\Gmix=3.5-6.5\times10^{-4}$: the aspect ratio of the tank is such that the salt is well mixed at any operating point. The liquid concentration is uniform and the 0D description of the salt inventory holds;
+    \item $\Gp=0.09-0.18$: growth of $a$ and $u_g$ as  gas expands along $z$ is non-negligible. The numerical model will catch this. 
+    \item As for $\PI$, it is the uncertain parameter that motivates the 2 scenarios:
+    \begin{itemize}
+        \item optimistic: $\PI=3.5\cdot10^{-5}-2.4\cdot10^{-3}$, the bubbles are always in the MTL regime
+        \item pessimistic: $\PI=0.03-2.2$, spans MTL up to the entrance of the SPP regime. The temperature might therefore have an adverse effect on the extraction in some regions of the operational parameters space. 
+    \end{itemize}
 \end{itemize}
 
-This places LIBRA Pi in case 4 of \cref{tab:design_map}, where the analytical model underestimates the extration speed. It must therefore be simulated using the numerical ARD model. 
+It follows that LIBRA Pi can potentially be in cases 3 or 4 of \cref{tab:design_map}, where the analytical model underestimates the extration speed. It must therefore be simulated using the numerical ARD model. As in \cref{sec:sparging_expl}, we use a Monte Carlo-like approach to cover the entire 4-dimensional parameter space for each of the 2 bounding scenarios. \todo{1 or 2 sentence about the sampling scheme used (saltelli, log and uniform)}. Each sample is run for a transient duration of $5\Tana$, enough to observe the inventory decay below 1\% of its original value. 
 
-The current state of literature on ClLiF doesn't contain correlations for its tritium transport properties. This makes the extraction time estimate inherently uncertain. Then, the best that can be done is to enclose the extraction time estimate between upper and lower bounds, corresponding to pessimistic and optimistic scenarios derived from the currently available correlations for tritium transport in molten salt presented in \cref{fig:transport_params}):
-\begin{itemize}
-    \item \textit{pessimistic scenario} = high solubility (the salt tends to retain tritium) and low diffusivity: $K_s$ and $D_l$ are both given by the correlations derived by \textcite{calderoni_measurement_2008} for \ce{T2} in \ce{FLiBe};
-    \item \textit{optimistic scenario} = low solubility and high diffusivity: $K_s$ is given by the \textcite{malinauskas_solubilities_1974} correlation for \ce{D_2} in \ce{FLiBe}, $D_l$ is given by the \textcite{fukada_hydrogen_2006} correlation for \ce{H2} in \ce{FLiNaK}. 
-\end{itemize}
 
-It should be noted that the Calderoni solubility was derived for temperatures greater than 550°C, the temperature range we consider here goes below that. Nevertheless extrapolating this correlation constitutes the highest upper bound that can be obtained for tritium solubility at lower temperatures, since the correlations by Field and Shaffer concern fluorides \ce{HF} and \ce{DF} and are thus discarded. 
 
-\subsection{Dependence on operating parameters}
+\subsection{Results}
+
 \subsubsection{Sensitivity analysis}
+
+\begin{figure}[htbp]
+  \centering
+  \includegraphics[width=0.6\linewidth]{fig/sobol_indices_3.pdf}
+  \caption{Sobol sensitivity indices for the 4-dimensional parameter space considered, in (a) the optimistic scenario; (b) the pessimistic scenario}
+  \label{fig:sobol}
+\end{figure}
+
 % sobol plot of operating parameters
-\todo{sobol plot: don't use color bared (not an extensive quantity), instead show box plot like: nominal value and error, for both S1 and ST side to side; remove useless elements on the plot that add noise (vertical grid)}
+\todo{sobol plot: don't use color bares (not an extensive quantity), instead show box plot like: nominal value and error, for both S1 and ST side to side; remove useless elements on the plot that add noise (vertical grid)}
+
+Sobol indices measure the relative sensitivity of a fonction to each of its individual variables. It is a variance based sensitivity metric, quantifying the variance that propagates to the output when varying one of its inputs. \todo{write a quick and intuitive paragraph about what sobol indices are and how they can be interpreted, give mathematical definition for first and total order indices}
+
+It should be noted that the width of the sampling space for each parameter conditions the indices the Sobol study will yield: in a function $f(a,b)=a+e^b$, if $a\in[1,10^5]$ and $b\in[1,1.01]$, $a$ will have the dominating Sobol index even though $f$ depends exponentially on $b$ and only linearly on $a$. The sample space for a simulation must be representative of what is expected to be encountered in the experiment. It is the case here.
 
 \subsubsection{Operating point}
 % tau vs (n,T) map
+\begin{figure}[htbp]
+  \centering
+  \includegraphics[width=0.6\linewidth]{fig/operating_point_map.pdf}
+  \caption{Estimate of the time to extract 99\% of the tritium, denoted $\tau_{99}$, as a function of the reduced 2D operational parameters space for (a) the optimistic scenario; (b) the pessimistic scenario. The smoothing is obtained by fitting the random samples with a surface $\tau_{99}\propto$... ($R^2=0.99$)} 
+  \label{fig:abaque}
+\end{figure}
 \todo{abaque: change tau to tau99, use even spacing between isolines to express true topography, make it a 2 panel figure with pessimistic and optimistic case (same color scale)}
 
-% add cost function to give optimal region ?
-\subsection{Uncertainty on transport parameters}
-% given Pi number (previous chapter), can Ks be neglected
-% pessimistic vs optimistic scenario
+The prediction of the numerical ARD model for each scenario are presented in \cref{fig:abaque}. In the following, we define the \textit{tritium removal time} $\tau_{99}$ as the time taken to extract 99\% of the initially bred tritium:
+\begin{itemize}
+    \item Fastest case: in the optimistic scenario and under optimal operational conditions (high $T$, high \ndotg) it can take only \textbf{17 hours} to remove tritium from LIBRA Pi;
+    \item Slowest case: up to \textbf{up to 27 days} in case of adverse tritium transport properties of ClLiF and sustained degraded operational conditions;
+    \item Expected case: at nominal operating conditions ($T=550$°C, \ndotg=500 sccm, \Ptop = 1.2 atm and \dnoz=2 mm) which should be sustainable in the experiment, the tritium removal time is 55.6 hours (optimistic) to 126.5 hours (pessimistic), i.e. \textbf{2.3 to 5.3 days}. 
+\end{itemize}  
+
 
 \section{Tritium permeation study}
 
@@ -1234,18 +1264,6 @@ It should be noted that the Calderoni solubility was derived for temperatures gr
 \subsubsection{Impact of sweep gas composition}
 \subsubsection{Impact of recombination constant}
 \subsubsection{Effect of tritium extraction kinetics}
-
-
-%%%%%%%%%%%%%%%%%%%%
-\chapter{Evaluation}
-%%%%%%%%%%%%%%%%%%%%
-
-% In the evaluation you convince the reader that your design works as intended.
-% Describe the evaluation setup, the designed experiments, and how the
-% experiments showcase the individual points you want to prove.
-
-% This section is usually 5-10 pages.
-
 
 %%%%%%%%%%%%%%%%%%%%%%
 \chapter{Related Work}
