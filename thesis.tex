@@ -509,9 +509,10 @@ Equating \cref{eq:n_g_constraint} and \cref{eq:n_g_integrated} yields the BCs th
 \subsection{Derived quantities}
 Ultimately, what we are interested in is the evolution of the tritium inventory in the molten salt $n_{T_2,l} \:\mathrm{[molT_2]}$, which can be obtained from the profiles computed by the 1D ARD model. 
 
-\subsubsection{Definition and properties}
+\subsubsection{Definition and properties} 
+\todo{move this to the general definitions at the beginning of the chapter}
 
-The profiles solved by the 1D ARD model are inherently space dependent, and because of the hydrostatic pressure in the tank $P_l(z)=P_\mathrm{top}+\rho_l\,g\,(H-z)$, all the hydrodynamic parameters are also space dependent. It will be useful in the following to represent an arbitrary spatially varying quantity $\psi(z)$ by its average over a volume $\alpha$, defined as:
+The profiles solved by the 1D ARD model are inherently space dependent, and because of the hydrostatic pressure in the tank $P_l(z)=P_\mathrm{top}+\rho_l\,g\,(H-z)$, all the hydrodynamic parameters are also space dependent. It will be useful in the rest of this work to represent an arbitrary spatially varying quantity $\psi(z)$ by its average over a volume $\alpha$, defined as:
 \begin{equation}
     \label{eq:def_average}
     \langle \psi \rangle^\alpha \equiv \frac{\iiint_{V_\alpha}\psi(\vec r) \,dV_\alpha}{V_\alpha}
@@ -1246,7 +1247,7 @@ The prediction of the numerical ARD model for each scenario are presented in \cr
 
 % presentation of FESTIM: see file:///C:/Users/hippo/OneDrive/temp/Estimations%20of%20tritium%20retention%20through%20DT1%20in%20a%20full%20tungsten%20ITER.pdf
 
-Tritium is expected to permeate through structural materials in general. This is accounted for in the BABY and LIBRA experiments as one of the removal pathways, competing with other extraction mechanisms such as sparging in LIBRA Pi. As part of the robust accountancy goal, the permeated tritium is collected using a double-walled vessel. However, the design of the LIBRA Pi vessel also opens some pathways for tritium to leak to the environment, challenging the robust accountancy goal. 
+Tritium is expected to permeate through structural materials in general. This is accounted for in the BABY and LIBRA experiments as one of the removal pathways, competing with other extraction mechanisms such as sparging in LIBRA Pi. As part of the robust accountancy goal of these experiments, the permeated tritium is collected using a double-walled vessel. However, the design of the LIBRA Pi vessel also opens some structural pathways for tritium to leak to the environment, challenging the robust accountancy goal. 
 
 The purpose of this section is therefore to evaluate the amount of tritium that permeates and quantify what portion of it leaks out during a run, in light of the sparging extraction dynamics predicted above. 
 
@@ -1255,17 +1256,55 @@ The purpose of this section is therefore to evaluate the amount of tritium that 
 \todo{study considers we are in diffusion-limited regime, but check W>>1 from Abdou 2020}
 
 \subsection{Tritium transport model}
-\subsubsection{Geometry}
-\subsubsection{Numerical scheme}
-\paragraph{Boundary conditions}
-% inside inconel, equations are linear -> wait NOT OV FLUX -> plot SS permeation ratio vs left BC ? over 1 decade, with 3 different cases (k_r, k_r+H2, k_r+H2O)
 
-\subsection{Mesh independence study}
+
+\subsubsection{Geometry}
+\subsubsection{Boundary conditions}
+\begin{itemize}
+    \item salt surface BC:
+    \item recombination surface BC: 
+    \item outside surface BC: 
+\end{itemize}
+
+\subsubsection{Mesh independence}
+
+\paragraph{Tested meshes}
+Two different meshes are tested for the same geometry: 
+\begin{itemize}
+    \item Unstructured tetrahedral mesh (TET): this is the first mesh that was tried, as it is straight forward to create. A strength of using tetrahedral elements is that it is able to reproduce complex shapes, in our case the half-elliptical shape of the spacer's channel.
+    \item Structured hexagonal mesh (HEX): for redundancy and because the tetrahedral mesh was showing poor numerical convergence performances. A trade-off is that the half-elliptical channel has to be approximated by a parallelepipedic one. 
+\end{itemize}
+
+The parallelepipedic approximation of the channel's shape in the HEX mesh leads to a slight increase of the recombination surface even if the height of the parallelepiped ($w_\mathrm{gap}$) is allowed to vary. Its other dimensions ($H_s$, $L_\mathrm{gap}$) can't change without corrupting the contact ratio $\chi_s$ which would cause greater harm to the fidelity of the estimated leakage. It was therefore chosen to tune $w_\mathrm{gap}$ so that the the volume of the spacer is conserved between the two meshes. This yields an extra recombination surface of 0.2\% and o.8\% for the side and bottom unit cells respectively, which is expected to be responsible for a slight underestimation of the leakage ratio and should be quantified. 
 
 % safety factor SF=1.25 as recommanded for GCI on 3 or more grids
 % we use P1 linear lagrange elements which theoretically give an L2 norm of the error in O(h^2) for the field themselves and O(h) for their gradient. Bounday fluxes are obtained from gradient so the results p=1-1.3 are consistent with the theory 
 
+\paragraph{Mesh convergence}
+
+HEX mesh wins the clean convergence criteria as well as the mass conservation criteria, it is therefore the adopted one. 
+
+The parallelepipedic approximation of the half-elliptical channel was replicated on the TET mesh to identify the origin of discrepancies of TET and HEX meshes. The results for the bottom cell are:
+\begin{itemize}
+    \item TET, original geometry: $\phi_\mathrm{leak}=4.66 \cdot10^9 \ \mathrm{mol/s}$
+    \item TET, approximated channel: $\phi_\mathrm{leak}=4.41 \cdot10^9 \ \mathrm{mol/s}$
+    \item HEX, approximated channel: $\phi_\mathrm{leak}=4.40 \cdot10^9 \ \mathrm{mol/s}$ 
+\end{itemize}
+It shows that a $-5.4\%$ underestimation of the leakage flux can be attributed to the parallelepipedic channel approximation. This propagates to a $8.5 \pm 0.5\%$ uncertainty on the leakage ratio, which is considered an acceptable cost. This underestimation is less pronounced for the side cell since it has a larger recombination surface that mitigates the small surface increase caused by the parallelepiped approximation. 
+
+The geometric difference being removed, HEX and TET meshes agree within 0.5\% of the leakage flux value, which can be attributed to discretization error. This cross-validates the trustworthiness of the model predictions.
+
+
+
+\subsubsection{Numerical scheme}
+% inside inconel, equations are linear -> wait NOT OV FLUX -> plot SS permeation ratio vs left BC ? over 1 decade, with 3 different cases (k_r, k_r+H2, k_r+H2O)
+
+
+
 \subsection{Results}
+
+in steady state, accounting only for recombination at the OV surface, leakage ratio is $8.4\%$ for the bottom cell against $3.0\pm0.2\%$ for the side cell, at 3-fold decrease that matches the $14\%$ vs $5.1\%$ contact ratio difference, as could be expected. 
+
 \subsubsection{Impact of sweep gas composition}
 \todo{}
 \subsubsection{Impact of recombination constant}
