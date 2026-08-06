@@ -350,7 +350,7 @@ Transport of solute gases through liquid-gas interfaces is commonly described by
   \centering
   \includegraphics[width=0.5\linewidth]{fig/boundary_layer.png}
   \caption{Illustration of the Lewis-Whitman two-film mass transfer model for a bubble in a liquid, taken from \textcite{evans_physics_2026}.}
-  \label{fig:sparging_tank}
+  \label{fig:two_film_model}
 \end{figure}
 
 \begin{equation*}
@@ -1259,12 +1259,76 @@ The purpose of this section is therefore to evaluate the amount of tritium that 
 
 
 \subsubsection{Geometry}
-\subsubsection{Boundary conditions}
+\todo{is the usage of "ribs" or "spacer ribs" right here ?}
+The quarter-annulus geometry of the LIBRA Pi experiment is shown in \cref{fig:librapi}(a). We are specifically interested about the vessel itself, consisting of an \textit{inner and outer wall} (IV and OV) so that tritium that permeates from the salt to the structural material can be collected by running a sweep gas in-between the two walls, called \textit{OV gas}. In LIBRA Pi specifically, some spacers are required between the IV and OV to hold the walls together, as pictured in \cref{fig:librapi}(b). They make several parallel ribs spanning the whole width of 5 of the 6 faces: bottom, 2 sides, inner and outer. Small repeated archs are carved in the spacers, these are channels that allow the OV gas to flow. They add complexity to the spacer's geometry.  Resolving the small features of the multiple spacers would be intractable in 3D at the scale of the full vessel. Instead, we run the 3D simulations at a smaller scale, from which we reconstruct the vessel-scale quantities of interest.
+
+\paragraph{Scale reduction methodology}
+
+The 3D transport simulations are run at the scale of a unit cell that repeats periodically on the vessel, described in \cref{fig:cell}. The 4 faces types listed in \cref{fig:librapi}(a) have slightly different spacer periodicity, this require individual treatments. For each face, the dimensions tight to the spacers are given by the spacer geometry itself; regarding the cell's dimensions, $L_\mathbf{cell}=L_\mathbf{s}+L_\mathbf{gap}$ is fixed by the periodicity of the spacer channels and $w_\mathrm{cell}=w_\mathrm{IV}+w_\mathrm{s}+w_\mathrm{OV}$ is the actual thickness of the vessel, so the only degree of freedom is $H_\mathrm{cell}$. The cell-scale$\rightarrow$vessel-scale reconstruction works as follows:
+\begin{enumerate}
+    \item It is assumed that the fraction of permeated tritium that leaks out is dictated by the contact surface area of spacers with walls $A_{\mathrm{contact}}$, since it offers a pathway for leakage. The unit cell should therefore be representative of it. We define the contact surface ratio of a geometrical entity $i$ (a \textit{cell} or a \textit{face}) as:
+    \begin{equation}
+    \label{eq:chi_def}
+        \chi_i\equiv\frac{A_{\mathrm{contact},i}}{A_{\mathrm{total},i}}
+    \end{equation}
+    \item For the results obtained with one unit cell to be applicable to a whole face of the vessel, we want: $ \chi_\mathrm{face}=\chi_\mathrm{cell}=\frac{L_\mathrm{s}\,H_\mathrm{s}}{L_\mathrm{cell}\,H_\mathrm{cell}}$. This fixes $H_\mathrm{cell}=\frac{L_\mathrm{s}\,H_\mathrm{s}}{L_\mathrm{cell}\,\chi_\mathrm{face}}$;
+    \item The contact surface ratio $\chi_\mathrm{face}$ for each face is obtained by simple application of its definition in \cref{eq:chi_def} (taking into account the void left by the spacers channels), yielding for the 4 different faces types: $\chi_\mathrm{bottom}=14\%$, $\chi_\mathrm{side}=5.1\%$, $\chi_\mathrm{inner}=5.4\%$, $\chi_\mathrm{outer}=5.7\%$;
+    \item This prescribes running the transport simulation on \textbf{4 different cell types}, with each respective $\chi_\mathrm{cell}$ matching the $\chi_\mathrm{face}$ of the corresponding face type;
+    \item Once results for all the cell types are obtained, any vessel scale quantity of interest $\psi$ can be reconstructed by summing up the contribution of individual cell types $\psi_k$, weighted by a multiplier $m_k$:
+    \begin{equation}
+        \psi=\sum_{k=1}^4 m_k \psi_k
+    \end{equation}
+    Note that $\psi$ must be an \textbf{extensive} quantity here (e.g. total permeated tritium, e.g. not a concentration). Intuitively, $m_k$ is chosen so that a reconstructed face has the same total surface area as its original face, the contact surface ratio being conserved it will also have the same contact surface area. Formally, we enforce:
+    \begin{align}
+        \left.
+        \begin{array}{rcl} 
+        &A_{\mathrm{total, reconstructed}\,k} &= m_k \,A_{\mathrm{total, cell}\,k}\\
+        &A_{\mathrm{total, reconstructed}\,k} &= A_{\mathrm{total, face}\,k}
+        \end{array}\right\} \Rightarrow m_k \equiv \frac{A_{\mathrm{total, face}\,k}}{A_{\mathrm{total, cell}\,k}}
+    \end{align}
+\end{enumerate}
+\todo{adapt geometry.py to reflect these notations: e.g. A\_contact\_cell instead of simply A\_cell}
+
+Under these definitions, the spacer contact surface of each reconstructed face is indeed conserved from the original face:
+\begin{align*}
+    A_{\mathrm{contact, reconstructed}\,k} &= m_k \,A_{\mathrm{contact, cell}\,k}\\
+    &=A_{\mathrm{total, face}\,k}\,\frac{A_{\mathrm{contact, cell}\,k}}{A_{\mathrm{total, cell}\,k}}\\
+    &=A_{\mathrm{total, face}\,k}\,\chi_{\mathrm{cell},k}\\
+    &=A_{\mathrm{total, face}\,k}\,\chi_{\mathrm{face},k}\\
+    &=A_{\mathrm{contact, face}\,k}
+\end{align*}
+
+The quantities derived using this scale reduction methodology can therefore be assumed representative of what would have been obtained with a full vessel-scale simulation. Details about all the dimensions used in this model can be found in the \verb|geometry.py| script of the \verb|LibraPi_transport| repository publicly available on GitHub. They were all measured from the CAD \verb|.step| model of LIBRA Pi with a $\pm0.1$ mm uncertainty. 
+
+
+\begin{figure}[htbp]
+  \centering
+  \includegraphics[width=\linewidth]{fig/librapi.pdf}
+  \caption{Orthographic projection of (a) the LIBRA Pi experiment viewed from the outside, with labelled faces; (b) an exploded view of the LIBRA Pi double-walled vessel (IV and OV) mechanically coupled by spacer ribs.} 
+  \label{fig:librapi}
+\end{figure}
+\todo{crop in latex so that it looks centered}
+
+\begin{figure}[htbp]
+  \centering
+  \includegraphics[width=0.6\linewidth]{fig/cell.pdf}
+  \caption{Simulated unit cell and its dimensions: (a) perspective view without the OV wall, showing one spacer rib with evenly spaced gas channels, the dotted-dashed line indicates the cross-section shown in (b) the top view. "spacer" is abreviated as "s"} 
+  \label{fig:cell}
+\end{figure}
+\todo{same: crop vertically}
+
+
+\subsubsection{Equations and boundary conditions}
+
+The numerical scheme and the equations solved in this model are documented in 
 \begin{itemize}
     \item salt surface BC:
     \item recombination surface BC: 
     \item outside surface BC: 
 \end{itemize}
+
+
+All the structural material is considered made of inconel. In practice, the salt is expected to reach 550°C and the vessel to be below that. Here, we conservatively consider the vessel is at salt temperature, so that the predicted tritium permeation is an upper bound. 
 
 \subsubsection{Mesh independence}
 
@@ -1306,9 +1370,26 @@ The geometric difference being removed, HEX and TET meshes agree within 0.5\% of
 in steady state, accounting only for recombination at the OV surface, leakage ratio is $8.4\%$ for the bottom cell against $3.0\pm0.2\%$ for the side cell, at 3-fold decrease that matches the $14\%$ vs $5.1\%$ contact ratio difference, as could be expected. 
 
 \subsubsection{Impact of sweep gas composition}
-\todo{}
-\subsubsection{Impact of recombination constant}
+
+\begin{figure}[htbp]
+  \centering
+  \includegraphics[width=\linewidth]{leakage_ratio_vs_salt_concentration.pdf}
+  \caption{Leakage ratio in steady state as a function of salt tritium concentrations for different cases of OV surface boundary condition. The range of salt concentrations corresponds to what can be expected during a run after a 6h irradiation at $2\cdot10^9$ neutrons/s. Datapoints are shown as dots.} 
+  \label{fig:leakage_vs_salt_concentration}
+\end{figure}
+
+The OV BC being non-linear, it introduces a dependency of the permeation ratio on the salt concentration, shown in \cref{fig:leakage_vs_salt_concentration}. In cases of tritium recombination only and isotopic exchange with moisture, the OV flux is \textit{surface limited} and the permeation ratio follows a $\propto c_\mathrm{salt}^{-0.37}$ law. In the case of recombination with \ce{H}, permeation is \textit{diffusion limited}, changing the flux BC to a perfect sink ($c_\mathrm{T}=0$) BC confirms this. This is valid for the entire range of considered salt concentrations, hiding the non-linearity of the OV boundary condition and making the permeation ratio \textbf{salt concentration independent}. This sets a lower bound on the achievable leakage ratio for each geometry 
+
+By surface limited, it is meant that the bottleneck for tritium permeation is chemical reactions happening at the surface. For example, tritium recombination ($k_r\,c_\mathrm{T}^2$ or $k_r\,c_\mathrm{T}\,c_\mathrm{H}$) or isotopic exchange ($k_e\,c_\mathrm{H_2O}\,c_T$). If any of these is very fast (e.g. if $k_r\,c_\mathrm{H}$ is large), all the tritium that reaches the surface can be considered immediately transferred to the gas, tritium concentration at the surface is then null. Permeation is no longer limited by reactions happening at the surface but rather by transport \textbf{to the surface}: it is diffusion limited. 
+
+The OV sink in the $\mathrm{T+H}$ case seems surprisingly high compared to the one in the $\mathrm{T+H_2O}$ case. This is caused by the mass transfer contribution of each gas to the flux: with \ce{H2} present to 3.5\% in the sweep gas and its concentration at the metal-gas interface assumed at equilibrium yields $c_H=K_s\sqrt{P_\mathrm{H_2}}=8.7\cdot 10^{23} \ \mathrm{H/m^3}$, thus a mass transfer coefficient $k_r\,c_\mathrm{H}=3.5\cdot 10^{-4} \ \mathrm{m/s}$, 5 orders of magnitude higher than the contribution of isotopic exchange with gas moisture estimated at $k_e\,c_\mathrm{H_2O}=4.6\cdot 10^{-9}\ \mathrm{m/s}$ by fitting data on previous BABY 1L runs. 
+
+ 
 \subsubsection{Effect of tritium extraction kinetics}
+
+\todo{plot showing the cumulative tritium: retrieved in sparge gas, retrieved in OV gas, leaked. Portion retrieved in sparge should be much larger than total permeated (check this assumptions holds). }
+
+The coupling between the sparging model and the permeation model is unidirectional: the permeation model gets the output of the sparging model as its salt concentration BC, but the sparging extraction time ignores the fact that some tritium is removed via permeation. The salt tritium inventory at any given time is therefore slightly overestimated, and so is permeation. The underlying assumption is that cumulative permeation is a negligible fraction of the initial salt inventory, small enough not to significantly change the sparging extraction kinetics.
 
 %%%%%%%%%%%%%%%%%%%%%%
 \chapter{Related Work}
