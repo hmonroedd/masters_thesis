@@ -1,9 +1,18 @@
+\begin{table}[htbp]
+\centering
+\caption{Unit cell dimensions and vessel-scale multipliers for the four face types of the LIBRA Pi vessel. $L_\mathrm{s}$ and $L_\mathrm{gap}$ are measured from the CAD model; $\chi_\mathrm{face}$ follows from \cref{eq:chi_def} applied to the wetted part of each face; $H_\mathrm{cell}$ and $m_k$ are then imposed by the scale reduction methodology. The 2 side faces are counted together in $A_\mathrm{total,face}$.}
 \label{tab:unit_cell}
-% face	χ	H_cell	m_k
-% bottom	0.0682	11.09 cm	30.7
-% side	0.0463	18.20 cm	64.0
-% inner	0.0485	18.20 cm	21.0
-% outer	0.0519	18.20 cm	58.7
-
-
-%k_m = 3.159e-5 m/s
+\begin{tabular}{@{}lccccc@{}}
+\toprule
+\textbf{Face} & $\chi_\mathrm{face}$ & $L_\mathrm{s}$ & $L_\mathrm{gap}$ & $H_\mathrm{cell}$ & $m_k$ \\
+              & [\%]                 & [cm]           & [cm]             & [cm]              & [--]  \\
+\midrule
+bottom & 6.82 & 2.27 & 1.54 & 11.09 & 30.7 \\
+side   & 4.63 & 3.03 & 1.54 & 18.20 & 64.0 \\
+inner  & 4.85 & 3.54 & 1.55 & 18.20 & 21.0 \\
+outer  & 5.19 & 4.26 & 1.47 & 18.20 & 58.7 \\
+\midrule
+\multicolumn{5}{@{}l}{Total wetted area $\sum_k A_{\mathrm{total,face}\,k}$} & 1.469 $\mathrm{m^2}$ \\
+\bottomrule
+\end{tabular}
+\end{table}

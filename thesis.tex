@@ -1242,25 +1242,21 @@ The prediction of the numerical ARD model for each scenario are presented in \cr
     \item Expected case: at nominal operating conditions ($T=550$°C, \ndotg=500 sccm, \Ptop = 1.2 atm and \dnoz=2 mm) which should be sustainable in the experiment, the tritium removal time is 55.6 hours (optimistic) to 126.5 hours (pessimistic), i.e. \textbf{2.3 to 5.3 days}. 
 \end{itemize}  
 
-
 \section{Tritium permeation study}
 
 % presentation of FESTIM: see file:///C:/Users/hippo/OneDrive/temp/Estimations%20of%20tritium%20retention%20through%20DT1%20in%20a%20full%20tungsten%20ITER.pdf
 
-Tritium is expected to permeate through structural materials in general. This is accounted for in the BABY and LIBRA experiments as one of the removal pathways, competing with other extraction mechanisms such as sparging in LIBRA Pi. As part of the robust accountancy goal of these experiments, the permeated tritium is collected using a double-walled vessel. However, the design of the LIBRA Pi vessel also opens some structural pathways for tritium to leak to the environment, challenging the robust accountancy goal. 
+Tritium is expected to permeate through structural materials in general. This is accounted for in the BABY and LIBRA experiments as one of the removal pathways, competing with other extraction mechanisms such as sparging in LIBRA Pi. As part of the accountancy goal of these experiments, the permeated tritium is collected using a double-walled vessel. However, the design of the LIBRA Pi vessel also opens some structural pathways for tritium to leak to the environment, challenging the robustness of tritium accountancy.
 
-The purpose of this section is therefore to evaluate the amount of tritium that permeates and quantify what portion of it leaks out during a run, in light of the sparging extraction dynamics predicted above. 
-
+The purpose of this section is therefore to evaluate the amount of tritium that permeates and quantify what portion of it leaks out during a run, in light of the sparging extraction dynamics predicted above.
 
 \label{sec:LIBRAPi_permeation}
-\todo{study considers we are in diffusion-limited regime, but check W>>1 from Abdou 2020}
 
 \subsection{Tritium transport model}
 
-
 \subsubsection{Geometry}
 \todo{is the usage of "ribs" or "spacer ribs" right here ?}
-The quarter-annulus geometry of the LIBRA Pi experiment is shown in \cref{fig:librapi}(a). We are specifically interested about the vessel itself, consisting of an \textit{inner and outer wall} (IV and OV) so that tritium that permeates from the salt to the structural material can be collected by running a sweep gas in-between the two walls, called \textit{OV gas}. The salt volume doesn't fill the vessel all the way up, it stops at a certain height which delimits the portion of the wall that is \textit{wetted} and can permeate. In LIBRA Pi specifically, some spacers are required between the IV and OV to hold the walls together, as pictured in \cref{fig:librapi}(b). They make several parallel ribs spanning the whole width of 5 of the 6 faces: bottom, 2 sides, inner and outer. Small repeated archs are carved in the spacers, these are channels that allow the OV gas to flow. They add complexity to the spacer's geometry.  Resolving the small features of the multiple spacers would be intractable in 3D at the scale of the full vessel. Instead, we run the 3D simulations at a smaller scale, from which we reconstruct the vessel-scale quantities of interest.
+The quarter-annulus geometry of the LIBRA Pi experiment is shown in \cref{fig:librapi}(a). We are specifically interested about the vessel itself, consisting of an \textit{inner and outer wall} (IV and OV) so that tritium that permeates from the salt to the structural material can be collected by running a sweep gas in-between the two walls, called \textit{OV gas}. The salt volume doesn't fill the vessel all the way up, it stops at a certain height which delimits the portion of the wall that is \textit{wetted} and can permeate. In LIBRA Pi specifically, some spacers are required between the IV and OV to hold the walls together, as pictured in \cref{fig:librapi}(b). They make several parallel ribs spanning the whole width of 5 of the 6 faces: \textit{bottom}, 2 \textit{sides}, \textit{inner} and \textit{outer}. Small repeated archs are carved in the spacers, these are channels that allow the OV gas to flow. They add complexity to the spacer's geometry.  Resolving the small features of the multiple spacers would be intractable in 3D at the scale of the full vessel. Instead, we run the 3D simulations at a smaller scale, from which we reconstruct the vessel-scale quantities of interest.
 
 \paragraph{Scale reduction methodology}
 
@@ -1279,10 +1275,10 @@ The 3D transport simulations are run at the scale of a unit cell that repeats pe
     \begin{equation}
         \psi=\sum_{k=1}^4 m_k \psi_k
     \end{equation}
-    Note that $\psi$ must be an \textbf{extensive} quantity here (e.g. total permeated tritium, e.g. not a concentration). Intuitively, $m_k$ is chosen so that a reconstructed face has the same total surface area as its original face, the contact surface ratio being conserved it will also have the same contact surface area. Formally, we enforce:
+    Note that $\psi$ must be an \textbf{extensive} quantity here (e.g. total permeated tritium, e.g. not a concentration). Intuitively, $m_k$ is chosen so that a reconstructed face has the same total surface area as its original face; the contact surface ratio being conserved it will also have the same contact surface area. Formally, we enforce:
     \begin{align}
         \left.
-        \begin{array}{rcl} 
+        \begin{array}{rcl}
         &A_{\mathrm{total, reconstructed}\,k} &= m_k \,A_{\mathrm{total, cell}\,k}\\
         &A_{\mathrm{total, reconstructed}\,k} &= A_{\mathrm{total, face}\,k}
         \end{array}\right\} \Rightarrow m_k \equiv \frac{A_{\mathrm{total, face}\,k}}{A_{\mathrm{total, cell}\,k}}
@@ -1299,15 +1295,14 @@ Under these definitions, the spacer contact surface of each reconstructed face i
     &=A_{\mathrm{contact, face}\,k}
 \end{align*}
 
-The quantities derived using this scale reduction methodology can therefore be assumed representative of what would have been obtained with a full vessel-scale simulation. The obtained dimensions and multipliers for each cell type are summarized in \cref{tab:unit_cell}. Details about all the dimensions used in this model can be found in the \verb|geometry.py| script of the \verb|LibraPi_transport| repository publicly available on GitHub. They were all measured from the CAD \verb|.step| model of LIBRA Pi with a $\pm0.1$ mm uncertainty. 
+The quantities derived using this scale reduction methodology can therefore be assumed representative of what would have been obtained with a full vessel-scale simulation. The obtained dimensions and multipliers for each cell type are summarized in \cref{tab:unit_cell}. Details about all the dimensions used in this model can be found in the \verb|geometry.py| script of the \verb|LibraPi_transport| repository publicly available on GitHub. They were all measured from the CAD \verb|.step| model of LIBRA Pi with a $\pm0.1$ mm uncertainty.
 
 \input{tab_unit_cell}
-\todo{make this table, fill with the values commented out in the .tex}
 
 \begin{figure}[htbp]
   \centering
   \includegraphics[width=\linewidth]{fig/librapi.pdf}
-  \caption{Orthographic projection of (a) the LIBRA Pi experiment viewed from the outside, with labelled faces; (b) an exploded view of the LIBRA Pi double-walled vessel (IV and OV) mechanically coupled by spacer ribs.} 
+  \caption{Orthographic projection of (a) the LIBRA Pi experiment viewed from the outside, with labelled faces; (b) an exploded view of the LIBRA Pi double-walled vessel (IV and OV) mechanically coupled by spacer ribs.}
   \label{fig:librapi}
 \end{figure}
 \todo{crop in latex so that it looks centered}
@@ -1315,7 +1310,7 @@ The quantities derived using this scale reduction methodology can therefore be a
 \begin{figure}[htbp]
   \centering
   \includegraphics[width=0.6\linewidth]{fig/cell.pdf}
-  \caption{Simulated unit cell and its dimensions: (a) perspective view without the OV wall, showing one spacer rib with evenly spaced gas channels, the dotted-dashed line indicates the cross-section shown in (b) the top view. "spacer" is abreviated as "s"} 
+  \caption{Simulated unit cell and its dimensions: (a) perspective view without the OV wall, showing one spacer rib with evenly spaced gas channels, the dotted-dashed line indicates the cross-section shown in (b) the top view. "spacer" is abreviated as "s"}
   \label{fig:cell}
 \end{figure}
 \todo{same: crop vertically}
@@ -1323,112 +1318,227 @@ The quantities derived using this scale reduction methodology can therefore be a
 
 \subsubsection{Equations and boundary conditions}
 
-This model simulates tritium transport using the FESTIM open source code, whose details about numerical scheme and equations solved are documented in \cite{dark_festim_2026}. Here, we only account for mono-species diffusion in a solid media, without accounting for tritium trapping.
+Tritium transport in the inconel is a pure diffusion problem, solved with the open-source hydrogen transport code FESTIM 2.0\cite{dark_festim_2026}. What makes the problem specific to LIBRA Pi is the three boundary conditions, one per surface of the unit cell. It is useful to read them as \textbf{three resistances in series}: tritium has to cross the salt to reach the wall, diffuse through the metal, and then leave it, either into the OV gas or into the environment. Which of the three dominates decides everything that follows.
 
-
-\todo{insert illustration of where the BCs go}
-The boundary conditions are:
 \begin{itemize}
-    \item \textit{salt surface BC}: molten salts are tritium repellants and metals are tritium sponges. We can't consider the inconel surface concentration to be at equilibrium with the salt, it is physically unrealistic: after irradiation, the $3.6\cdot10^{13} \ \mathrm{T/m^3}$ in the salt becomes $4.0\cdot10^{20}\ \mathrm{T/m^3}$ in the metal, once this diffuses for a few timesteps the tritium inventory in the mere IV wall becomes of the order of $10^{18}$ T atoms, 6 orders of magnitude higher than the total amount of bred tritium.\textbf{The tritium flux to the wall has to be limited by transport on the salt side}. This is enforced by considering a flux BC that accounts for salt transport:
+    \item \textit{salt surface BC}: molten salts are tritium repellants and metals are tritium sponges. We can't consider the inconel surface concentration to be at equilibrium with the salt, it is physically unrealistic: after irradiation, the $3.6\cdot10^{13} \ \mathrm{T/m^3}$ in the salt becomes $4.0\cdot10^{20}\ \mathrm{T/m^3}$ in the metal, once this diffuses for a few timesteps the tritium inventory in the mere IV wall becomes of the order of $10^{18}$ T atoms, 6 orders of magnitude higher than the total amount of bred tritium. \textbf{The tritium flux to the wall has to be limited by transport on the salt side}. This is enforced by considering a flux BC that accounts for salt transport:
     \begin{equation}
-        J_\mathrm{salt}=k_m\,\left(c_\mathrm{salt}(t)-K_H\,\left(\frac{c_\mathrm{T}(t)}{K_s}\right)^2\right)
+    \label{eq:salt_BC}
+        J_\mathrm{salt}=k_\mathrm{eff}\,\left(c_\mathrm{salt}(t)-K_H\,\left(\frac{c_\mathrm{T}(t)}{K_s}\right)^2\right)
     \end{equation}
-    where $k_m$ is a salt-to-wall mass transfer coefficient.
-    \item recombination surface BC: 
-    \item outside surface BC: 
+    where $k_\mathrm{eff}$ is the salt-to-wall mass transfer coefficient. The second term is the salt concentration that would be in equilibrium with the local metal surface, obtained by inverting Sieverts' law then applying Henry's law. It allows $J_\mathrm{salt}$ reverse sign on its own once the wall is more loaded than the salt, which can happen at the end of a run.
+    \item \textit{OV gas surface BC}: a \ce{T} atom leaves the metal into the OV gas by either: recombining with another \ce{T} into \ce{T2} ($\mathrm{2^{nd}}$ order reaction); recombining with a \ce{H} adsorbed at the OV surface into \ce{HT}; or by isotopic exchange with a partner molecule of the sweep gas (e.g. through \ce{T+H2O -> H+HTO} or \ce{T+H2 -> H+HT}). The first channel is quadratic in the surface concentration, the others are linear, so the flux out of the sweep gas facing surfaces is:
+    \begin{equation}
+    \label{eq:sweep_BC}
+        J_\mathrm{OV}=-k_r\,c_\mathrm{T}^2-k_e\,c_\mathrm{X}\,c_\mathrm{T}
+    \end{equation}
+    with $k_r=4\cdot10^{-28} \ \mathrm{m^4/(T\,s)}$ for tritium in a clean (non-oxidized) inconel 625 surface at 550°C\cite{perujo_low_1996}. Three sweep gas compositions are considered, an inert carrier alone and the same carrier with one of two reactive partners added:
+    \begin{itemize}
+        \item \textbf{He only}: an inert carrier, so $k_e\,c_\mathrm{X}=0$ and recombination is the only channel;
+        \item \textbf{He + 3.5\% \ce{H2}}: $\mathrm{T(metal)}+\mathrm{H(metal, adsorbed)}\rightarrow \mathrm{HT}$, so the same $k_r$ applies and $c_\mathrm{X}$ is the hydrogen the sweep gas loads into the surface, assumed at Sievert's equilibrium with its partial pressure. At 3.5\% \ce{H2} in a 1.2 atm sweep gas, $c_\mathrm{H}=K_s\sqrt{P_\mathrm{H_2}}=8.7\cdot10^{23} \ \mathrm{H/m^3}$, hence $\frac{1}{2}k_r\,c_\mathrm{H}=3.5\cdot10^{-4}\ \mathrm{m/s}$;
+        \item \textbf{He + \ce{H2O}}: $\mathrm{T(metal)}+\mathrm{H_2O(gas)}\rightarrow \mathrm{HTO}$, with the product $k_e\,c_\mathrm{H_2O}=4.6\cdot10^{-9}\ \mathrm{m/s}$, an unpublished estimate obtained by fitting data on previous BABY 1L runs. This single number is what separates a sweep gas that collects tritium from one that does not (\cref{sec:perm_sweep}), so it deserves to be better constrained than it currently is.
+    \end{itemize}
+    \item \textit{outside surface BC}: the outer face of the OV wall is open to the experimental room, where tritium is assumed to be immediately carried away by ambient air. It is modelled as a perfect sink, $c_\mathrm{T}=0$. Any surface resistance there would reduce the leakage, so this is the conservative choice.
 \end{itemize}
 
-\todo{very small paragraph that explains the derivation of km briefly}
-$k_m$ is obtained from a bubble column wall heat transfer correlation by \cite{deckwer_mechanism_1980} derived from a Stanton number, transposed to mass transfer by the Chilton-Colburn analogy, which susbsitutes Pr for Sc. % derivation https://share.gemini.google/8vN4kPgOQjCo
+\paragraph{Salt-side mass transfer}
+The mass transfer coefficient $k_m$ for salt transport is obtained from a Chilton-Colburn analogy applied to the bubble column wall correlation of \textcite{deckwer_mechanism_1980}, in which the column diameter cancels and only the superficial gas velocity remains:
+\begin{equation}
+    k_m=C\,(g\,\nu_l\,u_g)^{1/4}\,\mathrm{Sc}^{-1/2}
+\end{equation}
+With $C$ a prefactor that can take values from 1.13 (theoretical upper bound) to 0.1 (empirical). The liquid properties are the same as those resolved by the sparging model, so the salt transport correlations of \cref{tab:correlations} are reused here rather than duplicated. At nominal LIBRA Pi conditions this gives $k_m=3.2\cdot10^{-5}\ \mathrm{m/s}$.
 
+Still large uncertainties remain about the salt-to-metal transport, the presence of an oxide layer could change the flux by an order of magnitude. We account for this by considering a permeation reduction factor (PRF) applied to $k_m$ so that the salt BC uses an effective mass transfer coefficient $k_\mathrm{eff}\equiv k_m / \mathrm{PRF}$, and we simulate the four values $\mathrm{PRF}=1, 10, 100, 1000$. The PRF is applied on the salt side only: the oxide grows where the metal meets the salt, while the OV side is swept with an inert or reducing gas. Note that this sweep also covers the uncertainty on the prefactor $C$ of the correlation itself, which is only known to within a factor of about 10: the PRF spans three decades on $k_\mathrm{eff}$, so no plausible $C$ falls outside the range simulated.
 
 \paragraph{Sparging-permeation coupling}
 
-Permeation will impact the amount of tritium available to be extracted by sparging, and the other way around. The modelling on sparging done in this work allowed to establish that the concentration in the salt can be assumed uniform and that we can use a simple time constant $\tau$, independently of the concentration, to represent sparging extraction. The coupling can be achieved through a simple 0D mass balance:
+Permeation will impact the amount of tritium available to be extracted by sparging, and the other way around. The modelling on sparging done in this work allowed to establish that the concentration in the salt can be assumed uniform and that we can use a simple time constant $\tau$, independently of the concentration, to represent sparging extraction. The coupling can simply be achieved through a 0D mass balance:
 \begin{equation}
-    V_\mathrm{salt}\frac{d\,c_\mathrm{salt}}{dt}=-V_\mathrm{salt}\,\frac{c_\mathrm{salt}}{\tau}-A_\mathrm{wetted}\,J_\mathrm{salt}
+\label{eq:salt_balance}
+    V_\mathrm{salt}\frac{d\,c_\mathrm{salt}}{dt}=-\frac{c_\mathrm{salt}}{\tau}-A_\mathrm{wetted}\,J_\mathrm{salt}
 \end{equation}
 
-We decided to treat the optimistic scenario of \cref{sec:LIBRAPi_extraction} in nominal conditions, with $\tau_{99}=55.6$ hours. To stay consistent, we use the \textcite{malinauskas_solubilities_1974} and the \textcite{fukada_hydrogen_2006} correlations for the salt solubility and diffusivity respectively. 
+We decided to treat the optimistic scenario of \cref{sec:LIBRAPi_extraction} in nominal conditions, with $\tau_{99}=55.6$ hours. To stay consistent, we use the \textcite{malinauskas_solubilities_1974} and the \textcite{fukada_hydrogen_2006} correlations for the salt solubility and diffusivity respectively.
+\todo{run the same PRF sweep in the pessimistic scenario ($\tau_{99}=126.5$ h) to bound the sparging/permeation competition}
 
-All the structural material is considered made of inconel. In practice, the salt is expected to reach 550°C and the vessel to be below that. Here, we conservatively consider the vessel is at salt temperature, so that the predicted tritium permeation is an upper bound. 
+All the structural material is considered made of inconel. In practice, the salt is expected to reach 550°C and the vessel to be below that. Here, we conservatively consider the vessel is at salt temperature, so that the predicted tritium permeation is an upper bound.
+
+\subsubsection{Numerical scheme}
+
+The transport equation is discretised with linear Lagrange elements on the unit cell mesh and integrated in time with a backward Euler scheme, the resulting non-linear system being solved by a Newton method at each time step; the details of the FESTIM implementation are documented in \textcite{delaporte-mathurin_festim_2024}. Transient simulations a ran over 4 days, well above the $\tau_{99}$=55.6 hours sparging extraction time, so that effects of wall tritium inventory diffusing back to the salt can be observed. The time step is ramped geometrically from 30 s to 30 min, which resolves the initial loading of the wall without paying for it over the rest of the 4 days simulated.
+
+The coupling of \cref{eq:salt_balance} is the part specific to this work. The unit cells do not interact with each other, but they all draw from the same salt, so they cannot be run independently: they are stepped \textbf{in lockstep on a common time step}, and after each step the tritium that entered every cell is summed with the multipliers $m_k$ and removed from the 0D salt inventory, alongside what sparging extracted. The balance is integrated semi-implicitly, the sparging term implicitly and the permeation term explicitly, so that the extraction cannot overshoot and drive the inventory negative. The updated $c_\mathrm{salt}$ is then written back into the salt-side BC of every cell before the next step.
+
+To keep the computational cost reasonable, only 2 of the 4 cell types are simulated: the bottom cell, and the inner cell standing in for the 3 lateral faces. This is justified by $\chi_\mathrm{inner}$ sitting in the middle of the 3 lateral contact ratios (\cref{tab:unit_cell}), and the multiplier of the inner cell is then taken as the one conserving the total lateral wetted area.
 
 \subsubsection{Mesh independence}
 
 \paragraph{Tested meshes}
-Two different meshes are tested for the same geometry: 
+Two different meshes are tested for the same geometry:
 \begin{itemize}
-    \item Unstructured tetrahedral mesh (TET): this is the first mesh that was tried, as it is straight forward to create. A strength of using tetrahedral elements is that it is able to reproduce complex shapes, in our case the half-elliptical shape of the spacer's channel.
-    \item Structured hexagonal mesh (HEX): for redundancy and because the tetrahedral mesh was showing poor numerical convergence performances. A trade-off is that the half-elliptical channel has to be approximated by a parallelepipedic one. 
+    \item Unstructured tetrahedral mesh (TET): this is the first mesh that was tried, as it is straight forward to create. A strength of using tetrahedral elements is that it is able to reproduce complex shapes, in our case the arched shape of the spacer's channel.
+    \item Structured hexagonal mesh (HEX): for redundancy and because the tetrahedral mesh was showing poor numerical convergence performances. A trade-off is that the arched channel has to be approximated by a parallelepipedic one.
 \end{itemize}
 
-The parallelepipedic approximation of the channel's shape in the HEX mesh leads to a slight increase of the recombination surface even if the height of the parallelepiped ($w_\mathrm{gap}$) is allowed to vary. Its other dimensions ($H_s$, $L_\mathrm{gap}$) can't change without corrupting the contact ratio $\chi_s$ which would cause greater harm to the fidelity of the estimated leakage. It was therefore chosen to tune $w_\mathrm{gap}$ so that the the volume of the spacer is conserved between the two meshes. This yields an extra recombination surface of 0.2\% and o.8\% for the side and bottom unit cells respectively, which is expected to be responsible for a slight underestimation of the leakage ratio and should be quantified. 
+The parallelepipedic approximation of the channel's shape in the HEX mesh leads to a slight increase of the recombination surface even if the height of the parallelepiped ($w_\mathrm{gap}$) is allowed to vary. Its other dimensions ($H_\mathrm{s}$, $L_\mathrm{gap}$) can't change without corrupting the contact ratio $\chi_\mathrm{s}$ which would cause greater harm to the fidelity of the estimated leakage. It was therefore chosen to tune $w_\mathrm{gap}$ so that the the volume of the spacer is conserved between the two meshes.
 
 % safety factor SF=1.25 as recommanded for GCI on 3 or more grids
-% we use P1 linear lagrange elements which theoretically give an L2 norm of the error in O(h^2) for the field themselves and O(h) for their gradient. Bounday fluxes are obtained from gradient so the results p=1-1.3 are consistent with the theory 
+% we use P1 linear lagrange elements which theoretically give an L2 norm of the error in O(h^2) for the field themselves and O(h) for their gradient. Bounday fluxes are obtained from gradient so the results p=1-1.3 are consistent with the theory
 
 \paragraph{Mesh convergence}
 
-HEX mesh wins the clean convergence criteria as well as the mass conservation criteria, it is therefore the adopted one. 
-
-The parallelepipedic approximation of the half-elliptical channel was replicated on the TET mesh to identify the origin of discrepancies of TET and HEX meshes. The results for the bottom cell are:
-\begin{itemize}
-    \item TET, original geometry: $\phi_\mathrm{leak}=4.66 \cdot10^9 \ \mathrm{mol/s}$
-    \item TET, approximated channel: $\phi_\mathrm{leak}=4.41 \cdot10^9 \ \mathrm{mol/s}$
-    \item HEX, approximated channel: $\phi_\mathrm{leak}=4.40 \cdot10^9 \ \mathrm{mol/s}$ 
-\end{itemize}
-It shows that a $-5.4\%$ underestimation of the leakage flux can be attributed to the parallelepipedic channel approximation. This propagates to a $8.5 \pm 0.5\%$ uncertainty on the leakage ratio, which is considered an acceptable cost. This underestimation is less pronounced for the side cell since it has a larger recombination surface that mitigates the small surface increase caused by the parallelepiped approximation. 
-
-The geometric difference being removed, HEX and TET meshes agree within 0.5\% of the leakage flux value, which can be attributed to discretization error. This cross-validates the trustworthiness of the model predictions.
-
-
-
-\subsubsection{Numerical scheme}
-
-
-
-\subsection{Results}
-
-in steady state, accounting only for recombination at the OV surface, leakage ratio is $8.4\%$ for the bottom cell against $3.0\pm0.2\%$ for the side cell, at 3-fold decrease that matches the $14\%$ vs $5.1\%$ contact ratio difference, as could be expected. 
-
-\subsubsection{Impact of salt-side transport}
-
-Still large uncertainties remain about the salt-to-metal transport, the presence of an oxide layer could change the flux by an order of magnitude. We account for this by considering a permeation reduction factor (PRF) applied to $k_m$ so that the salt BC uses an effective mass transfer coefficient $k_\mathrm{eff}\equiv \sfrac{k_m}{\mathrm{PRF}}$. 
-
-The cumulative tritium leakage stays the same for any PRF considered (1,10,100 and 1000): the PRF throttles what enters the wall, not how it splits once inside. \textbf{It is set almost entirely by the sweep-gas chemistry}, i.e. the strength of the tritium sink at the OV surface compared to that at the surface in contact with the outside.
-
-Without \ce{H2} the wall behaves as a reservoir no matter the PRF: in the case of \ce{He} only and \ce{He+H_2O}, \textbf{most of the tritium that permeates to the structural metal stays there}. With recombination alone, 87–95\% is still in the metal at 96 h. Among the little that comes out, most leaks. With 3.5\% \ce{H2} it retains essentially nothing.
-
-Conversely, salt side transport is agnostic of the sweep gas chemistry since it is the limiting mechanism: $J_\mathrm{salt}\propto k_\mathrm{eff}\,c_\mathrm{salt}$. A consequence is that the relative fraction of tritium extracted by gas sparging is only dependent on the PRF, not the sweep gas chemistry. Still, the difference in cumulative permeated tritium is real, but this is tritium that \textbf{left} the system.  
+Both meshes are refined over 4 levels and each series is compared against its own Richardson-extrapolated value, i.e. its own mesh-independent limit. The result is shown in \cref{fig:mesh_selection}. The HEX mesh converges monotonically over the whole series, at an observed order $p=0.98$ on the leakage flux and $p=1.31$ on the OV flux. This is consistent with what is expected from linear Lagrange elements: boundary fluxes are obtained from the gradient of the field, which converges one order slower than the field itself. The TET mesh behaves less cleanly: its leakage flux is not monotonic over the 2 coarsest levels, which is the usual signature of a series that has not reached its asymptotic regime, and its OV flux converges at $p=0.50$, well below the expected order. This is not a coincidence: the transfinite grading of the HEX mesh specifically targets the re-entrant corner between the rib and the channel, which is where the discretization error is concentrated, whereas the TET mesh refines isotropically and does not target that region at all.
 
 \begin{figure}[htbp]
   \centering
-  \includegraphics[width=\linewidth]{fig/final_partition.pdf}
-  \caption{Partition of where tritium resides after a 4 days transient running at nominal operating conditions (550°C, sparging at 500 sccm). The cumulated fraction exceeding 100\% is attributed to the mass conservation error caused by the finite mesh discretization (HEX medium refinement).} 
-  \label{fig:final_partition}
+  \includegraphics[width=\linewidth]{fig/mesh_selection.pdf}
+  \caption{Mesh selection: (a) discretization error on the two permeating fluxes and (b) mass conservation error, both against the number of degrees of freedom, for the structured hexahedral (solid) and unstructured tetrahedral (dashed) meshes. The error is measured against each series' own Richardson-extrapolated value, denoted $f_\mathrm{exact}$. The dotted horizontal line is the bias introduced by the parallelepipedic channel of the HEX mesh, which no amount of refinement crosses.}
+  \label{fig:mesh_selection}
+\end{figure}
+\todo{move annotations to places where they don't conflict with the plots, use capital HEX}
+
+The meshes are evaluated based on a trade-off between computational efficiency and the two discretization error (\cref{fig:mesh_selection}(a)) and mass conservation error (\cref{fig:mesh_selection}(b)) criterias. \textbf{The HEX mesh at refinement 1 is therefore adopted for the production runs}: with 24k degrees of freedom it reaches 0.30\% on the OV flux and 0.26\% on mass conservation, which the TET mesh does not match even at its finest level (0.82\% and 0.43\% with 487k degrees of freedom, 20 times the cost). Its 3.0\% error on the leakage flux is larger, and the TET mesh does end up below it at its finest level, but this is where the parallelepipedic channel matters: the geometric bias it introduces on that same quantity is 4.7\%, so refining the HEX mesh further would only chase a discretization error that is already smaller than the geometry it is computed on.
+
+The parallelepipedic approximation of the arched channel was replicated on the TET mesh to identify the origin of discrepancies of TET and HEX meshes. The results for the bottom cell are:
+\begin{itemize}
+    \item TET, original geometry: $\phi_\mathrm{leak}=4.66 \cdot10^9 \ \mathrm{T/s}$
+    \item TET, approximated channel: $\phi_\mathrm{leak}=4.41 \cdot10^9 \ \mathrm{T/s}$
+    \item HEX, approximated channel: $\phi_\mathrm{leak}=4.40 \cdot10^9 \ \mathrm{T/s}$
+\end{itemize}
+\todo{are these values up to date ? Check the convergence runs}
+It shows that a $-5.4\%$ underestimation of the leakage flux can be attributed to the parallelepipedic channel approximation. The geometric difference being removed, HEX and TET meshes agree within 0.5\% of the leakage flux value, which can be attributed to discretization error. This cross-validates the trustworthiness of the model predictions.
+
+\paragraph{Limitations}
+
+The point is not to have a perfect simulation but to know where it stops being trustworthy. Three limitations should be kept in mind when reading the results:
+\begin{itemize}
+    \item \textbf{Mass conservation is the accuracy floor of every accountancy number}. The surface fluxes are recovered from the gradient of a linear field, which does not conserve mass exactly: at the selected mesh, what enters through the salt face and what leaves through the two others differ by 0.26\% in the convergence study, and by up to 1.9\% at the wall loadings actually reached during a run (\cref{fig:permeation_vs_sparging}(b)). This is because the transient runs add a second contribution on top of this one: the time integration is only first order, so the finite time step introduces its own imbalance, which the steady-state convergence study cannot see. This is why the bars of \cref{fig:partition} can slightly exceed 100\% of the bred inventory, and it is the reason no result below the percent level should be read as significant.
+    \todo{quantify the time-step contribution separately by rerunning one transient case with a halved step, so the space and time parts of the imbalance can be told apart}
+    \item \textbf{The parallelepipedic channel biases the leakage flux by 4.7\%}, as quantified above. It is a geometric bias, not a discretization error, so refining does not remove it.
+    \item \textbf{The environment-side boundary is a perfect sink}. Any oxide or surface resistance on the outer wall would reduce the leaked fraction, so the leakage numbers reported here are upper bounds.
+    \item \textbf{One cell stands in for the 3 lateral faces}. Using the inner cell for the side and outer faces as well hides a spread of the contact ratio of $-4.7\%$ to $+6.9\%$ in relative terms. Since the leaked fraction is assumed to be dictated by the contact area, this propagates directly to the reconstructed leakage.
+\end{itemize}
+
+\paragraph{Confidence in the reported numbers}
+Combining the above gives a simple and deliberately conservative error budget on the fractions reported in \cref{sec:perm_results}. Every quantity that crosses a surface of the model carries the mass conservation error, i.e. up to 2\% in relative terms. The leaked fraction carries in addition the $\pm7\%$ of the contact ratio spread, and is subject to 2 biases of opposite sign that are not corrected for: the parallelepipedic channel makes it 5\% too low, the perfect sink on the outer surface makes it too high. We therefore quote \textbf{the collected and retained fractions to $\pm2\%$ and the leaked fraction to $\pm10\%$, in relative terms}. On the headline result of this study, this means $12.0\%$ of the bred tritium leaking becomes $12\pm1\%$ of it.
+
+These are numerical uncertainties only. They say nothing about the uncertainty on the model inputs, which is dominated by the salt-metal interface barrier and is covered explicitly by the PRF sweep, and by $k_e\,c_\mathrm{H_2O}$ for the moisture case.
+
+
+\subsection{Results}
+\label{sec:perm_results}
+
+\subsubsection{The salt side sets how much permeates}
+\label{sec:perm_salt_side}
+
+\begin{figure}[htbp]
+  \centering
+  \includegraphics[width=\linewidth]{fig/permeation_vs_sparging.pdf}
+  \caption{(a) Cumulative tritium removed from the salt, one stacked area per permeation reduction factor. The 2 bands are the only 2 removal pathways of the 0D salt balance, so what they leave to 100\% is what is still in the salt. The permeated share at the end of the run is printed on the right of each panel; it is an aggregate of the 3 fates separated in \cref{fig:partition}, and matches their sum to within the mass conservation error of the model. (b) Relative difference of the cumulative permeation of the \ce{H2} and \ce{H2O} cases against the He only case, which is why the 3 sweep gas compositions are not differentiated in (a).}
+  \label{fig:permeation_vs_sparging}
 \end{figure}
 
-\subsubsection{Impact of sweep gas composition}
+The salt-side resistance dominates the two others by several orders of magnitude, and this has a consequence that simplifies the whole analysis: \textbf{the metal never gets close to equilibrium with the salt}. Over a 4-day run the tritium concentration at the salt-facing wall stays between $2.7\cdot10^{11}$ and $1.5\cdot10^{15} \ \mathrm{T/m^3}$, i.e. 5 to 6 orders of magnitude below the $4.0\cdot10^{20} \ \mathrm{T/m^3}$ it would reach at equilibrium. The back-pressure term of \cref{eq:salt_BC} therefore never exceeds $10^{-7}$ of the driving force, and the salt BC reduces in practice to $J_\mathrm{salt}\simeq k_\mathrm{eff}\,c_\mathrm{salt}$.
+
+It follows that \textbf{how much tritium permeates is set by $k_\mathrm{eff}$ alone}. \Cref{fig:permeation_vs_sparging}(a) shows the cumulative tritium leaving the salt for each PRF: $95\pm2\%$, $64\pm1\%$, $15.1\pm0.3\%$ and $1.74\pm0.04\%$ of the bred inventory for $\mathrm{PRF}=1$, 10, 100 and 1000 respectively. The salt-side flux is agnostic of what happens at the OV surface, since it does not depend on the metal surface concentration: the 3 sweep gas compositions give cumulative permeations that differ by less than 0.8\% from each other (\cref{fig:permeation_vs_sparging}(b)), which is of the same order as the mass conservation error of the model itself, and below it at the 2 lowest PRF. A direct consequence is that \textbf{the fraction of tritium recovered by sparging depends on the PRF only}, and not on how the OV gas is composed.
+
+\begin{keyresult}
+    \centering
+    Permeation is limited by transport on the salt side \\
+    $\Rightarrow$ the wall stays 5-6 decades below equilibrium with the salt, and $J_\mathrm{salt}\simeq k_\mathrm{eff}\,c_\mathrm{salt}$ \\
+    $\Rightarrow$ how much permeates is set by $k_\mathrm{eff}$, not by the sweep gas
+\end{keyresult}
+
+\subsubsection{The sweep gas sets where it goes}
+\label{sec:perm_sweep}
 
 \begin{figure}[htbp]
   \centering
   \includegraphics[width=\linewidth]{fig/leakage_ratio_vs_metal_concentration.pdf}
-  \caption{Leakage ratio in steady state as a function of metal concentrations at the salt-metal interface for the 3 cases of sweep gas chemistry. The wall loading ranges corresponds to what was observed in the transient simulations. Datapoints are shown as dots.} 
-  \label{fig:leakage_vs_metal_concentration}
+  \caption{Leakage ratio of steady state simulations, as a function of the tritium concentration on the metal side of the salt interface, for the 3 cases of OV surface boundary condition and the 2 extreme cell types. Datapoints are shown as dots. The strip under each panel gives the wall loading reached during a 4-day run for each permeation reduction factor.}
+  \label{fig:leakage_vs_loading}
 \end{figure}
 
-The OV BC being non-linear, it introduces a dependency of the permeation ratio on the salt concentration, shown in \cref{fig:leakage_vs_metal_concentration}. In cases of tritium recombination only and isotopic exchange with moisture, the OV flux is \textit{surface limited} and the permeation ratio follows a $\propto c_\mathrm{salt}^{-0.37}$ law. In the case of recombination with \ce{H}, permeation is \textit{diffusion limited}, changing the flux BC to a perfect sink ($c_\mathrm{T}=0$) BC confirms this. This is valid for the entire range of considered salt concentrations, hiding the non-linearity of the OV boundary condition and making the permeation ratio \textbf{salt concentration independent}. This sets a lower bound on the achievable leakage ratio for each geometry 
+What the salt side does not decide is where the permeated tritium goes once it is inside the metal. That split is set at the OV surface, and it is the quantity that matters for accountancy. The OV BC being non-linear, it introduces a dependency of the leakage ratio on the wall loading, shown in \cref{fig:leakage_vs_loading}.
 
-By surface limited, it is meant that the bottleneck for tritium permeation is chemical reactions happening at the surface. For example, tritium recombination ($k_r\,c_\mathrm{T}^2$ or $k_r\,c_\mathrm{T}\,c_\mathrm{H}$) or isotopic exchange ($k_e\,c_\mathrm{H_2O}\,c_T$). If any of these is very fast (e.g. if $k_r\,c_\mathrm{H}$ is large), all the tritium that reaches the surface can be considered immediately transferred to the gas, tritium concentration at the surface is then null. Permeation is no longer limited by reactions happening at the surface but rather by transport \textbf{to the surface}: it is diffusion limited. 
+In the He only and He + \ce{H2O} cases, the OV flux is \textit{surface limited}. In the case of recombination with \ce{H}, permeation is \textit{diffusion limited}, changing the flux BC to a perfect sink ($c_\mathrm{T}=0$) confirms this. This is valid for the entire range of considered wall loadings, hiding the non-linearity of the OV boundary condition and making the leakage ratio \textbf{loading independent}. This sets a lower bound on the achievable leakage ratio for each geometry.
 
-The OV sink in the $\mathrm{T+H}$ case seems surprisingly high compared to the one in the $\mathrm{T+H_2O}$ case. This is caused by the mass transfer contribution of each gas to the flux: with \ce{H2} present to 3.5\% in the sweep gas and its concentration at the metal-gas interface assumed at equilibrium yields $c_H=K_s\sqrt{P_\mathrm{H_2}}=8.7\cdot 10^{23} \ \mathrm{H/m^3}$, thus a mass transfer coefficient $k_r\,c_\mathrm{H}=3.5\cdot 10^{-4} \ \mathrm{m/s}$, 5 orders of magnitude higher than the contribution of isotopic exchange with gas moisture estimated at $k_e\,c_\mathrm{H_2O}=4.6\cdot 10^{-9}\ \mathrm{m/s}$ by fitting data on previous BABY 1L runs. 
+(Note on terminology: by \textit{surface limited}, it is meant that the bottleneck for tritium permeation is chemical reactions happening \textbf{at the surface}. For example, tritium recombination ($k_r\,c_\mathrm{T}^2$ or $k_r\,c_\mathrm{T}\,c_\mathrm{H}$) or isotopic exchange ($k_e\,c_\mathrm{H_2O}\,c_T$). Conversely, if any of these mechanisms is very fast (e.g. if $k_r\,c_\mathrm{H}$ is large), all the tritium that reaches the surface can be considered immediately transferred to the gas, tritium concentration at the surface is then null. Permeation is no longer limited by reactions happening at the surface but rather by transport \textbf{to the surface}: it is \textit{diffusion limited}.)
 
- 
-\subsubsection{Effect of tritium extraction kinetics}
+\paragraph{The recombination sink is negligible where the wall operates}
+Because the wall stays so far from equilibrium (\cref{sec:perm_salt_side}), the quadratic recombination term is evaluated at a concentration that is 5 decades lower than what the equilibrium assumption would suggest. Expressed as a velocity to be compared against the exchange terms, $k_r\,c_\mathrm{T}$ ranges from $1\cdot10^{-16}$ to $6\cdot10^{-13}\ \mathrm{m/s}$ over a run, against $4.6\cdot10^{-9}\ \mathrm{m/s}$ for the moisture channel and $3.5\cdot10^{-4}\ \mathrm{m/s}$ for the \ce{H2} one. \textbf{Recombination alone is 4 to 7 orders of magnitude too weak to compete with the leakage pathway}: the OV surface is barely a sink at all, and essentially all the permeated tritium ends up leaking to the environment. Adding a reactive partner to the sweep gas is what turns the OV surface into a collector:
+\begin{itemize}
+    \item He only: leakage ratio of 100\% on both cell types;
+    \item He + \ce{H2O}: 35\% (side cell) and 45\% (bottom cell);
+    \item He + 3.5\% \ce{H2}: 0.25\% (side cell) and 0.34\% (bottom cell).
+\end{itemize}
+The 3 curves only start to bend above $10^{17}\ \mathrm{T/m^3}$, which is 2 to 4 decades above anything the wall reaches. \textbf{In the operating range, the leakage ratio is therefore a constant of the geometry and of the sweep gas composition}, and does not depend on how loaded the salt is.
 
-\todo{plot showing the cumulative tritium: retrieved in sparge gas, retrieved in OV gas, leaked. Portion retrieved in sparge should be much larger than total permeated (check this assumptions holds). }
+The effect of the geometry is visible in the 2 cases where the OV surface is a sink: the bottom cell leaks 1.3 to 1.4 times more than the side cell, in line with its 1.5 times larger contact ratio (\cref{tab:unit_cell}), as expected from the assumption that leakage is dictated by the spacer contact area. With He alone the comparison is meaningless, since both geometries saturate at 100\% leakage.
 
-The coupling between the sparging model and the permeation model is unidirectional: the permeation model gets the output of the sparging model as its salt concentration BC, but the sparging extraction time ignores the fact that some tritium is removed via permeation. The salt tritium inventory at any given time is therefore slightly overestimated, and so is permeation. The underlying assumption is that cumulative permeation is a negligible fraction of the initial salt inventory, small enough not to significantly change the sparging extraction kinetics.
+\begin{keyresult}
+    \centering
+    The leakage ratio is set by the OV surface chemistry, and is loading independent in the operating range \\
+    He only $\Rightarrow$ 100\% leaks \quad $|$ \quad He + \ce{H2O} $\Rightarrow$ 35-45\% \quad $|$ \quad He + 3.5\% \ce{H2} $\Rightarrow$ 0.3\% \\
+    $\Rightarrow$ a reducing sweep gas is what makes the double wall a collector rather than a conduit
+\end{keyresult}
+
+\subsubsection{Most of the tritium never leaves the wall}
+\label{sec:perm_retention}
+
+\begin{figure}[htbp]
+  \centering
+  \includegraphics[width=\linewidth]{fig/wall_retention.pdf}
+  \caption{Vessel-scale tritium inventory held in the structural metal, as a fraction of the bred inventory, for the loosest (left) and the tightest (right) salt-metal interface barrier considered.}
+  \label{fig:wall_retention}
+\end{figure}
+
+The leakage ratio of \cref{sec:perm_sweep} describes the \textit{branching between OV and leakage} among the tritium that comes out of the metal, but it says nothing about \textit{how much tritium does come out}. It turns out that without \ce{H2} most of it does not: the wall behaves as a reservoir.
+
+\Cref{fig:wall_retention} shows the vessel-scale wall inventory over a run. All 3 compositions load the wall to about the same peak, which is expected since loading is set by the salt side, and they then diverge completely because unloading is set by the OV chemistry. At the end of a 4-day run with $\mathrm{PRF}=1$, \textbf{$84\pm2\%$ of all the tritium bred in the experiment is still inside the structural metal} with He only, and $52\pm1\%$ with He + \ce{H2O}, against essentially nothing with He + 3.5\% \ce{H2}, which empties the wall by 6 orders of magnitude over the same time. The same picture holds at $\mathrm{PRF}=1000$, only 50 times lower in amplitude. Note also that the loading timescale is set by the PRF, the peak being reached after a few hours at $\mathrm{PRF}=1$ but only after 30 to 50 hours at $\mathrm{PRF}=1000$, whereas the unloading timescale is set by the sweep gas alone.
+
+This is important for the robust accountancy goal: tritium sitting in the metal at the end of a run will come out delayed, on a timescale much longer than the run itself. This is accounted for in the BABY experiments by running \ce{H2} in the sweep gas at the end of every run, to collect all the tritium retained in the wall. 
+
+\todo{run one case much longer than 4 days to get the post-run release timescale of the retained inventory, this is what an accountancy campaign would need to know}
+
+\begin{keyresult}
+    \centering
+    Without \ce{H2} in the sweep gas, the wall is a reservoir: $84\pm2\%$ (He only) and $52\pm1\%$ (He + \ce{H2O}) \\
+    of the bred tritium is still in the metal after 4 days, against $\sim0\%$ with 3.5\% \ce{H2} \\
+    $\Rightarrow$ the accountancy does not close on the gas streams alone
+\end{keyresult}
+
+\subsubsection{Permeation against sparging}
+\label{sec:perm_vs_sparging}
+
+\begin{figure}[htbp]
+  \centering
+  \includegraphics[width=\linewidth]{fig/final_partition.pdf}
+  \caption{Fate of the bred tritium at the end of a 4-day run, for each permeation reduction factor and each sweep gas composition, as a fraction of the bred inventory. The leaked percentage is printed above its own band. What remains in the salt is below 0.04\% everywhere and is not shown. Bars can exceed 100\% by the mass conservation error of the model.}
+  \label{fig:partition}
+\end{figure}
+
+Putting the 3 previous results together gives the answer to the question this section started with: where does the bred tritium end up. \Cref{fig:partition} summarises the 12 simulated cases, and the corresponding time series are reported in \cref{fig:cumulative}.
+
+\paragraph{Permeation is not negligible against sparging}
+The competition between the 2 removal pathways is entirely decided by the interface barrier. At $\mathrm{PRF}=1$, sparging only recovers 5\% of the bred tritium and permeation takes the remaining 95\%; at $\mathrm{PRF}=1000$ the situation is reversed, sparging recovers 98\%. \textbf{The crossover sits around $\mathrm{PRF}\approx100$}. Since the interface barrier is precisely the least constrained parameter of this model, both situations have to be considered plausible, and the common assumption that permeation is a negligible loss channel compared to sparging \textbf{cannot be made} for LIBRA Pi.
+
+\paragraph{The sweep gas composition decides the accountancy}
+For a given PRF, the amount extracted by sparging is the same in the 3 compositions, as established in \cref{sec:perm_salt_side}. What changes is what happens to the permeated fraction, and the difference is significant. At $\mathrm{PRF}=1$:
+\begin{itemize}
+    \item \textbf{He only}: $1.22\pm0.02\%$ collected in the OV gas, \textbf{$12\pm1\%$ leaked to the environment}, $84\pm2\%$ still in the wall;
+    \item \textbf{He + \ce{H2O}}: $34.0\pm0.7\%$ collected, $10\pm1\%$ leaked, $52\pm1\%$ still in the wall;
+    \item \textbf{He + 3.5\% \ce{H2}}: 96.7\% collected, 0.39\% leaked, nothing left in the wall.
+\end{itemize}
+Adding \ce{H2} to the sweep gas divides the leaked fraction by 31 and turns a vessel that loses tritium into one that accounts for it. This is a design recommendation that costs nothing to implement, and \cref{fig:partition} shows it holds at every PRF.
+
+\begin{keyresult}
+    \centering
+    $\mathrm{PRF}\lesssim100 \Rightarrow$ permeation dominates over sparging, and cannot be neglected \\
+    He only $\Rightarrow$ up to $12\pm1\%$ of the bred tritium leaks to the environment \\
+    He + 3.5\% \ce{H2} in the OV gas $\Rightarrow$ $0.39\pm0.04\%$ leaks and $97\pm2\%$ is collected \\
+    $\Rightarrow$ \textbf{a reducing OV sweep gas is required to meet the robust accountancy goal}
+\end{keyresult}
 
 %%%%%%%%%%%%%%%%%%%%%%
 \chapter{Related Work}
@@ -1486,22 +1596,18 @@ In Li 2026, \cref{as:T2_press_is_negligible} doesn't hold as the tritium concent
     \begin{subfigure}[t]{\linewidth}
         \centering
         \includegraphics[width=\linewidth]{fig/vessel_cumulative_PRF1.pdf}
-        \label{fig:cumulative_prf1}
     \end{subfigure}
     \begin{subfigure}[t]{\linewidth}
         \centering
         \includegraphics[width=\linewidth]{fig/vessel_cumulative_PRF10.pdf}
-        \label{fig:cumulative_prf10}
     \end{subfigure}
     \begin{subfigure}[t]{\linewidth}
         \centering
         \includegraphics[width=\linewidth]{fig/vessel_cumulative_PRF100.pdf}
-        \label{fig:cumulative_prf100}
     \end{subfigure}
     \begin{subfigure}[t]{\linewidth}
         \centering
         \includegraphics[width=\linewidth]{fig/vessel_cumulative_PRF1000.pdf}
-        \label{fig:cumulative_prf1000}
     \end{subfigure}
     \caption{Results of the tritium permeation transient runs, showing cumulative tritium permeation compared to extraction by sparging, retention in structural metal and leakage ratio for the 4 considered permeation reduction factors}
     \label{fig:cumulative}
