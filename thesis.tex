@@ -1323,22 +1323,30 @@ The quantities derived using this scale reduction methodology can therefore be a
 
 \subsubsection{Equations and boundary conditions}
 
-The numerical scheme and the equations solved in this model are documented in 
+This model simulates tritium transport using the FESTIM open source code, whose details about numerical scheme and equations solved are documented in \cite{dark_festim_2026}. Here, we only account for mono-species diffusion in a solid media, without accounting for tritium trapping.
+
+
+\todo{insert illustration of where the BCs go}
+The boundary conditions are:
 \begin{itemize}
     \item \textit{salt surface BC}: molten salts are tritium repellants and metals are tritium sponges. We can't consider the inconel surface concentration to be at equilibrium with the salt, it is physically unrealistic: after irradiation, the $3.6\cdot10^{13} \ \mathrm{T/m^3}$ in the salt becomes $4.0\cdot10^{20}\ \mathrm{T/m^3}$ in the metal, once this diffuses for a few timesteps the tritium inventory in the mere IV wall becomes of the order of $10^{18}$ T atoms, 6 orders of magnitude higher than the total amount of bred tritium.\textbf{The tritium flux to the wall has to be limited by transport on the salt side}. This is enforced by considering a flux BC that accounts for salt transport:
     \begin{equation}
         J_\mathrm{salt}=k_m\,\left(c_\mathrm{salt}(t)-K_H\,\left(\frac{c_\mathrm{T}(t)}{K_s}\right)^2\right)
     \end{equation}
-    where $k_m$ is the salt-to-wall mass transfer coefficient, obtained from a Sherwood correlation. 
+    where $k_m$ is a salt-to-wall mass transfer coefficient.
     \item recombination surface BC: 
     \item outside surface BC: 
 \end{itemize}
 
+\todo{very small paragraph that explains the derivation of km briefly}
+$k_m$ is obtained from a bubble column wall heat transfer correlation by \cite{deckwer_mechanism_1980} derived from a Stanton number, transposed to mass transfer by the Chilton-Colburn analogy, which susbsitutes Pr for Sc. % derivation https://share.gemini.google/8vN4kPgOQjCo
+
+
 \paragraph{Sparging-permeation coupling}
 
-Permeation will impact the amount of tritium available to be extracted by sparging, and the other way around. The modelling on sparging done in this work allowed to establish that the concentration in the salt can be assumed uniform and that we can use a simple time constant $\tau$, independently of the concentration, to represent sparging extraction. The coupling can easily be achieved through a 0D salt balance:
+Permeation will impact the amount of tritium available to be extracted by sparging, and the other way around. The modelling on sparging done in this work allowed to establish that the concentration in the salt can be assumed uniform and that we can use a simple time constant $\tau$, independently of the concentration, to represent sparging extraction. The coupling can be achieved through a simple 0D mass balance:
 \begin{equation}
-    V_\mathrm{salt}\frac{d\,c_\mathrm{salt}}{dt}=-\frac{c_\mathrm{salt}}{\tau}-A_\mathrm{wetted}\,J_\mathrm{salt}
+    V_\mathrm{salt}\frac{d\,c_\mathrm{salt}}{dt}=-V_\mathrm{salt}\,\frac{c_\mathrm{salt}}{\tau}-A_\mathrm{wetted}\,J_\mathrm{salt}
 \end{equation}
 
 We decided to treat the optimistic scenario of \cref{sec:LIBRAPi_extraction} in nominal conditions, with $\tau_{99}=55.6$ hours. To stay consistent, we use the \textcite{malinauskas_solubilities_1974} and the \textcite{fukada_hydrogen_2006} correlations for the salt solubility and diffusivity respectively. 
@@ -1376,7 +1384,6 @@ The geometric difference being removed, HEX and TET meshes agree within 0.5\% of
 
 
 \subsubsection{Numerical scheme}
-% inside inconel, equations are linear -> wait NOT OV FLUX -> plot SS permeation ratio vs left BC ? over 1 decade, with 3 different cases (k_r, k_r+H2, k_r+H2O)
 
 
 
@@ -1386,7 +1393,7 @@ in steady state, accounting only for recombination at the OV surface, leakage ra
 
 \subsubsection{Impact of salt-side transport}
 
-The mass transfer coefficient $k_m$ for salt transport is obtained from a Chilton-Colburn analogy. Still large uncertainties remain about the salt-to-metal transport, the presence of an oxide layer could change the flux by an order of magnitude. We account for this by considering a permeation reduction factor (PRF) applied to $k_m$ so that the salt BC uses an effective mass transfer coefficient $k_\mathrm{eff}\equiv k_m \cdot \mathrm{PRF}$. 
+Still large uncertainties remain about the salt-to-metal transport, the presence of an oxide layer could change the flux by an order of magnitude. We account for this by considering a permeation reduction factor (PRF) applied to $k_m$ so that the salt BC uses an effective mass transfer coefficient $k_\mathrm{eff}\equiv \sfrac{k_m}{\mathrm{PRF}}$. 
 
 The cumulative tritium leakage stays the same for any PRF considered (1,10,100 and 1000): the PRF throttles what enters the wall, not how it splits once inside. \textbf{It is set almost entirely by the sweep-gas chemistry}, i.e. the strength of the tritium sink at the OV surface compared to that at the surface in contact with the outside.
 
@@ -1395,35 +1402,22 @@ Without \ce{H2} the wall behaves as a reservoir no matter the PRF: in the case o
 Conversely, salt side transport is agnostic of the sweep gas chemistry since it is the limiting mechanism: $J_\mathrm{salt}\propto k_\mathrm{eff}\,c_\mathrm{salt}$. A consequence is that the relative fraction of tritium extracted by gas sparging is only dependent on the PRF, not the sweep gas chemistry. Still, the difference in cumulative permeated tritium is real, but this is tritium that \textbf{left} the system.  
 
 \begin{figure}[htbp]
-    \centering
-    \begin{subfigure}[t]{\linewidth}
-        \centering
-        \includegraphics[width=\linewidth]{fig/vessel_cumulative_PRF1.pdf}
-        \caption{}
-        \label{fig:cumulative_prf1}
-    \end{subfigure}
-    \begin{subfigure}[t]{\linewidth}
-        \centering
-        \includegraphics[width=\linewidth]{fig/vessel_cumulative_PRF1000.pdf}
-        \caption{}
-        \label{fig:cumulative_prf1000}
-    \end{subfigure}
-    \caption{Comparison of tritium permeation, extraction by sparging and retention in structural metal, using (a) PRF=1; (b) PRF=1000.}
-    \label{fig:cumulative}
+  \centering
+  \includegraphics[width=\linewidth]{fig/final_partition.pdf}
+  \caption{Partition of where tritium resides after a 4 days transient running at nominal operating conditions (550°C, sparging at 500 sccm). The cumulated fraction exceeding 100\% is attributed to the mass conservation error caused by the finite mesh discretization (HEX medium refinement).} 
+  \label{fig:final_partition}
 \end{figure}
-\todo{add labels (a),(b),(c) to each subfigure. MAybe too much of a fourretout}
 
 \subsubsection{Impact of sweep gas composition}
 
 \begin{figure}[htbp]
   \centering
-  \includegraphics[width=\linewidth]{leakage_ratio_vs_salt_concentration.pdf}
-  \caption{Leakage ratio in steady state as a function of salt tritium concentrations for different cases of OV surface boundary condition. The range of salt concentrations corresponds to what can be expected during a run after a 6h irradiation at $2\cdot10^9$ neutrons/s. Datapoints are shown as dots.} 
-  \label{fig:leakage_vs_salt_concentration}
+  \includegraphics[width=\linewidth]{fig/leakage_ratio_vs_metal_concentration.pdf}
+  \caption{Leakage ratio in steady state as a function of metal concentrations at the salt-metal interface for the 3 cases of sweep gas chemistry. The wall loading ranges corresponds to what was observed in the transient simulations. Datapoints are shown as dots.} 
+  \label{fig:leakage_vs_metal_concentration}
 \end{figure}
-\todo{change x axis to "metal side T concentration at salt interface"}
 
-The OV BC being non-linear, it introduces a dependency of the permeation ratio on the salt concentration, shown in \cref{fig:leakage_vs_salt_concentration}. In cases of tritium recombination only and isotopic exchange with moisture, the OV flux is \textit{surface limited} and the permeation ratio follows a $\propto c_\mathrm{salt}^{-0.37}$ law. In the case of recombination with \ce{H}, permeation is \textit{diffusion limited}, changing the flux BC to a perfect sink ($c_\mathrm{T}=0$) BC confirms this. This is valid for the entire range of considered salt concentrations, hiding the non-linearity of the OV boundary condition and making the permeation ratio \textbf{salt concentration independent}. This sets a lower bound on the achievable leakage ratio for each geometry 
+The OV BC being non-linear, it introduces a dependency of the permeation ratio on the salt concentration, shown in \cref{fig:leakage_vs_metal_concentration}. In cases of tritium recombination only and isotopic exchange with moisture, the OV flux is \textit{surface limited} and the permeation ratio follows a $\propto c_\mathrm{salt}^{-0.37}$ law. In the case of recombination with \ce{H}, permeation is \textit{diffusion limited}, changing the flux BC to a perfect sink ($c_\mathrm{T}=0$) BC confirms this. This is valid for the entire range of considered salt concentrations, hiding the non-linearity of the OV boundary condition and making the permeation ratio \textbf{salt concentration independent}. This sets a lower bound on the achievable leakage ratio for each geometry 
 
 By surface limited, it is meant that the bottleneck for tritium permeation is chemical reactions happening at the surface. For example, tritium recombination ($k_r\,c_\mathrm{T}^2$ or $k_r\,c_\mathrm{T}\,c_\mathrm{H}$) or isotopic exchange ($k_e\,c_\mathrm{H_2O}\,c_T$). If any of these is very fast (e.g. if $k_r\,c_\mathrm{H}$ is large), all the tritium that reaches the surface can be considered immediately transferred to the gas, tritium concentration at the surface is then null. Permeation is no longer limited by reactions happening at the surface but rather by transport \textbf{to the surface}: it is diffusion limited. 
 
@@ -1480,18 +1474,38 @@ In Li 2026, \cref{as:T2_press_is_negligible} doesn't hold as the tritium concent
 \printbibliography
 
 % Appendices are optional
-% \appendix
-% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% \chapter{How to make a transmogrifier}
-% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-% In case you ever need an (optional) appendix.
-%
-% You need the following items:
-% \begin{itemize}
-% \item A box
-% \item Crayons
-% \item A self-aware 5-year old
-% \end{itemize}
+\appendix
+
+\todo{put prf 1,10,100 and 1000 4 panel figure for permeation and retention}
+\todo{move full tau ard here}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\chapter{Permeation transient simulations}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{figure}[htbp]
+    \centering
+    \begin{subfigure}[t]{\linewidth}
+        \centering
+        \includegraphics[width=\linewidth]{fig/vessel_cumulative_PRF1.pdf}
+        \label{fig:cumulative_prf1}
+    \end{subfigure}
+    \begin{subfigure}[t]{\linewidth}
+        \centering
+        \includegraphics[width=\linewidth]{fig/vessel_cumulative_PRF10.pdf}
+        \label{fig:cumulative_prf10}
+    \end{subfigure}
+    \begin{subfigure}[t]{\linewidth}
+        \centering
+        \includegraphics[width=\linewidth]{fig/vessel_cumulative_PRF100.pdf}
+        \label{fig:cumulative_prf100}
+    \end{subfigure}
+    \begin{subfigure}[t]{\linewidth}
+        \centering
+        \includegraphics[width=\linewidth]{fig/vessel_cumulative_PRF1000.pdf}
+        \label{fig:cumulative_prf1000}
+    \end{subfigure}
+    \caption{Results of the tritium permeation transient runs, showing cumulative tritium permeation compared to extraction by sparging, retention in structural metal and leakage ratio for the 4 considered permeation reduction factors}
+    \label{fig:cumulative}
+\end{figure}
+
 
 \end{document}
