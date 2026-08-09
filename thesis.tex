@@ -82,6 +82,10 @@
 \begin{document}
 \maketitle
 \listoftodos
+\dedication{
+"If, indeed, the sub-atomic energy in the stars is being freely used to maintain their great furnaces, it seems to bring a little nearer to fulfillment our dream of controlling this latent power for the well-being of the human race -- or for its suicide"
+Arthur Eddington, 1920
+}
 \makededication
 
 \acknowledgments{
@@ -127,26 +131,32 @@ English abstract. For other projects this is optional.
 % The eights paragraph discusses your core contribution.
 
 % This section is usually 3-5 pages.
-\todo{fusion first}
 \section{Motivation: fusion energy}
+% what is nuclear fusion
+Nuclear fusion is the process in which 2 light atom nuclei (reactant) combine together to form 1 heavier nucleus (product). The mass difference $\Delta m$ between reactant and product is converted into energy $E=\Delta m \, c^2$. Fusion reactions happen at the core of our sun and the energy they release is what gives us daylight and enables any life on earth. Artificial fusion reactions were first achieved by humans in the 1930s, at that time research in nuclear fusion was mainly motivated by military purposes. But just like nuclear fission found a peaceful use in nuclear reactors for energy production, nuclear fusion can be used as a carbon-free and virtually inexhaustible energy source.
+
+% where are we with fusion
+It requires extreme temperature and pressure conditions comparable to that of our Sun for fusion reactions to happen. This makes controlled fusion a problem of unprecedented complexity, with challenges still to be overcome before a commercially viable fusion power plant (FPP) becomes possible. Conventional nuclear reactors on the other hand, which are based on the reverse process of nuclear fission where a heavy nucleus splits into 2 lighter nuclei, have been providing electricity to the grid for more than 70 years. Nevertheless, compared to well-proven fission power plants, the fusion approach would present the advantage of lower and shorter radiotoxicity of its byproducts, increased safety and abundance of fuel. As humanity is facing the need of reducing its carbon emission while maintaining its energy supply, fusion power is increasingly seen as a promising candidate to fulfill this need: in 2026, the Fusion Industry Association numbered 56 private fusion companies for a total funding of \$14.2bn worldwide, which is \$4.5bn more than in 2025\cite{noauthor_2026_2026}. 
+
+% introducing tritium
+Among these 56 companies, 40 of them envision deuterium-tritium (D-T) as reactants of the fusion reactions. Indeed, the D-T couple offers a favorable cross section for fusion reactions, i.e it is the fuel choice that maximizes the likeliness of fusion reactions to happen at the conditions that can be achieved with the currently available technology. 
+
+Deuterium is present in small proportions in seawater (\needcite{how many ppm ?}) and its extraction is a well known process, as evidenced by the fleet of 44 Pressurized Heavy Water Reactors (PHWR) operating worldwide. Tritium fuel supply on the other hand faces a fundamental scarcity problem. 
+
+\todo{insert representation of H and T nucleus + isotope chart along with energy barrier}
+
 
 \section{The tritium isotope}
 % what is tritium (main characteristics)
 Tritium is a radioactive isotope of hydrogen, its nucleus is made of 1 proton and 2 neutrons and is therefore denoted \ce{^3H} or \ce{T}. It disintegrates into \ce{^3He} through beta decay with a half life of 12.3 years. 
 % where do we find it
-Because of its short half life and its absence of any decay chain, tritium can't be naturally found in concentrated quantities unlike other radioactive isotopes (e.g. uranium-238, radon-222). It is unintentionally produced: 
+Because of its short half life and its absence of any decay chain, tritium can't be naturally found in concentrated quantities unlike other radioactive isotopes (e.g. uranium-238, radon-222), and is therefore extremely scarce. It is unintentionally produced: 
 \begin{itemize}
-    \item naturally, from highly energetic cosmic neutrons interacting with atmospheric nitrogen (\ce{^14_7N(n,T)^12_6C} reaction, contribution estimated at 0.2 kg/year)
-    \item as a product of the fission reactions in all fission reactors, with a low yield ($10^{-4}$ to $10^{-6}$ T/fission event, depending on the fissile nuclide and the neutron energy) \needcite{IAEA database} %https://www-nds.iaea.org/relnsd/vcharthtml/VChartHTML.html
+    \item naturally: from highly energetic cosmic neutrons interacting with atmospheric nitrogen (\ce{^14_7N(n,T)^12_6C} reaction, contribution estimated at 0.2 kg of T/year)
+    \item artificially: in all fission reactors, tritium is a low yield product of fission reactions ($10^{-4}$ to $10^{-6}$ T/fission event \needcite{IAEA database}). In that context, it is an undesirable product due to its radioactivity: tritium can substitute to hydrogen in water, which if spread in the environment can contaminate the food chain and become a radiological hazard once ingested. %https://www-nds.iaea.org/relnsd/vcharthtml/VChartHTML.html
 \end{itemize}
+Both these tritium sources are too marginal to make a technically/economically feasible tritium stream. 
 
-% do we want tritium ?
-Even though beta radiations don't penetrate the skin, tritium can substitute to hydrogen in water to form \ce{HTO}, which if spread in the environment can contaminate the food chain and become a radiological hazard. For that reason, it is an undesirable byproduct in the fission industry. % -> no in fission
-
-Still, tritium finds a use as a fuel in nuclear fusion: because of its favorable cross section for fusion reactions with deuterium (\ce{^2H} or \ce{D}), it was identified as the most efficient fuel for fusion devices \needcite{ITER physical basis report ?}. Historically, nuclear fusion and therefore tritium have been serving military purposes, in nuclear weapons. But just like nuclear fission found a peaceful use in nuclear reactors for energy production, controlled nuclear fusion offers a promising path to carbon-free energy. Compared to its fission counterpart, a fusion power plant (FPP) would present the advantage of lower and shorter radiotoxicity of its byproducts, increased safety and abundance of fuel. Controlled fusion has therefore been the subject of intense research for decades, and is now entering a fast growing phase: in 2026, the Fusion Industry Association counted 56 private fusion companies for a total funding of \$14.2bn worldwide, which is \$4.5bn more than in 2025\cite{noauthor_2026_2026}. Among these companies, 40 of them envision deuterium-tritium (DT) as fusion fuel. Deuterium is present in small proportions in seawater (\needcite{how many ppm ?}) and its extraction is a well known process as evidenced by the fleet of 44 Pressurized Heavy Water Reactors (PHWR) operating worldwide. Tritium fuel supply on the other hand is a much bigger concern due to itsp scarcity, stressing the need for industrial tritium production. % -> yes in fusion
-
-\todo{insert representation of H and T nucleus + isotope chart along with energy barrier}
-% elaborate on why do we want fusion power plants ? Dedicate a subsection ?
 
 \section{Tritium production}
 \subsection{Main pathways}
@@ -163,7 +173,7 @@ As of now, the existing commercially available tritium is produced as a byproduc
 
 \todo{paragraph on lithium (scarcitiy of Li6, 8\% naturally}
 % where do we get the neutrons from
-Aforementioned transmutation reactions all need neutrons as a reactant. Neutrons can be found in fission reactors, but producing tritium there poses the problem of introducing large amounts of tritium in an environment where it is usually unwanted because of its handling difficulties and the associated radiological concern, and is anyway constrained to relatively low tritium amounts to leave enough neutrons for fission to self-sustain ($\sim$1 kg/reactor/year using Tritium Producing Burnable Absorbers Rods)\needcite{NRC?}. For those reasons, tritium production in fission reactors is restricted to military programs.
+Aforementioned transmutation reactions all need neutrons as a reactant. Neutrons can be found in fission reactors, but producing tritium there poses the problem of introducing large amounts of tritium in an environment where it is usually unwanted because of its handling difficulties and the associated radiological concern presented above. Tritium production in fission reactors is anyway constrained to relatively low amounts ($\sim$1 kg/reactor/year using Tritium Producing Burnable Absorbers Rods)\needcite{NRC?}, as transmutation reactions consume neutrons that are also needed for fission to self-sustain. For those reasons, tritium production in fission reactors is restricted to military programs.
 
 DT fusion itself produces fast neutrons (\cref{eq:DT_fusion}), it naturally follows that a FPP can act as a neutron source that \textit{breeds} its own fuel. Contrary to external sources such as fission reactors or neutron beams, this approach offers the advantage that the available neutron flux scales with the amount of fuel needed and thus can sustain operation of an arbitrarily large fleet of FPP. This makes breeding the most scalable and economical path to industrial tritium fuel production. 
 
@@ -854,7 +864,7 @@ Each assumption can be checked against \cref{tab:verification_inputs}.
 
 \begin{figure}[htbp]
   \centering
-  \includegraphics[width=\linewidth]{fig/verification_P_T2_profile.pdf}
+  \includegraphics[width=\linewidth, trim={0.2cm 0 0 0}, clip]{fig/verification_P_T2_profile.pdf}
   \caption{Tritium partial pressure profile in the gas phase at three instants, computed by the 1D ARD model (solid) and given by the analytical solution \cref{eq:PT_profile} (dotted), in the small partial pressure regime (a) and close to the partial pressure limited regime (b).}
   \label{fig:verification_profile}
 \end{figure}
@@ -889,7 +899,7 @@ The API of \verb|libra_sparging| package is synthesized in \cref{fig:code_struct
 \input{diag_code_structure}
 
 
-\chapter{Sparger design space exploration}
+\chapter{General sparging system design}
 \label{sec:sparging_expl}
 
 This chapter uses the ARD model to explore the performance and behavior of the different gas sparging systems that can be designed. As a byproduct of this study, quantified conditions are derived that delimit the validity of the analytical ARD solution, informing the designer if the numerical ARD model is needed. 
