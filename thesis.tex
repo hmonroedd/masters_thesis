@@ -32,6 +32,14 @@
 \usepackage{graphicx}
 \usepackage{subcaption}
 % \usepackage[style=authoryear]{biblatex} % already included in the .sty, to display author name and year when citing: \textcite{}
+\usepackage[
+    font=small,
+    labelfont=bf,
+    format=plain,
+    justification=justified,
+    singlelinecheck=false,
+    margin=1cm
+]{caption} % for captions styling: bold label, smaller font -> distinguishable from bulk text 
 
 \title{Tritium extraction and transport from molten salt breeding experiments}
 \author{Hippolyte Monroe}
@@ -965,7 +973,7 @@ Bubble saturation regimes are characterized by \PI, defined in \cref{eq:Pi_def_m
 \paragraph{Mass transfer limited regime (MTL)}
 When $\PI\ll1 \Rightarrow 1-e^{-\PI}\approx0$: bubbles can be considered free of any tritium, the driving force for tritium exchange \JT is therefore maximal, limited only by the liquid side mass transfer $h_l$, i.e. the ability of tritium to diffuse down the concentration gradient at the liquid-gas interface: this is a \textbf{mass transfer limited (MTL)} regime, which can be characterized by a lower threshold \textbf{\PI<0.1} (\cref{fig:tau_vs_Pi}). In this regime, the extraction time is given by:
 \begin{equation}
-    \boxed{\tau_\mathrm{MTL}=\tau_\mathrm{SPP}=\frac{\langle\varepsilon_l\rangle}{\langle a \, h_l\rangle}}
+    \label{eq:tau_MTL} \boxed{\tau_\mathrm{MTL}=\tau_\mathrm{SPP}=\frac{\langle\varepsilon_l\rangle}{\langle a \, h_l\rangle}}
 \end{equation}
 It is coupled to tritium diffusivity in the liquid phase through $h_l$ and \textbf{independent of tritium solubility $K_s$}. Among the operating parameters that drive $\tau_\mathrm{MTL}$, temperature is expected to have the greatest impact as it is exponentially correlated to the tritium diffusivity $D_l$ and the liquid viscosity $\mu_l$ by Arrhenius laws (see \cref{tab:correlations}), both governing $h_l$. Therefore, \textbf{increasing temperature greatly improves the extraction performances in MTL}. Increasing the sparging gas flow rate \ndotg also helps, by maximizing the available interfacial area for mass transfer ($a$). 
 
@@ -976,6 +984,7 @@ When $\PI\gg1 \Rightarrow1-e^{-\Pi(z)}\approx1$: bubbles leave the tank saturate
 
 In this regime, the extraction time follows $\tau\approx \tau_\mathrm{SPP}\cdot\PI \propto \frac{1}{a\,h_l}\cdot \frac{a\,h_l\,K_s\,H}{u_g}\propto \frac{K_s\,H}{u_g}$. More precisely, we can in this case get an exact and compact expression from the general form of \Tana, which doesn't need the "uniform hydrodynamic parameters" assumption: 
 \begin{equation}
+    \label{eq:tau_PPL}
     \boxed{\tau_\mathrm{PPL}=\frac{\langle\varepsilon_l\rangle R\,T\,K_s\,H}{u_g(H)}}
 \end{equation}
 
@@ -1005,14 +1014,14 @@ As shown in \cref{fig:error_vs_groups}(a), large \Gmix alone isn't sufficient to
 Toward high \Gmix however, many samples exhibit a normalized Root Mean Square Error (RMSE) of the fit indicating that the inventory decay is no longer well fitted by an exponential. Plotting the same quantity as a function of bubble saturation (\cref{fig:error_vs_groups}(b)) gives us the dimension needed to understand what happens in the high \Gmix region of \cref{fig:error_vs_groups}(a): when mixing becomes insufficient (large \Gmix, indicated by the imperfect fit) and bubbles are saturated (large \PI), extraction kinetics are improved, as shown by the systematically overestimated extraction time. Conversely, lack of mixing seems to impair extraction in the MTL regime, as shown by the positive relative error of the high \Gmix samples in the upper left part of \cref{fig:error_vs_groups}(b). From \cref{fig:error_vs_groups}(a), \textbf{\Gmix<0.1 seems to be a sufficient condition to ensure that \Tnum is obtained from a fit that is representative of the sparger performance}. 
 
 
-This non-exponential behavior can be explained by examining one of these high-RMSE cases: sample 191 (poor mixing, bubbles saturated) exhibits a tritium inventory decay that is faster than exponential (\cref{fig:nonexp}(b)), suggesting that in this case the characteristic extraction time decreases with time. Other samples from this study exhibit high \Gmix comparable to sample 191 and still follow an exponential decay that is well predicted by \Tana: sample 139, with \Gmix=25, \Gp=0.032, \PI=0.095, differs only significantly by its \PI, it is well fitted (normalized RMSE = $2.7\cdot10^{-5}$) and gives a good prediction ($e=4.3\cdot10^{-3}$). This confirms that the non-exponential nature of sample 191 comes from the high \PI: bubbles saturate soon after being generated, as shown by the spike in the reaction rate $a\,\JT$ in \cref{fig:nonexp}(a), moving up the column as the lower part gets stripped of its tritium. This sparging system behaves like a plug-flow contactor (PFC). At the end of the simulated time, the liquid phase is near fully depleted of its tritium ($\NT(2\Tana)\approx2\%\cdot\NT(0)$), where there should still be 13\% tritium remaining according to the "perfect mixing" result: the extraction is faster, meaning that \textbf{poor liquid mixing enhances extraction when operating in a saturated (PPL) regime}. This matches the classic chemical-engineering results that plug-flow contactors beat stirred tank (perfect mixing) whenever the process is equilibrium limited \needcite{PFR faster than CSTR}. 
+This non-exponential behavior can be explained by examining one of these high-RMSE cases: sample 191 plotted in \cref{fig:nonexp}(b)(poor mixing, bubbles saturated) exhibits a tritium inventory decay that is faster than exponential (normalized RMSE = $2.7\cdot10^{-2}$), suggesting that in this case the characteristic extraction time decreases with time. Other samples from this study exhibit high \Gmix comparable to sample 191 and still follow an exponential decay that is well predicted by \Tana: sample 139, with \Gmix=25, \Gp=0.032, \PI=0.095, differs only significantly by its \PI, it is well fitted (normalized RMSE = $2.7\cdot10^{-5}$) and gives a good prediction ($e=4.3\cdot10^{-3}$). This confirms that the non-exponential nature of sample 191 comes from the high \PI: bubbles saturate soon after being generated, as shown by the spike in the reaction rate $a\,\JT$ in \cref{fig:nonexp}(a), moving up the column as the lower part gets stripped of its tritium. This sparging system behaves like a plug-flow contactor (PFC). At the end of the simulated time, the liquid phase is near fully depleted of its tritium ($\NT(2\Tana)\approx2\%\cdot\NT(0)$), where there should still be 13\% tritium remaining according to the "perfect mixing" result: the extraction is faster, meaning that \textbf{poor liquid mixing enhances extraction when operating in a saturated (PPL) regime}. This matches the classic chemical-engineering results that plug-flow contactors beat stirred tank (perfect mixing) whenever the process is equilibrium limited \needcite{PFR faster than CSTR}. 
 
 Note that that the error of \Tana grows toward the $\PI>1$ region of \cref{fig:error_vs_groups}(b), even when the analytical assumptions are supposed to be valid. This is because \Tana scales linearly with it in the PPL regime, and therefore acts as an error amplifier: if the analytical assumptions are not perfectly valid, \Tana will be even more off as \PI is large. Here $\Gmix<0.1$ and $\Gp<0.1$ are taken as acceptable indicators of the assumption's validity, still they can be refined to restrict the analytical solution to a higher level of accuracy.  
 
 \begin{figure}[htbp]
   \centering
-  \includegraphics[width=\linewidth]{fig/nonexp.pdf}
-  \caption{Sample 191 of the study, with \Gmix=15, \Gp=0.032 and \PI=16: (a) the concentration, partial pressure and volumetric transfer rate profiles at five instants, showing a mass transfer front travelling up the column; (b) the decay of the tritium inventory with its exponential fit, and the residual that fit leaves, which is where the departure from a single exponential is visible.}
+  \includegraphics[width=0.7\linewidth]{fig/nonexp.pdf}
+  \caption{Sample 191 of the study, with \Gmix=25, \Gp=0.032 and \PI=16: (a) the concentration, partial pressure and volumetric transfer rate profiles at five instants, showing a mass transfer front travelling up the column; (b) the decay of the tritium inventory with its exponential fit, and the residual that fit leaves, which is where the departure from a single exponential is visible.}
   \label{fig:nonexp}
 \end{figure}
 
@@ -1023,8 +1032,8 @@ Note that that the error of \Tana grows toward the $\PI>1$ region of \cref{fig:e
     \begin{align*}
     &\Gmix<0.1 \Rightarrow \text{exponential decay} \\
     &\Gmix>0.1 \ \text{AND} \ \big(\PI>0.1 \ \text{OR} \ \Gp>0.1\big)\Rightarrow \text{non-exponential decay} \\
-    &\qquad \text{case} \ \PI>0.1 \Rightarrow \text{faster extraction (PFC)} \\
-    &\qquad \text{case} \ \PI<0.1 \ \text{AND} \ \Gp>0.1 \Rightarrow \text{slower extraction}\\ 
+    &\qquad \text{case} \ \PI<0.1 \ \text{AND} \ \Gp>0.1 \Rightarrow \Tnum>\Tana \ \text{(slower extraction)}\\ 
+    &\qquad \text{case} \ \PI>0.1 \Rightarrow \Tnum<\Tana \ \text{(faster extraction, PFC)} \\
     &\PI<0.1 \ \text{AND} \ \Gp<0.1 \Rightarrow \text{\Tana is accurate (even if $\Gmix\gg0.1$)}
     \end{align*}
 \end{keyresult}
@@ -1046,12 +1055,6 @@ When conditions on $\Gmix$ are met for the "well-mixed" assumption, the \CT ARD 
 % plot signed error: at higher Gp, tau_pred always overestimates -> the bubble expansion improves the mass transfer properties 
 \label{sec:impact_of_pressure}
 
-When considering variations of \Gp, the comparison between \cref{fig:error_vs_Gp}(a) and (b) shows that it is important to take into account hydrostatic pressure variations when modelling gas sparging experiments: even at relatively small $\Gp=0.2$ (typically LIBRA Pi case), ignoring pressure variations can result in a 5\% overestimation extraction time, which gets worse at higher \Gp. Despite of yielding a conservative estimate, this represents added error which is always undesirable\todo{do we care about that ?}. 
-
-As shown in \cref{fig:error_vs_Gp}(b), using spatially averaged quantities as derived in \cref{sec:analytical_solution} yields an analytical prediction that matches well the numerical results when the underlying assumptions are valid. Interestingly, it can be seen that around $\Gp> 5$, the analytical model starts to break down and overestimates the extraction time. This is a hint that bubble's expansion is beneficial to mass transfer. 
-
-To look at it more closely, we can isolate the impact of \Gp on the extraction time by considering only the small \PI samples. Here, the SPP approximation is valid and $\tau$ becomes only a function of $\langle a\,h_l\rangle$ and $\langle\varepsilon_l\rangle$ (\cref{eq:tau_SPP}), which neither $K_s$ nor $E_l$ vary. This allows to isolate the effect of varying $P_\mathrm{top}$, to reveal a clear positive correlation shown in \cref{fig:tau_vs_Ptop}: $\tau\propto P_\mathrm{top}^{0.50}$. This suggests that \textbf{pumping the top head space to a low pressure could be used as a mechanism to accelerate tritium extraction}, at least when operating in the SPP regime (the $\PI>0.1$ samples also seem to follow this trend, although less clearly). This might however hit a limit when bubble's expansion make them coalesce, which reduces the specific interfacial area $a$ but is not caught by this model, as per \cref{as:no_coalescence}.
-
 
 \begin{figure}[htbp]
   \centering
@@ -1067,9 +1070,24 @@ To look at it more closely, we can isolate the impact of \Gp on the extraction t
   \label{fig:tau_vs_Ptop}
 \end{figure}
 
+
+Pressure variation is characterized by $\Gp\equiv \frac{\rho_l\,g\,H}{\Ptop}$. The comparison between \cref{fig:error_vs_Gp}(a) and (b) shows the importance of taking into account hydrostatic pressure variations when modelling gas sparging: even at relatively small $\Gp=0.2$ (typically LIBRA Pi case), ignoring pressure variations can result in a 5\% overestimation extraction time, which gets worse at higher \Gp. Despite of yielding a conservative estimate, this represents added error which is always undesirable\todo{do we care about that ? Maybe drop the left panel}. 
+
+As shown in \cref{fig:error_vs_Gp}(b), using spatially averaged quantities as derived in \cref{sec:analytical_solution} yields an analytical prediction that matches well the numerical results when the underlying assumptions are valid. Interestingly, it can be seen that around $\Gp> 5$, the analytical model starts to break down and overestimates the extraction time. This is a hint that bubble's expansion is beneficial to mass transfer. 
+
+To look at it more closely, we can isolate the impact of \Gp on the extraction time by considering only the small \PI samples. Here, the SPP approximation is valid and $\tau$ becomes only a function of $\langle a\,h_l\rangle$ and $\langle\varepsilon_l\rangle$ (\cref{eq:tau_SPP}), which neither $K_s$ nor $E_l$ vary. This allows to isolate the effect of varying $P_\mathrm{top}$, to reveal a clear positive correlation shown in \cref{fig:tau_vs_Ptop}: $\tau\propto P_\mathrm{top}^{0.50}$. This suggests that \textbf{pumping the top head space to a low pressure could be used as a mechanism to accelerate tritium extraction}, at least when operating in the SPP regime (the $\PI>0.1$ samples also seem to follow this trend, although less clearly). This might however hit a limit when bubble's expansion make them coalesce, which reduces the specific interfacial area $a$ but is not caught by this model, as per \cref{as:no_coalescence}.
+
+At the same gas flow rate and assuming no bubble coalescence, the observed effect of pressure is explained as follows:
+\begin{itemize}
+    \item in MTL regime: extraction is driven by the specific bubble interfacial area and the mass transfer: $\tau \propto a^{-1}h_l^{-1}$ (\cref{eq:tau_MTL}), with $a\propto \varepsilon_g \,d_b^{-1}$ and $h_l \propto d_b^{-1/3}$. Given $\epsilon_g\propto P_l^{-1}$ whereas $d_b\propto P_l^{-1/3}$, this yields $\tau\propto P_l^{5/9}$, close to the observed tendency;
+    \item in PPL regime: extraction is throttled by the bubbles back-pressure \PT. Intuitively, a lower initial pressure or a decompression of the bubble as it rises allows to accommodate more tritium in the bubble. Formally, the extraction time derived for the PPL regime suggests $\tau\propto P_l$ (\cref{eq:tau_PPL}).
+\end{itemize}
+Here, \textbf{for a given gas molar flow rate}, pressure drives variations of the gas volume, competing with variations of the size of individual bubbles. 
+This doesn't contradict the well-established result that \textbf{for a given gas volume}, smaller bubbles are desirable to maximize the interfacial area available for mass transfer, this is controlled by the design of the nozzles.  
+
 \begin{keyresult}
     \centering
-    Lower head space pressure (=higher \Gp) $\Rightarrow$ faster extraction
+    Lower head space pressure $\Rightarrow$ faster extraction
 \end{keyresult}
 
 \subsection{Summary}
@@ -1077,12 +1095,22 @@ To look at it more closely, we can isolate the impact of \Gp on the extraction t
 \input{tab_design_map}
 \todo{make this basic table publication grade quality, replace \Tnum vs \Tana column with a column that tells what formula can be used for tau (or just "<\Tana") when the extraction is faster than the analytical model. The information of "where can we use \Tana" will be relegated to the venn diagram}
 
+
+
+\paragraph{The design space can be categorized in 8 distinct regions}
+The findings of the design study are summarized in \cref{fig:venn}, covering the 8 possible cases a sparging system might fall in. Case 7 (MTL regime where none of the "good mixing" and "uniform hydrodynamic" holds) shouldn't be misread: in this case the analytical reference under-predicts the extraction time, nevertheless decreasing $P_\mathrm{top}$ still overall improves the extraction dynamics as stated in \cref{sec:impact_of_pressure}. 
+
+
 \begin{figure}[htbp]
   \centering
-  \includegraphics[width=\linewidth]{fig/design_venn.pdf}
-  \caption{Map of the design space. The three circles are the regions where each analytical assumption is \textbf{violated}, so a system for which all three hold falls outside them (case 1). Each region is labelled with its case number in \cref{tab:design_map} and with the median signed error of \Tana, the fill colour reading that same error. Green hatching marks the regions where \Tana is accurate to $\pm5\%$, i.e. those where at most one assumption is violated; red hatching marks the regions where the inventory decay is no longer a single exponential, so that a single $\tau$ no longer summarises it.}
+  \includegraphics[width=0.6\linewidth]{fig/design_venn.pdf}
+  \caption{Map of the design space showing the accuracy of the analytical model in each region. The three circles are the regions where each analytical assumption is \textbf{violated}, so a system for which all three hold falls outside them (case 1). Each region is labelled with its case number in \cref{tab:design_map} and with the median signed error of \Tana, the fill colour reading that same error. Green hatching marks the regions where \Tana is accurate to $\pm5\%$, i.e. those where at most one assumption is violated; red hatching marks the regions where the inventory decay is no longer a single exponential, so that a single $\tau$ no longer summarises it.}
   \label{fig:venn}
 \end{figure}
+
+\paragraph{When can one use the analytical model ?}
+The parity plot of \cref{fig:parity} shows that \textbf{having at most one of the three assumptions violated is a sufficient condition for the analytical model to hold}: all 111 samples satisfying it fall within the reference $\Tnum\pm5\%$, the largest deviation being 3.3\%. It does not matter which of the three is the one relaxed, so this contains in particular the insight that the "good-mixing" assumption can be relaxed ($\Gmix \nless 0.1$) and the analytical model still hold, as found in \cref{sec:impact_of_mixing}. Beyond that the failure is abrupt rather than gradual, as \cref{fig:venn} shows region by region: as soon as a second assumption is violated the deviation reaches 11.9\%, and up to 46\% when all three are.
+
 
 \begin{figure}[htbp]
   \centering
@@ -1091,17 +1119,11 @@ To look at it more closely, we can isolate the impact of \Gp on the extraction t
   \label{fig:parity}
 \end{figure}
 
-\paragraph{The design space is made of 8 distinct regions}
-The findings of the design study are summarized in \cref{tab:design_map}, covering the 8 possible cases a sparging system might fall in. Case 7 (MTL regime where none of the "good mixing" and "uniform hydrodynamic" holds) shouldn't be misread: in this case the analytical reference under-predicts the extraction time, nevertheless decreasing $P_\mathrm{top}$ still overall improves the extraction dynamics as stated in \cref{sec:impact_of_pressure}. 
-
-\paragraph{When can one use the analytical model ?}
-The parity plot of \cref{fig:parity} shows that \textbf{having at most one of the three assumptions violated is a sufficient condition for the analytical model to hold}: all 111 samples satisfying it fall within the reference $\Tnum\pm5\%$, the largest deviation being 3.3\%. It does not matter which of the three is the one relaxed, so this contains in particular the insight that the "good-mixing" assumption can be relaxed ($\Gmix \nless 0.1$) and the analytical model still hold, as found in \cref{sec:impact_of_mixing}. Beyond that the failure is abrupt rather than gradual, as \cref{fig:venn} shows region by region: as soon as a second assumption is violated the deviation reaches 11.9\%, and up to 46\% when all three are.
-
 \paragraph{The optimal sparger design}
 
 \begin{figure}[htbp]
   \centering
-  \includegraphics[width=\linewidth]{fig/design_violin.pdf}
+  \includegraphics[width=0.8\linewidth]{fig/design_violin.pdf}
   \caption{Extraction time reached across the design space, normalized by $\tau_\mathrm{ref}$, the median extraction time of case 1. The 8 cases of \cref{tab:design_map} are paired by their $(\PI,\Gp)$ combination and ranked from fastest to slowest, the two members of each pair differing only in \Gmix and being distinguished by hatching. The number under each violin is the case number in \cref{tab:design_map}. The spread within a case reflects the sampled transport parameters, so it is the medians that compare the regimes.}
   \label{fig:violin}
 \end{figure}
@@ -1110,14 +1132,13 @@ The parity plot of \cref{fig:parity} shows that \textbf{having at most one of th
 \todo{does it actually make sense to talk about PFC ? In a PFC the reactant is introduced by "plugs" in the moving phase. The only similary with PFC here is that mixing is neglible}
 
 
-In a design problem, the tritium transport properties are not controlled directly, the optimal design depends on the constraints. Beside the obvious extraction time goal, there might be cases when the tritium concentration of the outlet gas also constitutes a strong constraint. For instance in the LIBRA Pi experiment, after being extracted from the vessel, tritium is stripped from its carrying gas by water bubblers (ready to be counted using a liquid scintillator), and the gas rate drives evaporation in those bubblers, it is thus desirable that the tritium concentration in the gas is maximized so that the gas flow rate itself can be kept low enough, eventually enabling a higher tritium concentration in the water samples to be counted. 
+In a design problem, the tritium transport properties are not controlled directly, the optimal design depends on the constraints. But beside the obvious extraction time goal, there might be cases when the tritium concentration of the outlet gas becomes a strong constraint. For instance in the LIBRA Pi experiment, after being extracted from the vessel, tritium is stripped from its carrying gas by water bubblers (ready to be counted using a liquid scintillator). The gas rate drives evaporation in those bubblers, it is thus desirable that the tritium concentration in the gas is optimized so that the gas flow rate itself can be kept low enough, eventually enabling a higher tritium concentration in the water samples to be counted. 
 
+The relative performance of each region of the design space is shown in \cref{fig:violin}, the fastest on the left:
 \begin{itemize}
-    \item case "optimize for the extraction time no matter what": the sparger should be operated in the MTL regime; \Gp should be maximized by pulling vacuum on the head space ($\Ptop \searrow$) and making the column taller (while still ensuring \PI<0.1); mixing is irrelevant (no constraint on \Gmix). During operation, the extraction time can be reduced by increasing $T$ and \ndotg and decreasing \Ptop. 
-    \item case "optimize for tritium concentration in the outlet gas": 
+    \item  \textit{optimize for the extraction time no matter what}: the system should operate in MTL regime (regions 3 or 7 of the design space); \Gp maximized by pulling vacuum on the head space ($\Ptop \searrow$) and making the column taller (while still ensuring \PI<0.1); mixing irrelevant (no constraint on \Gmix). During operation, the extraction time can be reduced by increasing $T$ and \ndotg and decreasing \Ptop;
+    \item \textit{optimize tritium concentration in the outlet gas}: the system has to operate in PPL regime, at the expense of slower extraction (region 4 and 8 of the design space); even though slower, extraction performance can still be optimized by pulling vacuum in the head space (high \Gp); mixing doesn't make a significant difference. When operating in PPL, the extraction time is reduced by increasing \ndotg and decreasing \Ptop, increasing $T$ can still have a positive effect if the bubbles are not fully saturated (\PI<5), but if they are it starts having an adverse effect.
 \end{itemize}
-
-The study showed that a PFC-like sparger yields the best performances, with a super-exponential decay of the tritium inventory. 
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%
@@ -1196,7 +1217,7 @@ Considering the range of attainable operating parameters presented in \cref{tab:
     \end{itemize}
 \end{itemize}
 
-It follows that LIBRA Pi can potentially be in cases 3 or 4 of \cref{tab:design_map}, where the analytical model underestimates the extration speed. It must therefore be simulated using the numerical ARD model. As in \cref{sec:sparging_expl}, we use a Monte Carlo-like approach to cover the entire 4-dimensional parameter space for each of the 2 bounding scenarios. \todo{1 or 2 sentence about the sampling scheme used (saltelli, log and uniform)}. Each sample is run for a transient duration of $5\Tana$, enough to observe the inventory decay below 1\% of its original value. 
+It follows that LIBRA Pi can potentially be in regions 3 or 4 of \cref{fig:venn}, where the analytical model might underestimates the extration speed. It must therefore be simulated using the numerical ARD model. As in \cref{sec:sparging_expl}, we use a Monte Carlo-like approach to cover the entire 4-dimensional parameter space for each of the 2 bounding scenarios. \todo{1 or 2 sentence about the sampling scheme used (saltelli, log and uniform)}. Each sample is run for a transient duration of $5\Tana$, enough to observe the inventory decay below 1\% of its original value. 
 
 
 
@@ -1216,6 +1237,10 @@ It follows that LIBRA Pi can potentially be in cases 3 or 4 of \cref{tab:design_
 Sobol indices measure the relative sensitivity of a fonction to each of its individual variables. It is a variance based sensitivity metric, quantifying the variance that propagates to the output when varying one of its inputs. \todo{write a quick and intuitive paragraph about what sobol indices are and how they can be interpreted, give mathematical definition for first and total order indices}
 
 It should be noted that the width of the sampling space for each parameter conditions the indices the Sobol study will yield: in a function $f(a,b)=a+e^b$, if $a\in[1,10^5]$ and $b\in[1,1.01]$, $a$ will have the dominating Sobol index even though $f$ depends exponentially on $b$ and only linearly on $a$. The sample space for a simulation must be representative of what is expected to be encountered in the experiment. It is the case here.
+
+In the present case, the sensitivity study in \cref{fig:sobol} shows that 2 input parameters dominate the system's performance, regardless of the scenario: in the considered parameter space, variations in $T$ and \ndotg are responsible for most of the extraction time variance, indicating that the contribution of \Ptop and \dnoz can be ignored to a certain extent. This allows to reduce the parameter space from 4D to 2D, simplifying the analysis. 
+
+It can be observed that the relative importance of \ndotg and $T$ flips from the pessimistic to the optimistic scenario. This matches the analysis of \cref{sec:impact_of_sat_Pi}, stating that as the extraction starts being limited by tritium partial pressure (high \PI, the pessimistic scenario), sparger gas flow rate becomes the main extraction driver and increasing temperature becomes counter-productive.  
 
 \subsection{Operating point}
 % tau vs (n,T) map
@@ -1600,7 +1625,6 @@ In Li 2026, \cref{as:T2_press_is_negligible} doesn't hold as the tritium concent
 % Appendices are optional
 \appendix
 
-\todo{put prf 1,10,100 and 1000 4 panel figure for permeation and retention}
 \todo{move full tau ard here}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \chapter{Permeation transient simulations}
