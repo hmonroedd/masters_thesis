@@ -111,17 +111,17 @@
 \draw[arrflow] (results.south) -- ++(0,-4mm) -| ([xshift=5mm]anim.north);
 
 % ============ step numbers and source files ============
-\node[tag=purple!60]      at (g1.north west)       {1 -- describe the system \textbar{} \texttt{inputs.py}};
-\node[filetag]            at (resolve.north west)  {2 -- resolve the closures \textbar{} \texttt{inputs.py}};
-\node[tag=green!45!black] at (siminput.north west) {3 -- model input \textbar{} \texttt{inputs.py}};
-\node[filetag]            at (solve.north west)    {4 -- solve \textbar{} \texttt{model.py}};
-\node[tag=green!45!black] at (results.north west)  {5 -- results \textbar{} \texttt{model.py}};
-\node[tag=blue!55]        at (save.north west)     {6 \textbar{} \texttt{model.py}};
+\node[tag=purple!60]      at (g1.north west)       {1 -- describe the system \textbar{} \texttt{simulation\_input.py}};
+\node[filetag]            at (resolve.north west)  {2 -- resolve the closures \textbar{} \texttt{simulation\_input.py}};
+\node[tag=green!45!black] at (siminput.north west) {3 -- model input \textbar{} \texttt{simulation\_input.py}};
+\node[filetag]            at (solve.north west)    {4 -- solve \textbar{} \texttt{ard\_model.py}};
+\node[tag=green!45!black] at (results.north west)  {5 -- results \textbar{} \texttt{ard\_model.py}};
+\node[tag=blue!55]        at (save.north west)     {6 \textbar{} \texttt{ard\_model.py}};
 \node[tag=blue!55]        at (post.north west)     {\texttt{postprocess.py}};
 \node[tag=blue!55]        at (anim.north west)     {\texttt{animation.py}};
 \node[filetag]            at (corr.north west)     {\texttt{correlations.py}};
-\node[filetag]            at (diag.north west)     {\texttt{inputs.py}};
-\node[filetag]            at (examples.north west) {\texttt{input\_examples.py}};
+\node[filetag]            at (diag.north west)     {\texttt{simulation\_input.py}};
+\node[filetag]            at (examples.north west) {\texttt{example\_cases.py}};
 
 \end{tikzpicture}
 \caption{High-level structure of the \texttt{sparging} package, and the order in which its API is used to write a simulation}

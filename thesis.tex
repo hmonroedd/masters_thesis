@@ -307,7 +307,7 @@ The viability of gas sparging as a tritium extraction system for LIBRA Pi has no
         \caption{}
         \label{fig:diffusivity}
     \end{subfigure}
-    \caption{Overview of (a) Henry's law solubility constant and (b) diffusivity constant for hydrogen species in molten salts as a function of temperature. Experimental datapoints are shown as shapes. Self diffusion of free fluorines (\ce{F^-}) in FLiBe is included as a reference. \textcite{briggs_calculation_1970} was calculated from results of the MSRE based on mass transport and diffusion relationships. In (b) the plotted correlation doesn't match the original formula of \textcite{fukada_hydrogen_2006}, the literature seems to agree on the fact that the pre-exponential factor given in the original paper is too low by 4 orders of magnitude. Taken from \textcite{humrickhouse_tritium_2020}}
+    \caption{Overview of (a) Henry's law solubility constant and (b) diffusivity constant for hydrogen species in molten salts as a function of temperature. Experimental datapoints are shown as shapes. Self diffusion of free fluorines (\ce{F^-}) in FLiBe is included as a reference. \textcite{briggs_calculation_1970} was calculated from results of the MSRE based on mass transport and diffusion relationships. In (b) the plotted correlation doesn't match the original formula of \textcite{fukada_hydrogen_2006}: the pre-exponential factor given in the original paper is too low by 4 orders of magnitude, and the corrected value plotted here is the one adopted by \textcite{humrickhouse_tritium_2020}. Taken from \textcite{humrickhouse_tritium_2020}}
     \label{fig:transport_params}
 \end{figure}
 %%%%%%%%%%%%%%%%%%%%
@@ -377,7 +377,6 @@ Concentration at the liquid-gas interface is assumed to be always at equilibrium
 
 In \cref{eq:JT2}, \JT and \PT are the unknown to be solved in the 1D-ARD model; $K_s$ is a salt property; $h_l$ is a parameter that depends on tritium diffusivity and fluid dynamic characteristics of the salt. 
 % -> transition to next section
-\todo{add table of closure relations for mass transport}
 \todo{add figure of P(c) equilibrium curve ?}
 
 \subsection{Fluid dynamics}
@@ -388,7 +387,6 @@ Advective transport through fluid motion is expected to influence, if not domina
 The net bubble velocity gives rise to an advective term, while phases mixing translates into a dispersion term. Mixing is expressed by a "dispersion" term that resembles molecular diffusion, as both phenomena have a Fickian behavior which tends to flatten the concentration profiles. They are however inherently different from a physical point of view and shouldn't be mixed up, as transport caused by phases mixing largely dominates molecular diffusion at macroscopic scales. This translates in dispersion coefficients being order of magnitude larger than diffusion coefficients. 
 \todo{elaborate on choices of correlations, put the fluid dynamics closure relations table here and present typical order of magnitude values for the present work -> will be used in the assumptions/simplifications}
 
-\todo{add table of closure relations for fluid dynamics}
 % take from sparging paper, add a column "order of magnitude" 
 
 \subsection{Advection-reaction-dispersion model}
@@ -580,7 +578,6 @@ This is a hint that the average concentration and therefore the tritium inventor
 \subsection{Closure relations and correlations}
 
 \todo{short introduction, explain briefly the choices of correlations}
-\todo{update this table with the modifications made in correlations.py (eg include superficial velocity), add columns "order of magnitude" and "validity" (give the validity range/assumptions needed)}
 \input{tab_correlations}
 
 \subsection{Assumptions of the model}
@@ -856,7 +853,7 @@ Each assumption can be checked against \cref{tab:verification_inputs}.
 \begin{enumerate}
     \item The liquid concentration is uniform (\cref{as:c_is_uniform}): the dispersive mixing time $H^2/E_l$ is $0.62\ \mathrm{s}$ against an extraction time of the order of a day, i.e. $\Gmix\simeq5\times10^{-6}$, so the liquid homogenises some five orders of magnitude faster than tritium leaves it;
     \item The bubble residence time $H/v_b=0.35\ \mathrm{s}$ is more than five orders of magnitude shorter than $\tau$ (\cref{as:short_res_time}), which justifies both the quasi-steady gas phase and the neglect of the gas inventory in front of the liquid one;
-    \item Finally, although the gas Bodenstein number is only $\mathrm{Bo}=2.8$, gas dispersion is negligible in \cref{eq:ARD_PT}: the dispersive term carries a factor $\varepsilon_g$ that the advective term does not, so their ratio is $\varepsilon_g/\mathrm{Bo}\simeq2\times10^{-4}$ (\cref{as:no_gas_dispersion})
+    \item Finally, the gas Bodenstein number is $\mathrm{Bo}=4.7\times10^{3}$, so gas dispersion is negligible in \cref{eq:ARD_PT}: the ratio of the dispersive to the advective term is $1/\mathrm{Bo}\simeq2\times10^{-4}$ (\cref{as:no_gas_dispersion})
     \item The hydrodynamic parameters are close to uniform (\cref{as:uniform_hydrodynamic}): the hydrostatic head over the column is $1.5\ \%$ of the pressure at the top, which is also the order of the variation of $\varepsilon_g$, $a$ and $u_g$ along $z$. Accordingly $\Pi(0)$ and $\langle\Pi\rangle$ agree to within $0.4\ \%$;
 \end{enumerate}  .
 
@@ -893,7 +890,7 @@ The implementation therefore reproduces the analytical solution, in both the par
 The model is implemented as a Python package, \verb|libra_sparging| (Python 3.12 or later), released under the MIT license at \url{https://github.com/LIBRA-project/libra_sparging}. The finite element discretisation is built on FEniCSx/DOLFINx \needcite{DOLFINx}, and the resolution of the closure relations on the graph library NetworkX \needcite{NetworkX}. Every physical quantity carries its units through Pint \needcite{Pint}, which performs the conversions and catches dimensional inconsistencies at run time (a useful safeguard given the number of empirical correlations involved, sometimes with archaic units). NumPy, SciPy, pandas and Matplotlib support the post-processing. Correctness is checked by a \verb|pytest| suite covering the resolution of the model input, the solver on cases with a known solution, and the
 serialisation of the results.
 
-The API of \verb|libra_sparging| package is synthesized in \cref{fig:code_structure}: the user describes the system with the four dataclasses of step~1, from which \texttt{from\_parameters} resolves the parameters (scalars and $z$-profiles) required by the 1D-ARD equations (step~3); any parameter left unspecified is filled with the default correlation of \texttt{correlations.py}. The dimensionless diagnostics of \texttt{SimulationInput} are available before any computation, and give the discretisation steps handed to \texttt{solve}, which returns a \texttt{SimulationResults} object holding the profiles and the requested exports. The dashed path is the shortcut used in practice: the pre-built cases of \texttt{input\_examples.py} return a ready \texttt{SimulationInput}. All quantities carry physical units, as \texttt{pint} objects built on the registry \texttt{ureg} of \texttt{config.py}.
+The API of \verb|libra_sparging| package is synthesized in \cref{fig:code_structure}: the user describes the system with the four dataclasses of step~1, from which \texttt{from\_parameters} resolves the parameters (scalars and $z$-profiles) required by the 1D-ARD equations (step~3); any parameter left unspecified is filled with the default correlation of \texttt{correlations.py}. The dimensionless diagnostics of \texttt{SimulationInput} are available before any computation, and give the discretisation steps handed to \texttt{solve}, which returns a \texttt{SimulationResults} object holding the profiles and the requested exports. The dashed path is the shortcut used in practice: the pre-built cases of \texttt{example\_cases.py} return a ready \texttt{SimulationInput}. All quantities carry physical units, as \texttt{pint} objects built on the registry \texttt{ureg} of \texttt{config.py}.
 \todo{should this rather be in the caption ?}
 
 \input{diag_code_structure}
@@ -921,7 +918,7 @@ The derivation of the analytical solution \Tana (\cref{eq:tau_ana}) was insightf
 \end{itemize}
 
 \paragraph{Excluded from the study}
-The bubble speed is expected to stay within $0.2$-$0.3\ \mathrm{m/s}$ no matter its size \cite{chavez_experimental_2021}. Considering that gas sparging columns are of the order of few meters high at most and that the gas dispersion coefficient in the LIBRA Pi experiment $E_g\propto D_t^2\,u_g$ sits around $10^{-6}\ \mathrm{m^2/s}$, we get in most pessimistic cases: $\frac{H}{v_b}=\frac{10\ \mathrm{m}}{0.2 \ \mathrm{m/s}}=50\ \mathrm{s}\ll \tau$ and $\mathrm{Bo}=\frac{(1 \ \mathrm{m}\cdot 0.3 \ \mathrm{m/s})}{(10^{-6} \ \mathrm{m^2/s})\cdot 10^{-1}\cdot 10^{-2}}=300\gg 1$. We can therefore confidently state that \cref{as:short_res_time,as:no_gas_dispersion} are always verified, studying their effect is therefore excluded from this study. 
+The bubble speed is expected to stay within $0.2$-$0.3\ \mathrm{m/s}$ no matter its size \cite{chavez_experimental_2021}. Considering that gas sparging columns are of the order of few meters high at most and that the gas dispersion coefficient in the LIBRA Pi experiment $E_g\propto D_t^2\,u_g$ sits around $10^{-6}\ \mathrm{m^2/s}$, we get in most extreme designs: $\frac{H}{v_b}=\frac{10\ \mathrm{m}}{0.2 \ \mathrm{m/s}}=50\ \mathrm{s}\ll \tau$ and $\mathrm{Bo}=\frac{(0.1 \ \mathrm{m}\cdot 0.2 \ \mathrm{m/s})}{(10^{-6} \ \mathrm{m^2/s})\cdot 10^{2}}=200\gg 1$. We can therefore confidently state that \cref{as:short_res_time,as:no_gas_dispersion} are always verified, studying their effect is therefore excluded from this study. 
 
 \todo{change Dt to dt to avoid confusion with diffusion coeff, consistent with db bubble diameter}
 
@@ -959,7 +956,7 @@ The signed relative error $e=\frac{\Tnum-\Tana}{\Tana}$ gives information about 
 \begin{figure}[htbp]
   \centering
   \includegraphics[width=0.6\linewidth]{fig/regimes_tau_vs_Pi.pdf}
-  \caption{Extraction time as a function of bubble saturation \PI and asymptotic behavior, for samples where \Gmix>0.1 and \Gp>0.1}
+  \caption{Extraction time as a function of bubble saturation \PI and asymptotic behavior, for samples where \Gmix<0.1 and \Gp<0.1}
   \label{fig:tau_vs_Pi}
 \end{figure}
 \todo{only keep samples where all assumptions are verified, change tau\_PPL to tau\_SPP*PI in the legend}
@@ -1020,7 +1017,7 @@ Toward high \Gmix however, many samples exhibit a normalized Root Mean Square Er
 
 This non-exponential behavior can be explained by examining one of these high-RMSE cases: sample 191 (poor mixing, bubbles saturated) exhibits a tritium inventory decay that is faster than exponential (\cref{fig:nonexp_inventory}), suggesting that in this case the characteristic extraction time decreases with time. Other samples from this study exhibit high \Gmix comparable to sample 191 and still follow an exponential decay that is well predicted by \Tana: sample 139, with \Gmix=25, \Gp=0.032, \PI=0.095, differs only significantly by its \PI, it is well fitted (normalized RMSE = $2.7\cdot10^{-5}$) and gives a good prediction ($e=4.3\cdot10^{-3}$). This confirms that the non-exponential nature of sample 191 comes from the high \PI: bubbles saturate soon after being generated, as shown by the spike in the reaction rate $a\,\JT$ in \cref{fig:nonexp_profiles}, moving up the column as the lower part gets stripped of its tritium. This sparging system behaves like a plug-flow contactor (PFC). At the end of the simulated time, the liquid phase is near fully depleted of its tritium ($\NT(2\Tana)\approx2\%\cdot\NT(0)$), where there should still be 13\% tritium remaining according to the "perfect mixing" result: the extraction is faster, meaning that \textbf{poor liquid mixing enhances extraction when operating in a saturated (PPL) regime}. This matches the classic chemical-engineering results that plug-flow contactors beat stirred tank (perfect mixing) whenever the process is equilibrium limited \needcite{PFR faster than CSTR}. 
 
-Note that that the error of \Tana grows toward the $\PI>1$ region of \cref{fig:error_vs_Pi}, even when the analytical assumptions are supposed to be valid. This is because \Tana scales linearly with it in the PPL regime, and therefore acts as an error amplifier: if the analytical assumptions are not perfectly valid, \Tana will be even more off as \PI is large. Here $\Gmix>0.1$ and $Gp<0.1$ are taken as acceptable indicators of the assumption's validity, still they can be refined to restrict the analytical solution to a higher level of accuracy.  
+Note that that the error of \Tana grows toward the $\PI>1$ region of \cref{fig:error_vs_Pi}, even when the analytical assumptions are supposed to be valid. This is because \Tana scales linearly with it in the PPL regime, and therefore acts as an error amplifier: if the analytical assumptions are not perfectly valid, \Tana will be even more off as \PI is large. Here $\Gmix<0.1$ and $\Gp<0.1$ are taken as acceptable indicators of the assumption's validity, still they can be refined to restrict the analytical solution to a higher level of accuracy.  
 
 \begin{figure}[htbp]
     \centering
@@ -1103,29 +1100,38 @@ To look at it more closely, we can isolate the impact of \Gp on the extraction t
 
 \input{tab_design_map}
 \todo{make this basic table publication grade quality, replace \Tnum vs \Tana column with a column that tells what formula can be used for tau (or just "<\Tana") when the extraction is faster than the analytical model. The information of "where can we use \Tana" will be relegated to the venn diagram}
-\todo{IMPORTANT FIGURE: add a venn diagram out of this truth table. Use the 1-complement of each proposition, e.g. Pi>0.1, so that the center of the diagram is where none of the assumptions hold. Color the =,faster and slower regions in different colors, intensity of the color informing how much different it is, and dash regions of non-exponential decay.}
-
 
 \begin{figure}[htbp]
   \centering
-  \includegraphics[width=0.6\linewidth]{fig/validity_parity_nodisc.pdf}
-  \caption{Parity of \Tnum compared to \Tana predicted by the analytical model, under the conditions that $\Gmix>0.1$ and $Gp<0.1$}
+  \includegraphics[width=\linewidth]{fig/design_violin.pdf}
+  \caption{Distribution of the extraction time reached in each of the 8 cases of \cref{tab:design_map}, normalized by the mass transfer limited ideal $\tau_\mathrm{SPP}$ of the same system, so that the comparison isolates the penalty of the regime from the sampled transport parameters. Box plots give the median and quartiles, the right axis reads the penalty as a multiple of the ideal.}
+  \label{fig:violin}
+\end{figure}
+
+\begin{figure}[htbp]
+  \centering
+  \includegraphics[width=\linewidth]{fig/design_venn.pdf}
+  \caption{Map of the design space: the three circles are the regions where each analytical assumption is \textbf{violated}, so a system for which all three hold falls outside them (case 1). Each region carries its case number in \cref{tab:design_map} and the median signed error of \Tana, hatching indicating that the inventory decay is no longer a single exponential.}
+  \label{fig:venn}
+\end{figure}
+
+\begin{figure}[htbp]
+  \centering
+  \includegraphics[width=\linewidth]{fig/validity_parity_nodisc.pdf}
+  \caption{Validity of the analytical solution: (a) parity of \Tnum against \Tana; (b) the same samples as a ratio, against the saturation number. Highlighted are the two groups of conditions under which \Tana was found to hold, both of which stay inside the $\pm5\%$ band.}
   \label{fig:parity}
 \end{figure}
-\todo{only keep the $\Gmix>0.1$ and $Gp<0.1$ samples, to show that these conditions are sufficient for analytical model validity}
 
 \paragraph{The design space is made of 8 distinct regions}
 The findings of the design study are summarized in \cref{tab:design_map}, covering the 8 possible cases a sparging system might fall in. Case 7 (MTL regime where none of the "good mixing" and "uniform hydrodynamic" holds) shouldn't be misread: in this case the analytical reference under-predicts the extraction time, nevertheless decreasing $P_\mathrm{top}$ still overall improves the extraction dynamics as stated in \cref{sec:impact_of_pressure}. 
 
 \paragraph{When can one use the analytical model ?}
-The parity plot of \cref{fig:parity} shows that \textbf{$\Gmix<0.1$ and $Gp<0.1$ are sufficient conditions for the analytical model to hold}: xxx of the predicted \Tana fall within the reference $\Tnum\pm10\%$ under those conditions, regardless of the value of \PI. This study also provides the insight that \textbf{these are not necessary conditions}: the "good-mixing" assumption can be relaxed ($\Gmix \nless 0.1$) and the analytical model still hold, under the conditions that the bubbles are in the MTL regime ($\PI<0.1$), as found in \cref{sec:impact_of_mixing}.
-\todo{put the actual value, should be 100 percent, otherwise refine the conditions on Gp and Gmix, maybe Gp is rather <0.02 as fig errorvsGp could suggest (where tau0 crosses the zero error)}
+The parity plot of \cref{fig:parity} shows that \textbf{$\Gmix<0.1$ and $Gp<0.1$ are sufficient conditions for the analytical model to hold}: all 67 samples satisfying them fall within the reference $\Tnum\pm5\%$ regardless of the value of \PI, the largest deviation being 3.3\%. This study also provides the insight that \textbf{these are not necessary conditions}: the "good-mixing" assumption can be relaxed ($\Gmix \nless 0.1$) and the analytical model still hold, under the conditions that the bubbles are in the MTL regime ($\PI<0.1$), as found in \cref{sec:impact_of_mixing}.
 
 \paragraph{The optimal sparger design}
 
 \todo{does it actually make sense to talk about PFC ? In a PFC the reactant is introduced by "plugs" in the moving phase. The only similary with PFC here is that mixing is neglible}
 
-\todo{IMPORTANT FIGURE: violin diagram of the normalized fitted extraction time (\Tnum-tau\_nominal)/tau\_nominal for each 8 regimes with superimposed box plot, with the z=0 horizontal line indicating the baseline extraction time tau\_nominal (LIBRA Pi input), and using the same red circling for high RMSE samples. Should show clearly where each regime performs, and which regime is fastest. Print the number of samples in each group in the x-axis tick label (like "Group 1 (linebreak) n= 23")}
 
 In a design problem, the tritium transport properties are not controlled directly, the optimal design depends on the constraints. Beside the obvious extraction time goal, there might be cases when the tritium concentration of the outlet gas also constitutes a strong constraint. For instance in the LIBRA Pi experiment, after being extracted from the vessel, tritium is stripped from its carrying gas by water bubblers (ready to be counted using a liquid scintillator), and the gas rate drives evaporation in those bubblers, it is thus desirable that the tritium concentration in the gas is maximized so that the gas flow rate itself can be kept low enough, eventually enabling a higher tritium concentration in the water samples to be counted. 
 
@@ -1166,7 +1172,7 @@ It should be noted that those correlations were derived for temperatures greater
 
 The sparger design isn't decided yet. The number of nozzles in particular dictates the gas volumetric flow rate through each nozzle for a given total mass flow rate. In this work, it is assumed that the sparger is made of 4 nozzles, so that the volumetric flow rate at each nozzle stays within $3-10\ \mathrm{cm^3/s}$ which is the validity range of the correlation used for the initial bubble diameter\cite{kanai_establishment_2017}. 
 
-Beside the already fixed geometry, only four quantities can be controlled by the experiment: the temperature ($T$), the gas molar flow rate (\ndotg), the headspace pressure (\Ptop) and the sparger nozzle diameter (\dnoz). Their range is reported in \cref{tab:model_input}. Everything else comes from the closure relations of \cref{tab:correlations}. 
+Beside the already fixed geometry, only four quantities can be controlled by the experiment: the temperature ($T$), the gas molar flow rate (\ndotg), the headspace pressure (\Ptop) and the sparger nozzle diameter (\dnoz). Their range is reported in \cref{tab:model_input}. Everything else comes from the closure relations of \cref{tab:correlations,tab:correlations_hydro}. 
 
 The initial tritium inventory is fixed to $3.6\cdot10^{-12} \ \mathrm{molT2}$ (equivalent to $\langle\CT\rangle =3.0\cdot10^{-11} \ \mathrm{molT2/m^3}$) to correspond to an irradiation of $2\cdot10^{-9} \ \mathrm{n/s}$ (the available 14 MeV neutron source) for 6 hours and a TBR=0.1 (calculated for the LIBRA Pi geometry using OpenMC). That being said, in the case of the sparging model itself, as long as the "negligible contribution of \PT to bubble pressure" (\cref{as:T2_press_is_negligible}) holds, it could take any value this would not change the extraction time since the ARD equations are linear. This will however become relevant in \cref{sec:LIBRAPi_permeation} where the boundary condition for the concentration at the salt-metal interface is non-linear. 
 
@@ -1223,13 +1229,12 @@ It follows that LIBRA Pi can potentially be in cases 3 or 4 of \cref{tab:design_
 
 \begin{figure}[htbp]
   \centering
-  \includegraphics[width=0.6\linewidth]{fig/sobol_indices_3.pdf}
-  \caption{Sobol sensitivity indices for the 4-dimensional parameter space considered, in (a) the optimistic scenario; (b) the pessimistic scenario}
+  \includegraphics[width=\linewidth]{fig/sobol_indices.pdf}
+  \caption{Sobol sensitivity indices of the tritium removal time $\tau_{99}$ with respect to the four controllable operating parameters, for (a) the pessimistic and (b) the optimistic transport scenario. For each parameter the first order index $S_i$ (filled circle), i.e. the variance it explains on its own, is shown next to the total order index $S_{T_i}$ (open square), which includes all its interactions. Whiskers are bootstrap 95\% confidence intervals over 999 resamples of the 1536 sample design. The two indices overlap for every parameter and $\sum_i S_i$ reaches 0.96 and 0.94 respectively, so interactions contribute only a few percent of the variance and the response is essentially additive.}
   \label{fig:sobol}
 \end{figure}
 
 % sobol plot of operating parameters
-\todo{sobol plot: don't use color bares (not an extensive quantity), instead show box plot like: nominal value and error, for both S1 and ST side to side; remove useless elements on the plot that add noise (vertical grid)}
 
 Sobol indices measure the relative sensitivity of a fonction to each of its individual variables. It is a variance based sensitivity metric, quantifying the variance that propagates to the output when varying one of its inputs. \todo{write a quick and intuitive paragraph about what sobol indices are and how they can be interpreted, give mathematical definition for first and total order indices}
 
@@ -1239,16 +1244,15 @@ It should be noted that the width of the sampling space for each parameter condi
 % tau vs (n,T) map
 \begin{figure}[htbp]
   \centering
-  \includegraphics[width=0.6\linewidth]{fig/operating_point_map.pdf}
-  \caption{Estimate of the time to extract 99\% of the tritium, denoted $\tau_{99}$, as a function of the reduced 2D operational parameters space for (a) the optimistic scenario; (b) the pessimistic scenario. The smoothing is obtained by fitting 768 operating points with a surface $\tau_{99}\propto$... ($R^2=0.99$). The \textcite{kanai_establishment_2017} correlation for the bubble size is extrapolated from its 3-10 $\mathrm{cm^3/s}$ validity range for $\ndotg\lesssim 350$ sccm.} 
+  \includegraphics[width=\linewidth]{fig/operating_point_map.pdf}
+  \caption{Estimate of the time to extract 99\% of the tritium, denoted $\tau_{99}$, as a function of the reduced 2D operational parameters space for (a) the pessimistic and (b) the optimistic scenario, at the design pressure (1.2 atm) and nozzle diameter (2 mm). The surface is a quintic radial basis interpolant of $\log_{10}\tau_{99}$ over the 1536 sampled operating points of each scenario, shown as faint dots; on held-out samples it reproduces the model to better than 0.6\% in the worst case, so the interpolation is negligible against the transport property uncertainty that separates the two panels. Isolines are equally spaced so their spacing reads as the local gradient, with 4 unlabelled intermediate lines per interval, and the star marks the nominal operating point. The \textcite{kanai_establishment_2017} correlation for the bubble size is extrapolated from its 3-10 $\mathrm{cm^3/s}$ validity range for $\ndotg\lesssim 350$ sccm.} 
   \label{fig:abaque}
 \end{figure}
-\todo{abaque: change tau to tau99, use even spacing between isolines to express true topography, make it a 2 panel figure with pessimistic and optimistic case (same color scale)}
 
 The prediction of the numerical ARD model for each scenario are presented in \cref{fig:abaque}. In the following, we define the \textit{tritium removal time} $\tau_{99}$ as the time taken to extract 99\% of the initially bred tritium:
 \begin{itemize}
-    \item Fastest case: in the optimistic scenario and under optimal operational conditions (high $T$, high \ndotg) it can take only \textbf{17 hours} to remove tritium from LIBRA Pi;
-    \item Slowest case: up to \textbf{up to 27 days} in case of adverse tritium transport properties of ClLiF and sustained degraded operational conditions;
+    \item Fastest case: in the optimistic scenario and under optimal operational conditions (high $T$, high \ndotg) it can take only \textbf{16 hours} to remove tritium from LIBRA Pi;
+    \item Slowest case: up to \textbf{36 days} in case of adverse tritium transport properties of ClLiF and sustained degraded operational conditions;
     \item Expected case: at nominal operating conditions ($T=550$°C, \ndotg=500 sccm, \Ptop = 1.2 atm and \dnoz=2 mm) which should be sustainable in the experiment, the tritium removal time is 55.6 hours (optimistic) to 126.5 hours (pessimistic), i.e. \textbf{2.3 to 5.3 days}. 
 \end{itemize}  
 
@@ -1323,7 +1327,6 @@ The 3D transport simulations are run at the scale of a unit cell that repeats pe
         \end{array}\right\} \Rightarrow m_k \equiv \frac{A_{\mathrm{total, face}\,k}}{A_{\mathrm{total, cell}\,k}}
     \end{align}
 \end{enumerate}
-\todo{adapt geometry.py to reflect these notations: e.g. A\_contact\_cell instead of simply A\_cell}
 
 Under these definitions, the spacer contact surface of each reconstructed face is indeed conserved from the original face:
 \begin{align*}
