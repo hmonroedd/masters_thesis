@@ -55,8 +55,8 @@
 \newcommand{\ST}{\ensuremath{S_\mathrm{T_2}}}
 \newcommand{\Tana}{\ensuremath{\tau_\mathrm{ana}}}
 \newcommand{\Tnum}{\ensuremath{\tau_\mathrm{num}}}
-\newcommand{\Gmix}{\ensuremath{G_\mathrm{mix}}}
-\newcommand{\Gp}{\ensuremath{G_P}}
+\newcommand{\Gmix}{\ensuremath{\Gamma_\mathrm{mix}}}
+\newcommand{\Gp}{\ensuremath{\Gamma_P}}
 \newcommand{\PI}{\ensuremath{\langle \Pi \rangle}}
 \newcommand{\ndotg}{\ensuremath{\dot n_g}}
 \newcommand{\dnoz}{\ensuremath{d_\mathrm{noz}}}
@@ -868,7 +868,6 @@ Each assumption can be checked against \cref{tab:verification_inputs}.
 
 \Cref{fig:verification_inventory} compares the decay of the tritium inventory with the exponential law of \cref{eq:tau_ana}. The residual grows linearly with time, as expected of a small error on a decay rate, and reaches $1.2\ \%$ after five extraction times in the SPP case. This residual is numerical, not physical: replacing $\tau$ by $\tau+\Delta t/2$, the decay time that a backward Euler scheme actually reproduces (\cref{eq:tau_delta_expansion}), brings the deviation down to $1.2\times10^{-4}$ over the same interval, a hundredfold reduction. The PPL case behaves the same way up to a residual of $5\times10^{-3}$ at $t=5\tau$, which corresponds to \cref{eq:tau_ana} overestimating the extraction time by $0.11\ \%$, a consequence of the assumptions listed above, and an acceptable one.
 
-\todo{plot abs of the error}
 \begin{figure}[htbp]
   \centering
   \includegraphics[width=0.6\linewidth]{fig/verification_inventory.pdf}
@@ -877,7 +876,7 @@ Each assumption can be checked against \cref{tab:verification_inputs}.
 \end{figure}
 
 \paragraph{Relaxing the assumptions} \todo{adapt with the new analytical study data}
-Once the +dt/2 discretisation bias of the backward Euler scheme is removed from $\tau_\mathrm{fitted}$, \Tana (\cref{eq:tau_ana}) reproduces the fitted decay time of the full 1D ARD model to a median relative error of 8e-6 (worst case 3.5e-4) over the 182 samples of the 0D validity study for which the liquid is well mixed ($\Gmix$ < 1e-3), spanning $G_P$ from 7e-4 to 1.4 and $\langle\Pi\rangle$ from 2e-5 to 2.6.
+Once the +dt/2 discretisation bias of the backward Euler scheme is removed from $\tau_\mathrm{fitted}$, \Tana (\cref{eq:tau_ana}) reproduces the fitted decay time of the full 1D ARD model to a median relative error of 8e-6 (worst case 3.5e-4) over the 182 samples of the 0D validity study for which the liquid is well mixed ($\Gmix$ < 1e-3), spanning \Gp from 7e-4 to 1.4 and $\langle\Pi\rangle$ from 2e-5 to 2.6.
 
 The implementation therefore reproduces the analytical solution, in both the partial pressure regimes and for both the gas phase profile and the integral quantity of interest, down to the discretisation error quantified in \cref{sec:numerical_error}.
 
@@ -993,53 +992,31 @@ The mass transfer process is throttled by the gas throughput at the outlet, \tex
 \label{sec:impact_of_mixing}
 
 \begin{figure}[htbp]
-    \begin{subfigure}[t]{0.48\linewidth}
-        \centering
-        \includegraphics[width=\linewidth]{fig/validity_error_vs_Gmix_nodisc.pdf}
-        \caption{Signed error of the analytical \Tana compared to the reference \Tnum, as a function of \Gmix. Blue filling indicates samples where the analytical assumptions are expected to hold. Red circled dots indicate samples where \Tana is obtained from a bad quality fit.}
-        \label{fig:error_vs_Gmix}
-    \end{subfigure}
-    \begin{subfigure}[t]{0.48\linewidth}
-        \centering
-        \includegraphics[width=\linewidth]{fig/validity_error_vs_Pi_nodisc.pdf}
-        \caption{Signed error against \PI, with the red disc (imperfect fit) being symptoms of a large \Gmix}
-        \label{fig:error_vs_Pi}
-    \end{subfigure}
+  \centering
+  \includegraphics[width=\linewidth]{fig/validity_error_vs_groups_nodisc.pdf}
+  \caption{Signed error of the analytical \Tana against the reference \Tnum, as a function of (a) the mixing number \Gmix and (b) the saturation number \PI. Opaque markers are the samples for which the two groups not on the horizontal axis are both below their own threshold, so the trend against the plotted group is not polluted by them. Red edges mark samples whose inventory decay is not a single exponential, so that \Tnum stops summarising it.}
+  \label{fig:error_vs_groups}
 \end{figure}
-\todo{make it a 2 panels figure and adapt the caption}
 
 None of the quantities that appear in the expression of \Tana depend on the liquid dispersion coefficient, it is therefore not expected to impact the extraction time. But \textit{is there a point where non-uniform mixing starts affecting extraction time, and if so where is that point ?}
 
-As shown in \cref{fig:error_vs_Gmix}, large \Gmix alone isn't sufficient to impact \Tnum: all the samples where the other analytical assumptions hold sit on the zero error line, even at $\Gmix=10^2$ where mixing is much slower than the extraction time hence the liquid concentration can't be considered uniform at all. This suggests that \textbf{the analytical model \Tana might hold even when relaxing the "good liquid mixing" assumption}.
+As shown in \cref{fig:error_vs_groups}(a), large \Gmix alone isn't sufficient to impact \Tnum: all the samples where the other analytical assumptions hold sit on the zero error line, even at $\Gmix=10^2$ where mixing is much slower than the extraction time hence the liquid concentration can't be considered uniform at all. This suggests that \textbf{the analytical model \Tana might hold even when relaxing the "good liquid mixing" assumption}.
 
-Toward high \Gmix however, many samples exhibit a normalized Root Mean Square Error (RMSE) of the fit indicating that the inventory decay is no longer well fitted by an exponential. Plotting the same quantity as a function of bubble saturation (\cref{fig:error_vs_Pi}) gives us the dimension needed to understand what happens in the high \Gmix region of \cref{fig:error_vs_Gmix}: when mixing becomes insufficient (large \Gmix, indicated by the imperfect fit) and bubbles are saturated (large \PI), extraction kinetics are improved, as shown by the systematically overestimated extraction time. Conversely, lack of mixing seems to impair extraction in the MTL regime, as shown by the positive relative error of the high \Gmix samples in the upper left part of \cref{fig:error_vs_Pi}. From \cref{fig:error_vs_Gmix}, \textbf{\Gmix<0.1 seems to be a sufficient condition to ensure that \Tnum is obtained from a fit that is representative of the sparger performance}. 
+Toward high \Gmix however, many samples exhibit a normalized Root Mean Square Error (RMSE) of the fit indicating that the inventory decay is no longer well fitted by an exponential. Plotting the same quantity as a function of bubble saturation (\cref{fig:error_vs_groups}(b)) gives us the dimension needed to understand what happens in the high \Gmix region of \cref{fig:error_vs_groups}(a): when mixing becomes insufficient (large \Gmix, indicated by the imperfect fit) and bubbles are saturated (large \PI), extraction kinetics are improved, as shown by the systematically overestimated extraction time. Conversely, lack of mixing seems to impair extraction in the MTL regime, as shown by the positive relative error of the high \Gmix samples in the upper left part of \cref{fig:error_vs_groups}(b). From \cref{fig:error_vs_groups}(a), \textbf{\Gmix<0.1 seems to be a sufficient condition to ensure that \Tnum is obtained from a fit that is representative of the sparger performance}. 
 
 
-This non-exponential behavior can be explained by examining one of these high-RMSE cases: sample 191 (poor mixing, bubbles saturated) exhibits a tritium inventory decay that is faster than exponential (\cref{fig:nonexp_inventory}), suggesting that in this case the characteristic extraction time decreases with time. Other samples from this study exhibit high \Gmix comparable to sample 191 and still follow an exponential decay that is well predicted by \Tana: sample 139, with \Gmix=25, \Gp=0.032, \PI=0.095, differs only significantly by its \PI, it is well fitted (normalized RMSE = $2.7\cdot10^{-5}$) and gives a good prediction ($e=4.3\cdot10^{-3}$). This confirms that the non-exponential nature of sample 191 comes from the high \PI: bubbles saturate soon after being generated, as shown by the spike in the reaction rate $a\,\JT$ in \cref{fig:nonexp_profiles}, moving up the column as the lower part gets stripped of its tritium. This sparging system behaves like a plug-flow contactor (PFC). At the end of the simulated time, the liquid phase is near fully depleted of its tritium ($\NT(2\Tana)\approx2\%\cdot\NT(0)$), where there should still be 13\% tritium remaining according to the "perfect mixing" result: the extraction is faster, meaning that \textbf{poor liquid mixing enhances extraction when operating in a saturated (PPL) regime}. This matches the classic chemical-engineering results that plug-flow contactors beat stirred tank (perfect mixing) whenever the process is equilibrium limited \needcite{PFR faster than CSTR}. 
+This non-exponential behavior can be explained by examining one of these high-RMSE cases: sample 191 (poor mixing, bubbles saturated) exhibits a tritium inventory decay that is faster than exponential (\cref{fig:nonexp}(b)), suggesting that in this case the characteristic extraction time decreases with time. Other samples from this study exhibit high \Gmix comparable to sample 191 and still follow an exponential decay that is well predicted by \Tana: sample 139, with \Gmix=25, \Gp=0.032, \PI=0.095, differs only significantly by its \PI, it is well fitted (normalized RMSE = $2.7\cdot10^{-5}$) and gives a good prediction ($e=4.3\cdot10^{-3}$). This confirms that the non-exponential nature of sample 191 comes from the high \PI: bubbles saturate soon after being generated, as shown by the spike in the reaction rate $a\,\JT$ in \cref{fig:nonexp}(a), moving up the column as the lower part gets stripped of its tritium. This sparging system behaves like a plug-flow contactor (PFC). At the end of the simulated time, the liquid phase is near fully depleted of its tritium ($\NT(2\Tana)\approx2\%\cdot\NT(0)$), where there should still be 13\% tritium remaining according to the "perfect mixing" result: the extraction is faster, meaning that \textbf{poor liquid mixing enhances extraction when operating in a saturated (PPL) regime}. This matches the classic chemical-engineering results that plug-flow contactors beat stirred tank (perfect mixing) whenever the process is equilibrium limited \needcite{PFR faster than CSTR}. 
 
-Note that that the error of \Tana grows toward the $\PI>1$ region of \cref{fig:error_vs_Pi}, even when the analytical assumptions are supposed to be valid. This is because \Tana scales linearly with it in the PPL regime, and therefore acts as an error amplifier: if the analytical assumptions are not perfectly valid, \Tana will be even more off as \PI is large. Here $\Gmix<0.1$ and $\Gp<0.1$ are taken as acceptable indicators of the assumption's validity, still they can be refined to restrict the analytical solution to a higher level of accuracy.  
+Note that that the error of \Tana grows toward the $\PI>1$ region of \cref{fig:error_vs_groups}(b), even when the analytical assumptions are supposed to be valid. This is because \Tana scales linearly with it in the PPL regime, and therefore acts as an error amplifier: if the analytical assumptions are not perfectly valid, \Tana will be even more off as \PI is large. Here $\Gmix<0.1$ and $\Gp<0.1$ are taken as acceptable indicators of the assumption's validity, still they can be refined to restrict the analytical solution to a higher level of accuracy.  
 
 \begin{figure}[htbp]
-    \centering
-    \begin{subfigure}[t]{0.48\linewidth}
-        \centering
-        \includegraphics[width=\linewidth]{fig/nonexp_profiles.pdf}
-        \caption{}
-        \label{fig:nonexp_profiles}
-    \end{subfigure}
-    \hfill
-    \begin{subfigure}[t]{0.48\linewidth}
-        \centering
-        \includegraphics[width=\linewidth]{fig/nonexp_inventory_fit.pdf}
-        \caption{}
-        \label{fig:nonexp_inventory}
-    \end{subfigure}
-    \caption{Sample 191 of the study with \Gmix=25 ($E_{l,\mathrm{sample}}=1.9\cdot10^{-6}\,E_{l,\mathrm{LIBRA Pi}}$), \Gp=0.032 ($P_{\mathrm{top},\mathrm{sample}}=4.7,P_{\mathrm{top},\mathrm{LIBRA Pi}}$), \PI=16 ($K_{s,\mathrm{sample}}=37\,K_{s,\mathrm{LIBRA Pi}}$):(a) concentration profiles are non-uniform, showing a mass transfer front traveling up the column; (b) the decay of the tritium inventory is super-exponential (normalized RMSE = $2.7\cdot 10^{-2}$)}
-    \label{fig:nonexp}
+  \centering
+  \includegraphics[width=\linewidth]{fig/nonexp.pdf}
+  \caption{Sample 191 of the study, with \Gmix=15, \Gp=0.032 and \PI=16: (a) the concentration, partial pressure and volumetric transfer rate profiles at five instants, showing a mass transfer front travelling up the column; (b) the decay of the tritium inventory with its exponential fit, and the residual that fit leaves, which is where the departure from a single exponential is visible.}
+  \label{fig:nonexp}
 \end{figure}
 
-\todo{tau in the x-axis should be \Tana and in the legend should be \Tnum}\todo{redo figure to be 2 panels already, and label them (a=profiles, b=concentration and residual), and add a profile for t=0.2*tau}
-
+\todo{tau in the x-axis should be \Tana and in the legend should be \Tnum}
 \todo{run sample with high Gmix and Gp and export profiles, expected to shown the minimisation of aJ (throttling)}
 
 \begin{keyresult}
@@ -1089,7 +1066,6 @@ To look at it more closely, we can isolate the impact of \Gp on the extraction t
   \caption{Correlation of the extraction time with the head space pressure when operating in the SPP regime. The shaded region corresponds to samples where the gas fraction at the top of the tank exceeds 1\%, challenging the "no-bubble coalescence" assumption}
   \label{fig:tau_vs_Ptop}
 \end{figure}
-\todo{bring up the "large epsilong" annotation so that it is clearly visible}
 
 \begin{keyresult}
     \centering
@@ -1103,22 +1079,15 @@ To look at it more closely, we can isolate the impact of \Gp on the extraction t
 
 \begin{figure}[htbp]
   \centering
-  \includegraphics[width=\linewidth]{fig/design_violin.pdf}
-  \caption{Distribution of the extraction time reached in each of the 8 cases of \cref{tab:design_map}, normalized by the mass transfer limited ideal $\tau_\mathrm{SPP}$ of the same system, so that the comparison isolates the penalty of the regime from the sampled transport parameters. Box plots give the median and quartiles, the right axis reads the penalty as a multiple of the ideal.}
-  \label{fig:violin}
-\end{figure}
-
-\begin{figure}[htbp]
-  \centering
   \includegraphics[width=\linewidth]{fig/design_venn.pdf}
-  \caption{Map of the design space: the three circles are the regions where each analytical assumption is \textbf{violated}, so a system for which all three hold falls outside them (case 1). Each region carries its case number in \cref{tab:design_map} and the median signed error of \Tana, hatching indicating that the inventory decay is no longer a single exponential.}
+  \caption{Map of the design space. The three circles are the regions where each analytical assumption is \textbf{violated}, so a system for which all three hold falls outside them (case 1). Each region is labelled with its case number in \cref{tab:design_map} and with the median signed error of \Tana, the fill colour reading that same error. Green hatching marks the regions where \Tana is accurate to $\pm5\%$, i.e. those where at most one assumption is violated; red hatching marks the regions where the inventory decay is no longer a single exponential, so that a single $\tau$ no longer summarises it.}
   \label{fig:venn}
 \end{figure}
 
 \begin{figure}[htbp]
   \centering
   \includegraphics[width=\linewidth]{fig/validity_parity_nodisc.pdf}
-  \caption{Validity of the analytical solution: (a) parity of \Tnum against \Tana; (b) the same samples as a ratio, against the saturation number. Highlighted are the two groups of conditions under which \Tana was found to hold, both of which stay inside the $\pm5\%$ band.}
+  \caption{Validity of the analytical solution: (a) parity of \Tnum against \Tana; (b) the same samples as a ratio, against the saturation number. Samples are grouped by how many of the three analytical assumptions they violate. Every sample violating at most one stays inside the $\pm5\%$ band, at any \PI; beyond that the deviation grows to several tens of percent.}
   \label{fig:parity}
 \end{figure}
 
@@ -1129,6 +1098,14 @@ The findings of the design study are summarized in \cref{tab:design_map}, coveri
 The parity plot of \cref{fig:parity} shows that \textbf{$\Gmix<0.1$ and $Gp<0.1$ are sufficient conditions for the analytical model to hold}: all 67 samples satisfying them fall within the reference $\Tnum\pm5\%$ regardless of the value of \PI, the largest deviation being 3.3\%. This study also provides the insight that \textbf{these are not necessary conditions}: the "good-mixing" assumption can be relaxed ($\Gmix \nless 0.1$) and the analytical model still hold, under the conditions that the bubbles are in the MTL regime ($\PI<0.1$), as found in \cref{sec:impact_of_mixing}.
 
 \paragraph{The optimal sparger design}
+
+\begin{figure}[htbp]
+  \centering
+  \includegraphics[width=\linewidth]{fig/design_violin.pdf}
+  \caption{Extraction time reached across the design space, normalized by $\tau_\mathrm{ref}$, the median extraction time of case 1. The 8 cases of \cref{tab:design_map} are paired by their $(\PI,\Gp)$ combination and ranked from fastest to slowest, the two members of each pair differing only in \Gmix and being distinguished by hatching. The number under each violin is the case number in \cref{tab:design_map}. The spread within a case reflects the sampled transport parameters, so it is the medians that compare the regimes.}
+  \label{fig:violin}
+\end{figure}
+
 
 \todo{does it actually make sense to talk about PFC ? In a PFC the reactant is introduced by "plugs" in the moving phase. The only similary with PFC here is that mixing is neglible}
 
