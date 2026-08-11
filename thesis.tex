@@ -1118,7 +1118,7 @@ The parity plot of \cref{fig:parity} shows that \textbf{having at most one of th
   \label{fig:parity}
 \end{figure}
 
-\paragraph{The optimal sparger design}
+\paragraph{How to optimized the sparging system's design}
 
 \begin{figure}[htbp]
   \centering
@@ -1131,12 +1131,16 @@ The parity plot of \cref{fig:parity} shows that \textbf{having at most one of th
 \todo{does it actually make sense to talk about PFC ? In a PFC the reactant is introduced by "plugs" in the moving phase. The only similary with PFC here is that mixing is neglible}
 
 
-In a design problem, the tritium transport properties are not controlled directly, the optimal design depends on the constraints. But beside the obvious extraction time goal, there might be cases when the tritium concentration of the outlet gas becomes a strong constraint. For instance in the LIBRA Pi experiment, after being extracted from the vessel, tritium is stripped from its carrying gas by water bubblers (ready to be counted using a liquid scintillator). The gas rate drives evaporation in those bubblers, it is thus desirable that the tritium concentration in the gas is optimized so that the gas flow rate itself can be kept low enough, eventually enabling a higher tritium concentration in the water samples to be counted. 
+In a design problem, the tritium transport properties are not controlled directly. The designer controls the tank geometry $H$ and $d_t$, the sparger nozzles and the range of expected operational parameters $T$, \ndotg and \Ptop, all of which are synthesized in the dimensionless groups \PI, \Gp and \Gmix.
 
-The relative performance of each region of the design space is shown in \cref{fig:violin}, the fastest on the left:
+The optimal design depends on the constraints: beside the obvious extraction time goal, there might be cases when the tritium concentration of the outlet gas becomes a strong constraint. For instance in the LIBRA Pi experiment, after being extracted from the vessel, tritium is stripped from its carrying gas by water bubblers (ready to be counted using a liquid scintillator). The gas rate drives evaporation in those bubblers, it is thus desirable that the tritium concentration in the gas is optimized so that the gas flow rate itself can be kept low enough, eventually enabling a higher tritium concentration in the water samples to be counted. 
+
+A ranking of the relative performance in each region of the design space is shown in \cref{fig:violin}, the fastest on the left. It reveals \Gp as being the primary lever for extraction performance, Within each half, the \PI<0.1 case comes first, with a factor $\sim 3$ improvement compared to the \PI>0.1 case. \Gmix on the otehr hand doesn't seem to significantly change extraction performance (cases 7 and 3 are barely distinguishable, as are 5 and 1). 
+
+This answers the design optimization problem:
 \begin{itemize}
-    \item  \textit{optimize for the extraction time no matter what}: the system should operate in MTL regime (regions 3 or 7 of the design space); \Gp maximized by pulling vacuum on the head space ($\Ptop \searrow$) and making the column taller (while still ensuring \PI<0.1); mixing irrelevant (no constraint on \Gmix). During operation, the extraction time can be reduced by increasing $T$ and \ndotg and decreasing \Ptop;
-    \item \textit{optimize tritium concentration in the outlet gas}: the system has to operate in PPL regime, at the expense of slower extraction (region 4 and 8 of the design space); even though slower, extraction performance can still be optimized by pulling vacuum in the head space (high \Gp); mixing doesn't make a significant difference. When operating in PPL, the extraction time is reduced by increasing \ndotg and decreasing \Ptop, increasing $T$ can still have a positive effect if the bubbles are not fully saturated (\PI<5), but if they are it starts having an adverse effect.
+    \item  case \textit{optimize for the extraction time}: the system should operate in MTL regime (regions 3 or 7 of the design space); \Gp maximized by pulling vacuum on the head space ($\Ptop \searrow$) and making the column taller (while still ensuring \PI<0.1); mixing irrelevant (no constraint on \Gmix). During operation, the extraction time can be reduced by increasing $T$ and \ndotg and decreasing \Ptop;
+    \item case \textit{optimize for tritium concentration in the outlet gas}: the system has to operate in PPL regime, at the expense of slower extraction (region 4 and 8 of the design space); even though slower, extraction performance can still be optimized by pulling vacuum in the head space (high \Gp). When operating in PPL, the extraction time is reduced by increasing \ndotg and decreasing \Ptop, increasing $T$ can still have a positive effect if the bubbles are not fully saturated (\PI<5), but if they are it starts having an adverse effect.
 \end{itemize}
 
 
@@ -1246,16 +1250,23 @@ It can be observed that the relative importance of \ndotg and $T$ flips from the
 \begin{figure}[htbp]
   \centering
   \includegraphics[width=\linewidth]{fig/operating_point_map.pdf}
-  \caption{Estimate of the time to extract 99\% of the tritium, denoted $\tau_{99}$, as a function of the reduced 2D operational parameters space for (a) the pessimistic and (b) the optimistic scenario, at the design pressure (1.2 atm) and nozzle diameter (2 mm). The surface is a quintic radial basis interpolant of $\log_{10}\tau_{99}$ over the 1536 sampled operating points of each scenario, shown as faint dots; on held-out samples it reproduces the model to better than 0.6\% in the worst case, so the interpolation is negligible against the transport property uncertainty that separates the two panels. Isolines are equally spaced so their spacing reads as the local gradient, with 4 unlabelled intermediate lines per interval, and the star marks the nominal operating point. The \textcite{kanai_establishment_2017} correlation for the bubble size is extrapolated from its 3-10 $\mathrm{cm^3/s}$ validity range for $\ndotg\lesssim 350$ sccm.} 
+  \caption{Estimate of the time to extract 99\% of the tritium, denoted $\tau_{99}$, as a function of the reduced 2D operational parameters space for (a) the pessimistic and (b) the optimistic scenario, at the design pressure (1.2 atm) and nozzle diameter (2 mm). The surface is a quintic radial basis interpolant of $\log_{10}\tau_{99}$ over the 1536 sampled operating points of each scenario, shown as faint dots. The star marks the nominal operating point. The \textcite{kanai_establishment_2017} correlation for the bubble size is extrapolated from its 3-10 $\mathrm{cm^3/s}$ validity range for $\ndotg\lesssim 350$ sccm.} 
   \label{fig:abaque}
 \end{figure}
 
-The prediction of the numerical ARD model for each scenario are presented in \cref{fig:abaque}. In the following, we define the \textit{tritium removal time} $\tau_{99}$ as the time taken to extract 99\% of the initially bred tritium:
+Following the results of the sensitivity analysis, a map of the 2D-reduced operational space of LIBRA Pi is proposed in \cref{fig:abaque}, made to inform the operation of its sparging system. Here we define the \textit{tritium removal time} $\tau_{99}$ as the time taken to extract 99\% of the initially bred tritium. The 2D reduction comes at the cost of a 0.6\% error in the worst case, so the interpolation performed in \cref{fig:abaque} is negligible against the transport property uncertainty that separates the two scenarios. The prediction of the numerical ARD model for each scenario are summarized as follows:
 \begin{itemize}
-    \item Fastest case: in the optimistic scenario and under optimal operational conditions (high $T$, high \ndotg) it can take only \textbf{16 hours} to remove tritium from LIBRA Pi;
-    \item Slowest case: up to \textbf{36 days} in case of adverse tritium transport properties of ClLiF and sustained degraded operational conditions;
-    \item Expected case: at nominal operating conditions ($T=550$°C, \ndotg=500 sccm, \Ptop = 1.2 atm and \dnoz=2 mm) which should be sustainable in the experiment, the tritium removal time is 55.6 hours (optimistic) to 126.5 hours (pessimistic), i.e. \textbf{2.3 to 5.3 days}. 
+    \item Fastest case: in the optimistic scenario and under optimal operational conditions (high $T$, high \ndotg) it can take only \textbf{$\sim$20 hours} to remove tritium from LIBRA Pi;
+    \item Slowest case: up to \textbf{tens of days} in case of adverse tritium transport properties of ClLiF and sustained degraded operational conditions;
+    \item Expected case: at nominal operating conditions ($T=550$°C, \ndotg=500 sccm, \Ptop = 1.2 atm and \dnoz=2 mm) which should be sustainable in the experiment, the tritium removal time given by the surrogate of \cref{fig:abaque} is $55.6\pm0.4$ hours (optimistic) to $126.5\pm0.8$ hours (pessimistic), i.e. \textbf{2.3 to 5.3 days}. 
 \end{itemize}  
+
+As first stated in \cref{sec:impact_of_sat_Pi} and already observed in the sensitivity analysis, increasing temperature is inefficient in the high $T$, low \ndotg regions where bubbles tend to saturate, especially in the pessimistic case where \PI is above the MTL threshold. \textbf{This implies that uncertainties on the measured temperature propagate less in this region.} 
+
+\subsection{Limitations}
+\todo{complete with: the ClLiF proxy, the extrapolation below 550 °C, the Kanai correlation used outside its 3-10 cm³/s range below 350 sccm, and the absence of any experimental validation}
+
+Eventually this operating point map (\cref{fig:abaque}) will need to be validated by LIBRA Pi experimental data: when doing so, a strategy could be to operate at high temperature to mitigate the propagation of an error on the measured temperature and only vary the easier-to-measure \ndotg. This would first indicate if the trend that the ARD model suggests is actually observed, and if so which scenario LIBRA Pi and ClLiF are close to. 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \chapter{Tritium permeation in LIBRA Pi}
