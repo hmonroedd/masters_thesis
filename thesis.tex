@@ -1126,7 +1126,7 @@ The findings of the design study are summarized in \cref{fig:venn}, covering the
 \end{figure}
 
 \paragraph{When can one use the analytical model ?}
-The parity plot of \cref{fig:parity} shows that \textbf{having at most one of the three assumptions violated is a sufficient condition for the analytical model to hold}: all 111 samples satisfying it fall within the reference $\Tnum\pm5\%$, the largest deviation being 3.3\%. It does not matter which of the three is the one relaxed, so this contains in particular the insight that the "good-mixing" assumption can be relaxed ($\Gmix \nless 0.1$) and the analytical model still hold, as found in \cref{sec:impact_of_mixing}. Beyond that the failure is abrupt rather than gradual, as \cref{fig:venn} shows region by region: as soon as a second assumption is violated the deviation reaches 11.9\%, and up to 46\% when all three are.
+ Defining the threshold tolerance at $\pm5\%$, the parity plot of \cref{fig:parity} shows that \textbf{having no more than one the three assumptions violated is a sufficient condition for the analytical model to hold}: all 111 samples satisfying it fall within the reference $\Tnum\pm5\%$, the largest deviation being 3.3\%. It does not matter which of the three is the one relaxed, so this contains in particular the insight that the "good-mixing" assumption can be relaxed ($\Gmix \nless 0.1$) and the analytical model still hold, as found in \cref{sec:impact_of_mixing}. Beyond that the failure is abrupt rather than gradual, as \cref{fig:venn} shows region by region: as soon as a second assumption is violated the deviation can reach 12\%, and up to 46\% when all three are.
 
 
 \begin{figure}[htbp]
@@ -1179,21 +1179,6 @@ This will be used in \cref{sec:LIBRAPi_permeation} to inform a study on tritium 
 \section{Design of the study}
 \subsection{LIBRA Pi model input}
 
-The model input corresponding to the LIBRA Pi experiment is reported in \cref{tab:model_input}. The quarter-annulus geometry of LIBRA Pi (see \cref{fig:librapi}) containing a salt volume of $\sim120$ L is described by a cylinder of height 0.93 m and equivalent base area $A=0.13 \ \mathrm{m^2}$ chosen to conserve salt volume. 
-
-LIBRA Pi will run in ClLiF molten salt, which is a convenient experimental breeder as it doesn't have Be toxicity problem. The current state of literature on ClLiF doesn't contain correlations for its tritium transport properties. This last point motivates the choice of rather using the properties of other molten salts as a ClLiF proxy. The physical properties (density, surface tension, viscosity) were taken for \ce{FLiBe}, they are expected to have a secondary impact on kinetics prediction. \todo{should try to find CLiF properties}. Regarding the tritium transport properties, this makes the extraction time estimate inherently uncertain. Then, the best that can be done is to enclose the extraction time estimate between upper and lower bounds, corresponding to pessimistic and optimistic scenarios derived from the currently available correlations for tritium transport in molten salt presented in \cref{fig:transport_params}):
-\begin{itemize}
-    \item \textit{pessimistic scenario} = high solubility (the salt tends to retain tritium) and low diffusivity: $K_s$ and $D_l$ are both given by the correlations derived by \textcite{calderoni_measurement_2008} for \ce{T2} in \ce{FLiBe};
-    \item \textit{optimistic scenario} = low solubility and high diffusivity: $K_s$ is given by the \textcite{malinauskas_solubilities_1974} correlation for \ce{D_2} in \ce{FLiBe}, $D_l$ is given by the \textcite{fukada_hydrogen_2006} correlation for \ce{H2} in \ce{FLiNaK}. 
-\end{itemize}
-
-It should be noted that those correlations were derived for temperatures greater than 550°C, the temperature range we consider here goes below that. Nevertheless extrapolating these correlations constitutes the broadest upper/lower bounds that can be derived, ensuring the actual extraction time is well enclosed between the pessimistic and optimistic estimates. 
-
-The sparger design isn't decided yet. The number of nozzles in particular dictates the gas volumetric flow rate through each nozzle for a given total mass flow rate. In this work, it is assumed that the sparger is made of 4 nozzles, so that the volumetric flow rate at each nozzle stays within $3-10\ \mathrm{cm^3/s}$ which is the validity range of the correlation used for the initial bubble diameter\cite{kanai_establishment_2017}. 
-
-Beside the already fixed geometry, only four quantities can be controlled by the experiment: the temperature ($T$), the gas molar flow rate (\ndotg), the headspace pressure (\Ptop) and the sparger nozzle diameter (\dnoz). Their range is reported in \cref{tab:model_input}. Everything else comes from the closure relations of \cref{tab:correlations,tab:correlations_hydro}. 
-
-The initial tritium inventory is fixed to $3.6\cdot10^{-12} \ \mathrm{molT2}$ (equivalent to $\langle\CT\rangle =3.0\cdot10^{-11} \ \mathrm{molT2/m^3}$) to correspond to an irradiation of $2\cdot10^{-9} \ \mathrm{n/s}$ (the available 14 MeV neutron source) for 6 hours and a TBR=0.1 (calculated for the LIBRA Pi geometry using OpenMC). That being said, in the case of the sparging model itself, as long as the "negligible contribution of \PT to bubble pressure" (\cref{as:T2_press_is_negligible}) holds, it could take any value this would not change the extraction time since the ARD equations are linear. This will however become relevant in \cref{sec:LIBRAPi_permeation} where the boundary condition for the concentration at the salt-metal interface is non-linear. 
 
 \begin{table}[t]
 \centering
@@ -1218,6 +1203,24 @@ Headspace pressure, \Ptop         & 1-2 atm \\
 \bottomrule
 \end{tabular}
 \end{table}
+
+
+The model input corresponding to the LIBRA Pi experiment is reported in \cref{tab:model_input}. The quarter-annulus geometry of LIBRA Pi (see \cref{fig:librapi}) containing a salt volume of $\sim120$ L is described by a cylinder of height 0.93 m and equivalent base area $A=0.13 \ \mathrm{m^2}$ chosen to conserve salt volume. 
+
+LIBRA Pi will run in ClLiF molten salt, which is a convenient experimental breeder as it doesn't have Be toxicity problem. The current state of literature on ClLiF doesn't contain correlations for its tritium transport properties. This last point motivates the choice of rather using the properties of other molten salts as a ClLiF proxy. The physical properties (density, surface tension, viscosity) were taken for \ce{FLiBe}, they are expected to have a secondary impact on kinetics prediction. \todo{should try to find CLiF properties}Regarding the tritium transport properties, this makes the extraction time estimate inherently uncertain. Then, the best that can be done is to enclose the extraction time estimate between upper and lower bounds, corresponding to pessimistic and optimistic scenarios derived from the currently available correlations for tritium transport in molten salt (presented in \cref{fig:transport_params}):
+\begin{itemize}
+    \item \textit{pessimistic scenario} = high solubility (i.e. the salt wants to retain tritium) and low diffusivity (slowing down mass transfer on the liquid side of the liquid-gas interface): $K_s$ and $D_l$ are both given by the correlations derived by \textcite{calderoni_measurement_2008} for \ce{T2} in \ce{FLiBe};
+    \item \textit{optimistic scenario} = low solubility and high diffusivity: $K_s$ is given by the \textcite{malinauskas_solubilities_1974} correlation for \ce{D_2} in \ce{FLiBe}, $D_l$ is given by the \textcite{fukada_hydrogen_2006} correlation for \ce{H2} in \ce{FLiNaK}. 
+\end{itemize}
+
+It should be noted that those correlations were derived for temperatures greater than 550°C, the temperature range we consider here goes below that. Nevertheless extrapolating these correlations constitutes the broadest upper/lower bounds that can be derived, ensuring the actual extraction time is well enclosed between the pessimistic and optimistic estimates. 
+
+The sparger design isn't decided yet. The number of nozzles in particular dictates the gas volumetric flow rate through each nozzle for a given total mass flow rate. In this work, it is assumed that the sparger is made of 4 nozzles, so that the volumetric flow rate of each nozzle in most of the operating conditions stays within $3-10\ \mathrm{cm^3/s}$, which is the validity range of the correlation used for the initial bubble diameter\cite{kanai_establishment_2017}. 
+
+Beside the already fixed geometry, only four quantities can be controlled by the experiment: the temperature ($T$), the gas molar flow rate (\ndotg), the head space pressure (\Ptop) and the sparger nozzle diameter (\dnoz). Their range is reported in \cref{tab:model_input}. Everything else comes from the closure relations of \cref{tab:correlations,tab:correlations_hydro}. 
+
+The initial tritium inventory is fixed to $3.6\cdot10^{-12} \ \mathrm{molT2}$ (equivalent to $\langle\CT\rangle =3.0\cdot10^{-11} \ \mathrm{molT2/m^3}$) to correspond to an irradiation of $2\cdot10^{-9} \ \mathrm{n/s}$ (the available 14 MeV neutron source) for 6 hours and a TBR=0.1 (calculated for the LIBRA Pi geometry using OpenMC). That being said, in the case of the sparging model itself, as long as the "negligible contribution of \PT to bubble pressure" (\cref{as:T2_press_is_negligible}) holds, it could take any value this would not change the extraction time since the ARD equations are linear. This will however become relevant in \cref{sec:LIBRAPi_permeation} where the boundary condition for the concentration at the salt-metal interface is non-linear. 
+
 
 
 \subsection{Sparging regimes}
@@ -1279,6 +1282,7 @@ As first stated in \cref{sec:impact_of_sat_Pi} and already observed in the sensi
 
 \subsection{Limitations}
 \todo{complete with: the ClLiF proxy, the extrapolation below 550 °C, the Kanai correlation used outside its 3-10 cm³/s range below 350 sccm, and the absence of any experimental validation}
+
 
 Eventually this operating point map (\cref{fig:abaque}) will need to be validated by LIBRA Pi experimental data: when doing so, a strategy could be to operate at high temperature to mitigate the propagation of an error on the measured temperature and only vary the easier-to-measure \ndotg. This would first indicate if the trend that the ARD model suggests is actually observed, and if so which scenario LIBRA Pi and ClLiF are close to. 
 
@@ -1575,7 +1579,7 @@ This is important for the robust accountancy goal: tritium sitting in the metal 
 
 \begin{figure}[htbp]
   \centering
-  \includegraphics[width=\linewidth]{fig/final_partition.pdf}
+  \includegraphics[width=1.1\linewidth]{fig/final_partition.pdf}
   \caption{Fate of the bred tritium at the end of a 4-day run, for each permeation reduction factor and each sweep gas composition, as a fraction of the bred inventory. The leaked percentage is printed above its own band. What remains in the salt is below 0.04\% everywhere and is not shown. Bars can exceed 100\% by the mass conservation error of the model.}
   \label{fig:partition}
 \end{figure}
@@ -1627,18 +1631,47 @@ In Li 2026, \cref{as:T2_press_is_negligible} doesn't hold as the tritium concent
 % In the conclusion you repeat the main result and finalize the discussion of
 % your project. Mention the core results and why as well as how your system
 % advances the status quo.
-- can be used to optimize design of sparging system: find right H (spare useless height where the bubble is already saturated) 
-- analytical: suitable for integration in 0D fuel cycle models (3D Volume of Fluid (VOF) CFD (see Li2026) prohibitively costly
+
+% summary of what was done
+This work set out to answer whether gas sparging can extract tritium from the LIBRA Pi molten salt breeder fast enough to be useful, and more generally what governs the kinetics of a sparging system. It did so by building a one-dimensional advection-reaction-dispersion model of the two phases, deriving a closed-form solution from it, mapping where that closed form can be trusted, and finally applying both to LIBRA Pi alongside a three-dimensional model of tritium permeation through the vessel.
+
+% the main results of the design study
+The central result of the modelling is that the kinetics of a sparging system are governed by a single dimensionless number: the \textbf{saturation number} $\langle\Pi\rangle$, which compares the residence time of a bubble to the time it needs to reach equilibrium with the surrounding liquid. It separates two regimes with opposite operation rules: below $\langle\Pi\rangle=0.1$ the bubbles stay far from equilibrium and the extraction is limited by the liquid side mass transfer, improved by increasing temperature; above $\langle\Pi\rangle=5$ the bubbles leave saturated and the extraction is throttled by the gas throughput, raising temperature is counterproductive and the gas flow rate becomes the only useful lever. The closed form $\tau_{ana}=\tau_\mathrm{SPP}\,\langle\Pi\rangle/(1-e^{-\langle\Pi\rangle})$ covers both regimes and the transition between them.
+
+% analytical and numerical models
+Mapping the design space showed when that closed form is accurate. Across 300 samples spanning four decades of each governing group, the analytical extraction time reproduces the numerical one to within $\pm5\%$ whenever the system is in the validity regions established by \cref{tab:design_map}. The criterion is easy to apply: a designer evaluates three dimensionless groups (\Gmix, \Gp, \PI) and knows immediately whether a formula suffices or a numerical solution is required. The same study identified the \textbf{head space pressure as the strongest lever available at fixed gas flow and temperature}: operating at $\Gp>0.1$ by lowering the pressure above the salt improves the extraction time up to a factor 8, as long as bubble coalescence stays negligible.
+
+The suitable sparging model, numerical or analytic, can then be coupled to a tritium transport simulation or integrated into a fuel cycle model. Fuel cycle models describe a plant with lumped compartments, they take the performance of a tritium extraction system as an input: in most cases the analytical model holds and coupling boils down to a \textbf{0D mass balance with the analytical extraction time as a lumped surrogate for sparging}, evaluated without running a transport simulation at all. When the analytical model can't describe sparging dynamics accurately, the computationally cheap numerical ARD model becomes the right object to hand to a system-level model. At the other end of the range, three-dimensional CFD simulations describe bubble dynamics and especially the gas-liquid interfaces more accurately, but cannot be swept over an entire design space nor integrated into fuel cycle models for computational cost reasons. This is the gap occupied by the present model.
+
+% sparging in LIBRA Pi
+Applied to LIBRA Pi, the model predicts a tritium removal time of \textbf{2.3 to 5.3 days} at the nominal operating point, and between 16 hours and 36 days over the whole attainable operating window. \textbf{The width of that interval represents epistemic uncertainty on the salt, not variability on the operating conditions}: the tritium transport properties of ClLiF have never been measured, and the two bounding scenarios simply carry the most optimistic and the most pessimistic correlations available for related fluoride salts. The sensitivity analysis showed that among the parameters the experiment does control, temperature and gas flow rate carry most of the variance and therefore \textbf{most of the operational uncertainty}, while the head space pressure and the nozzle diameter carry almost none. The operating map of \cref{fig:abaque} produced in this study can therefore be used to propagate operational uncertainty: graphically, a $550\pm25$ K uncertainty on the temperature distribution in the salt at the nominal operating point propagates to a $130\pm20$ hours uncertainty on the extraction time in the pessimistic salt scenario. Comparison with the $90\pm40$ hours extraction time interval brought by the uncertainty on the salt properties at the same operating point reveals that \textbf{this latter uncertainty source dominates}. \todo{move this last sentence at the end of the dedicated chapter, in limitations?}
+
+% permeation in LIBRA Pi
+Coupling the extraction time to a model of tritium permeation through the double-walled vessel produced the result with the most direct consequence for the experiment. Permeation is limited by transport on the salt side, so the metal never approaches equilibrium with the salt, and how much tritium permeates is set by the salt-metal interface barrier alone. That barrier is the least constrained parameter of the whole study, and over the plausible range it spans, permeation moves from taking $95\%$ of the bred tritium to taking $2\%$: the assumption that permeation is negligible against sparging cannot be made for LIBRA Pi. What the sweep gas between the two walls decides is not how much permeates but where it goes. With helium alone the outer surface is barely a sink at all, up to $12\pm1\%$ of the bred tritium leaks to the experimental room and $84\pm2\%$ remains in the metal at the end of a run; adding $3.5\%$ of \ce{H2} divides the leaked fraction by $\sim30$ and empties the wall. A reducing sweep gas is therefore a requirement rather than an option to achieve precise accountancy of the bred tritium.
+
 
 \section{Outlook}
-- relaxing some assumptions: implement multi-species (TF)
-- accounting for isotopic exchange in the gas (HT) since BABY 1L results suggests T goes out as HT 
 
-- still large uncertainties regarding transport properties, large discrepancies and difficult to replicate experiments \cite{saraswat_permeation_2026}
+% - can be used to optimize design of sparging system: find right H (spare useless height where the bubble is already saturated)
 
-- explore more the closure relations stage: other correlations, implement correlation choice logic based on the properties of the flow rather than let it up to the user 
+\paragraph{Model validation}
 
-- directives for sparging operation in LIBRA Pi: need precise temperature measurement, at different spots to catch non-uniformity ; abaque needs to be validated: for validation, better to by at high T vary ndot since error on T propagates less at high T (see modelled abaque: $T\nearrow \Rightarrow \frac{\partial \tau}{\partial T} \searrow$, isolines get parallel to T axis) 
+The most important limitation of this work is that the model is verified but not validated. Its numerical solution was checked against an analytical one derived independently, and its discretisation error quantified, but no prediction has been compared to an experiment. The measurements that would allow a first comparison exist: the stripping record of the MSRE reported by \textcite{briggs_calculation_1970}. LIBRA Pi itself will provide the direct test, and the operating map of \cref{fig:abaque} is the prediction to check it against. For as long as the model is not validated, uncertainty on the tritium transport properties of molten salts remains the limiting factor on any prediction.
+
+\paragraph{A novel method for measuring tritium transport properties}
+
+The present modeling work opens the possibility to \textbf{use experimental sparging data of LIBRA Pi to infer tritium transport properties of ClLiF}: if the system is operated at \PI<0.1, diffusivity of tritium in ClLiF can be obtained from the extraction time and the Sherwood number correlation, considering that the model predicts $\tau\propto \frac{\varepsilon_l}{a\,h_l}\propto \frac{\varepsilon_l\,d_b}{a\,\mathrm{Sh}\,D_l}$. This method doesn't have the drawback of having to first permeate tritium through structural metal, at the expense of requiring the properties of the bubbles to be known. 
+
+\paragraph{Improving the sparging model}
+
+Several assumptions (see \cref{sec:sparging_assumptions}) could be relaxed without changing the structure of the model. Tritium is treated as a single chemical species, which the BABY results support but which a change of redox conditions would invalidate; carrying \ce{TF} alongside \ce{T2} would require only a second transport equation and an equilibrium between them. The same applies to isotopic exchange in the gas phase, which the BABY campaigns suggest is the dominant release channel and which the present model does not represent. 
+
+The closure relations themselves deserve more attention: different combinations of hydrodynamic correlations should be explored to challenge the robustness of the set of closure relations chosen in this work, the automatic resolution stage making it easy to swap one correlation for another; also the choice of which correlation to use could be made automatically from the properties of the flow rather than left to the user.
+
+\paragraph{Recommendations for LIBRA Pi operation}
+
+Three practical recommendations for the operation of the experiment arise from the analysis done in this work: (1) the temperature must be measured precisely at several points, since it is the parameter the extraction time is most sensitive to and the least controllable model input; (2) potential validation campaign for the sparging system should be run at high temperature and vary the gas flow rate, because the isolines of \cref{fig:abaque} become parallel to the temperature axis there, so an error on the temperature propagates least; (3) the sweep gas circulating between the two vessel walls should contain a few percent of \ce{H2}, as already achieved in BABY 1L and now crucial in LIBRA Pi, since it is what turns the double wall from a leakage highway into a tritium collector.
+
 
 \cleardoublepage
 \phantomsection

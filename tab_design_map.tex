@@ -1,16 +1,15 @@
 \begin{table}[htbp]
-    \centering
     \small
     \renewcommand{\arraystretch}{1.35}
     \caption{Decision table covering the 8 regimes a sparging system can fall in. The upper block is where the analytical solution is accurate to $\pm5\%$, i.e. where at most one assumption is violated; in the lower block it is no longer reliable and the numerical model is required, the entry then indicating whether the extraction is faster or slower than \Tana predicts.}
     \label{tab:design_map}
     \begin{tabular}{@{}c ccc l l@{}}
         \toprule
-        case & $\Gmix<0.1$ & $\Gp<0.1$ & $\PI<0.1$ & expression for $\tau$ & reason \\
+        case & $\Gmix<0.1$ & $\Gp<0.1$ & $\PI<0.1$ & value for $\tau$ & reason \\
         \midrule
         \multicolumn{6}{@{}l}{\textit{\textbf{Analytical solution valid, $\pm5\%$}}} \\
-        1 & 1 & 1 & 1 & $\tau_\mathrm{SPP}$ & all assumptions hold, MTL regime \\
-        2 & 1 & 1 & 0 & \Tana & saturation captured by the $\PI/(1-e^{-\PI})$ factor \\
+        1 & 1 & 1 & 1 & $\tau_\mathrm{SPP}$ (\cref{eq:tau_SPP}) & all assumptions hold, MTL regime \\
+        2 & 1 & 1 & 0 & \Tana (\cref{eq:tau_ana})& saturation captured by the $\PI/(1-e^{-\PI})$ factor \\
         3 & 1 & 0 & 1 & $\tau_\mathrm{SPP}$ & spatial averaging absorbs the hydrostatic head \\
         5 & 0 & 1 & 1 & $\tau_\mathrm{SPP}$ & mixing is irrelevant while bubbles stay unsaturated \\
         \midrule
