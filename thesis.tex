@@ -49,7 +49,7 @@
 \expert{The External Reviewer}
 
 % custom commands
-\newcommand{\sysname}{FooSystem\xspace}
+\newcommand{\sysname}{Gas sparging system\xspace}
 \newcommand{\PT}{\ensuremath{P_\mathrm{T_2}}}
 \newcommand{\CT}{\ensuremath{c_\mathrm{T_2}}}
 \newcommand{\JT}{\ensuremath{J_\mathrm{T_2}}}
@@ -105,20 +105,23 @@ I would also like to acknowledge the support of the Zeno Karl Schindler foundati
 \makeacks
 
 \begin{abstract}
-The \sysname tool enables lateral decomposition of a multi-dimensional
-flux compensator along the timing and space axes.
+% The \sysname tool enables lateral decomposition of a multi-dimensional
+% flux compensator along the timing and space axes.
 
-The abstract serves as an executive summary of your project.
-Your abstract should cover at least the following topics, 1-2 sentences for
-each: what area you are in, the problem you focus on, why existing work is
-insufficient, what the high-level intuition of your work is, maybe a neat
-design or implementation decision, and key results of your evaluation.
+% The abstract serves as an executive summary of your project.
+% Your abstract should cover at least the following topics, 1-2 sentences for
+% each: what area you are in, the problem you focus on, why existing work is
+% insufficient, what the high-level intuition of your work is, maybe a neat
+% design or implementation decision, and key results of your evaluation.
+Deuterium-tritium fusion power plants must breed their own tritium, and recover it fast enough to mitigate permeation to structural materials and keep the fuel cycle closed. 
+% In molten salt breeders the recovery step is poorly constrained: the transport properties of tritium in the salt are known only to within orders of magnitude, and large uncertainties remain regarding tritium behavior once bred into the salt. 
+This work addresses gas sparging as a tritium extraction system, in which an inert gas is bubbled through the breeder so that tritium transfers to the rising bubbles and leaves with them. No cheap model predicts how quickly a gas sparging extraction system will strip the salt, it is the purpose of this work to develop one: a one-dimensional advection-reaction-dispersion model of the salt and gas phases is used, closed by user specified algebraic relations that are resolved automatically, the whole is released as an open-source package. Solving it analytically under four explicit assumptions yields a closed form for the extraction time, $\tau=\sfrac{\langle\varepsilon_l\rangle}{\langle a\,h_l\rangle}\cdot\PI/(1-e^{-\PI})$, governed by a single dimensionless saturation number $\langle\Pi\rangle$ that measures how close a bubble comes to equilibrium with the liquid before it leaves. A 300-sample sweep of the design space, spanning the three dimensionless groups that carry the assumptions, shows that this closed form reproduces the numerical model to within $\pm5\%$ whenever at most one assumption is violated, and fails by up to $46\%$ as soon as two are; on top of temperature and gas flow rate, it also identifies pressure as a significant design lever, improving the extraction time up to a factor 8 when pulling vacuum in the head space. Applied to the forthcoming LIBRA Pi experiment and its 100 L of ClLiF, the model predicts a tritium removal time of \textbf{2.3 to 5.3 days} at nominal operating conditions, the spread reflecting the uncertainty on the salt transport properties rather than on the operating point, with temperature and gas flow rate carrying almost all of the sensitivity. Coupling the extraction time to a three-dimensional simulation of tritium permeation through the double-walled vessel of LIBRA Pi shows that permeation competes with sparging rather than being negligible against it, and that the composition of the sweep gas between the two walls decides whether the permeated tritium is collected or lost: with helium alone up to $12\%$ of the bred tritium can escape to the environment, this goes down to less than $0.4\%$ once $3.5\%$ of \ce{H2} is added.
 \end{abstract}
 
-\begin{frenchabstract}
-For a doctoral thesis, you have to provide a French translation of the
-English abstract. For other projects this is optional.
-\end{frenchabstract}
+% \begin{frenchabstract}
+% For a doctoral thesis, you have to provide a French translation of the
+% English abstract. For other projects this is optional.
+% \end{frenchabstract}
 
 \maketoc
 
@@ -775,7 +778,7 @@ The 1D-ARD equations require as input some tritium transport and fluid dynamics 
 \subsection{Closure relations resolution}
 There are several available correlations in the literature for the same physical quantity, and the choice of which correlation to use is sometimes non-trivial: it changes depending on what parameters are already known and in what range they are. \todo{give an example (bubble size)}
 
-In particular, the topic of gas sparging in molten salts presents large unknowns (\todo{add diffusivity/solubility correlation plots in Background and refer to it here}), and it is the purpose of this model to explore them. It was therefore designed to offer flexibility as to the closure relations used and the assumptions they are built upon. 
+In particular, the topic of gas sparging in molten salts presents large unknowns (e.g. tritium transport properties, see \cref{fig:transport_params}), and it is the purpose of this model to explore them. It was therefore designed to offer flexibility as to the closure relations used and the assumptions they are built upon. 
 
 This flexibility is achieved by dynamically resolving the dependencies between all the parameters of the model every time a new simulation is launched, based on a set of closure relations and known parameters specified by the user for this specific simulation. Here, a \textit{parameters} can be a physical quantity (e.g. temperature) or more broadly any quantity used to describes the system (e.g. gas fraction, dimensionless numbers), it doesn't have to be a scalar, some parameters have a spatially varying profile (the pressure dependent ones); a \textit{closure relations} is any relation between parameters (e.g. correlation, state equation, definition).
 
@@ -1574,7 +1577,7 @@ For a given PRF, the amount extracted by sparging is the same in the 3 compositi
     \item \textbf{He + \ce{H2O}}: $34.0\pm0.7\%$ collected, $10\pm1\%$ leaked, $52\pm1\%$ still in the wall;
     \item \textbf{He + 3.5\% \ce{H2}}: 96.7\% collected, 0.39\% leaked, nothing left in the wall.
 \end{itemize}
-Adding \ce{H2} to the sweep gas divides the leaked fraction by 31 and turns a vessel that loses tritium into one that accounts for it. This is a design recommendation that costs nothing to implement, and \cref{fig:partition} shows it holds at every PRF.
+Adding \ce{H2} to the sweep gas divides the leaked fraction by $\sim30$ and turns a vessel that loses tritium into one that accounts for it. \Cref{fig:partition} shows this holds at every PRF.
 
 \begin{keyresult}
     \centering
