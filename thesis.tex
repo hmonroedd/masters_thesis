@@ -115,7 +115,7 @@ I would also like to acknowledge the support of the Zeno Karl Schindler foundati
 % design or implementation decision, and key results of your evaluation.
 Deuterium-tritium fusion power plants must breed their own tritium, and recover it fast enough to mitigate permeation to structural materials and keep the fuel cycle closed. 
 % In molten salt breeders the recovery step is poorly constrained: the transport properties of tritium in the salt are known only to within orders of magnitude, and large uncertainties remain regarding tritium behavior once bred into the salt. 
-This work addresses gas sparging as a tritium extraction system, in which an inert gas is bubbled through the breeder so that tritium transfers to the rising bubbles and leaves with them. No cheap model predicts how quickly a gas sparging extraction system will strip the salt, it is the purpose of this work to develop one: a one-dimensional advection-reaction-dispersion model of the salt and gas phases is used, closed by user specified algebraic relations that are resolved automatically, the whole is released as an open-source package. Solving it analytically under four explicit assumptions yields a closed form for the extraction time, $\tau=\sfrac{\langle\varepsilon_l\rangle}{\langle a\,h_l\rangle}\cdot\PI/(1-e^{-\PI})$, governed by a single dimensionless saturation number $\langle\Pi\rangle$ that measures how close a bubble comes to equilibrium with the liquid before it leaves. A 300-sample sweep of the design space, spanning the three dimensionless groups that carry the assumptions, shows that this closed form reproduces the numerical model to within $\pm5\%$ whenever at most one assumption is violated, and fails by up to $46\%$ as soon as two are; on top of temperature and gas flow rate, it also identifies pressure as a significant design lever, improving the extraction time up to a factor 8 when pulling vacuum in the head space. Applied to the forthcoming LIBRA Pi experiment and its 100 L of ClLiF, the model predicts a tritium removal time of \textbf{2.3 to 5.3 days} at nominal operating conditions, the spread reflecting the uncertainty on the salt transport properties rather than on the operating point, with temperature and gas flow rate carrying almost all of the sensitivity. Coupling the extraction time to a three-dimensional simulation of tritium permeation through the double-walled vessel of LIBRA Pi shows that permeation competes with sparging rather than being negligible against it, and that the composition of the sweep gas between the two walls decides whether the permeated tritium is collected or lost: with helium alone up to $12\%$ of the bred tritium can escape to the environment, this goes down to less than $0.4\%$ once $3.5\%$ of \ce{H2} is added.
+This work addresses gas sparging as an in-situ tritium extraction system for breeding experiments in molten salts. An inert gas is bubbled through the breeder so that tritium transfers to the rising bubbles and leaves with them. No cheap model predicts how quickly a gas sparging extraction system will strip the salt, it is the purpose of this work to develop one: a one-dimensional advection-reaction-dispersion model of the salt and gas phases is used, closed by user specified algebraic relations that are resolved automatically, the whole is released as an open-source package. Solving it analytically under four explicit assumptions yields a closed form for the extraction time, $\tau=\frac{\langle\varepsilon_l\rangle}{\langle a\,h_l\rangle}\cdot\PI/(1-e^{-\PI})$, governed by a single dimensionless saturation number $\langle\Pi\rangle$ that measures how close a bubble comes to equilibrium with the liquid before it leaves. A 300-sample sweep of the design space, spanning the three dimensionless groups that carry the assumptions, shows that this closed form reproduces the numerical model to within $\pm5\%$ whenever at most one assumption is violated, and fails by up to $46\%$ as soon as two are; on top of temperature and gas flow rate, it also identifies pressure as a significant design lever, improving the extraction time up to a factor 8 when pulling vacuum in the head space. Applied to the forthcoming LIBRA Pi experiment and its 100 L of ClLiF, the model predicts a tritium removal time of \textbf{2.3 to 5.3 days} at nominal operating conditions, the spread reflecting the uncertainty on the salt transport properties rather than on the operating point, with temperature and gas flow rate carrying almost all of the sensitivity. Coupling the extraction time to a three-dimensional simulation of tritium permeation through the double-walled vessel of LIBRA Pi shows that permeation competes with sparging rather than being negligible against it, and that the composition of the sweep gas between the two walls decides whether the permeated tritium is collected or lost: with helium alone up to $12\%$ of the bred tritium can escape to the environment, this goes down to less than $0.4\%$ once $3.5\%$ of \ce{H2} is added.
 \end{abstract}
 
 % \begin{frenchabstract}
@@ -231,22 +231,22 @@ The fusion fuel cycle is the set of processes that supplies tritium to the plasm
 % include doubling time considerations, achievable and required TBR ? (Ferry 2023, Abdou 2020)
 \todo{rathre use terminology "neutronics" and "real" TBR} % similarity with fusion gain is too farfelu 
 
-For the fusion power industry to be able to scale, individual FPPs have to produces at least as much tritium as they consumes, i.e. optimize their outer fuel cycle to achieve a sufficiently high TBR. For explanatory purposes. a distinction can be made between the "scientific" TBR (\cref{eq:TBR_sci}), which only measures tritium being born in the breeding material, and the "engineering" TBR (\cref{eq:TBR_eng}) which measures the tritium that is actually retrieved and can be injected in the fusion core. 
+For the fusion power industry to be able to scale, individual FPPs have to produces at least as much tritium as they consumes, i.e. optimize their outer fuel cycle to achieve a sufficiently high TBR. For explanatory purposes. a distinction can be made between the "neutronics" TBR (\cref{eq:TBR_neutronics}), which measures tritium being born in the breeding material from transmutation reactions, and the "real" TBR (\cref{eq:TBR_real}) which measures the tritium that is actually retrieved and can be injected in the fusion core. 
 \begin{align}
-    \mathrm{TBR_{sci}}&= \frac{\mathrm{T_{bred}}}{\mathrm{T_{burnt}}} \label{eq:TBR_sci} \\
-    \mathrm{TBR_{eng}} &= \frac{\mathrm{T_{retrieved}}}{\mathrm{T_{burnt}}} =  \mathrm{TBR_{sci}} \cdot \eta  \label{eq:TBR_eng}\\
+    \mathrm{TBR_{neutronics}}&= \frac{\mathrm{T_{bred}}}{\mathrm{T_{burnt}}} \label{eq:TBR_neutronics} \\
+    \mathrm{TBR_{real}} &= \frac{\mathrm{T_{retrieved}}}{\mathrm{T_{burnt}}} =  \mathrm{TBR_{neutronics}} \cdot \eta  \label{eq:TBR_real}\\
     \eta &= \frac{\mathrm{T_{retrieved}}}{\mathrm{T_{bred}}}<1 \label{eq:eta}
 \end{align}
 
-Where $\eta$ accounts for losses through the outer fuel cycle. 
+Where $\eta$ accounts for losses in the outer fuel cycle. 
 
-$\mathrm{TBR_{sci}}$>1 is necessary, but it is not sufficient. A self sufficient FPP needs to achieve $\mathrm{TBR_{eng}}$>1 by maximizing both its components:
+$\mathrm{TBR_{neutronics}}$>1 is necessary, but it is not sufficient. A self sufficient FPP needs to achieve $\mathrm{TBR_{real}}$>1 by maximizing both its components:
 \begin{itemize}
-    \item $\mathrm{TBR_{sci}}$ is purely neutronics dependent, it is optimized by use of \ce{^6Li} enrichment and by maximizing its thickness as well as the solid angle it covers around the fusion core;
+    \item $\mathrm{TBR_{neutronics}}$ is purely neutronics dependent, it is optimized by use of \ce{^6Li} enrichment and by maximizing its thickness as well as the solid angle it covers around the fusion core;
     \item $\eta$ is optimized by reducing permeation losses throughout the fuel cycle (e.g. by means of dedicated structural materials and coatings) and optimizing tritium extraction from the breeder.
 \end{itemize}  
 
-\subsection{Tritium handling}
+\subsection{Tritium permeation}
 % tritium is very mobile
 As isotopes of the same element share same electron structure, tritium chemically behaves like hydrogen (notwithstanding a few nuances in their kinetic properties arising from their mass difference). Tritium forms \ce{T2} gas and can substitutes with hydrogen to form tritiated water \ce{HTO}. It can dissolve as atomic \ce{T} in metallic materials, as a consequence of hydrogen being a small but non-inert element, enabling a 3-step process called \textit{permeation}: 
 \begin{enumerate}
@@ -269,19 +269,19 @@ Several TES technologies exist, with various maturities:
 \end{itemize}
 \todo{elaborate a bit}
 
-\section{State of the art and existing gaps}
+\section{Existing gaps}
 
 Both inner and outer fuel cycle are the subject of intense research, with the aim not to lose tritium and maximize its production. 
 
-On the outer fuel cycle side, the main focus is to better understand tritium handling and extraction, in other words to be able to predict and maximize $\mathrm{TBR_{eng}}$. In the context of the International Thermonuclear Experimental Reactor (ITER), the OFC aspect of ceramic and liquid metal based breeders was investigated in several studies\needcite{ITER references}. 
+On the outer fuel cycle side, the main focus is to better understand tritium handling and extraction, in other words to be able to predict and maximize $\mathrm{TBR_{real}}$. In the context of the International Thermonuclear Experimental Reactor (ITER), the OFC aspect of ceramic and liquid metal based breeders was investigated in several studies\cite{ricapito_tritium_2011,utili_tritium_2019,abdou_physics_2020}.
 
-There is however large uncertainties when it comes to molten salt based breeders, due to the challenges involved in experimenting with them: high temperatures, corrosion, Be toxicity and general tritium handling. This gap is addressed by the Liquid Immersion Blanket:Robust Accountancy (LIBRA) experiment, which main goal is to demonstrate accurate prediction of tritium breeding (the $\mathrm{TBR_{sci}}$ component) and extraction (the $\eta$ component), in a FLiBe salt breeder and DT fusion conditions (14 MeV neutrons)\cite{ferry_libra_2023}. 
+There is however large uncertainties when it comes to molten salt based breeders, due to the challenges involved in experimenting with them: high temperatures, corrosion, Be toxicity and general tritium handling. This gap is addressed by the Liquid Immersion Blanket:Robust Accountancy (LIBRA) experiment, which main goal is to demonstrate accurate prediction of tritium breeding (the $\mathrm{TBR_{neutronics}}$ component) and extraction (the $\eta$ component), in a FLiBe salt breeder and DT fusion conditions (14 MeV neutrons)\cite{ferry_libra_2023}. 
 
 Early results from this program are encouraging. The BABY 1L campaign, conducted on litre-scale salt volumes, showed good tritium recovery without any dedicated extraction system: tritium was collected simply by letting it diffuse through the salt to the free surface, or permeate through the container walls \cite{delaporte-mathurin_baby_2026}. At this scale, passive transport is sufficient.
 
 This approach does not survive scaling, as the characteristic time for tritium to diffuse out of the salt grows quadratically with the salt dimensions. The forthcoming LIBRA Pi experiment will operate on a salt volume of $\sim$100\,L, its characteristic diffusion time is $\frac{L^2}{D}=\frac{(30\ \mathrm{cm})^2}{5\cdot10^{-9} \ \mathrm{m^2/s}}\approx200 \ \mathrm{days}$ if no convective transport is considered. Such a timescale is incompatible with the experimental iteration rate the program requires, and an active extraction system therefore becomes necessary.
 
-Gas sparging was identified as a candidate to fill this role. The principle is to bubble an inert gas (typically helium) through the liquid breeder: tritium transfers from the liquid to the rising bubbles across the gas-liquid interface and is carried out of the tank, while the motion of the bubbles simultaneously promotes advective tritium transport within the liquid itself. The process is affordable, mechanically simple, and well documented in the chemical engineering literature \needcite{BCR / sparging chemical engineering references}. 
+Gas sparging was identified as a candidate to fill this role. The principle is to bubble an inert gas (typically helium) through the liquid breeder: tritium transfers from the liquid to the rising bubbles across the gas-liquid interface and is carried out of the tank, while the motion of the bubbles simultaneously promotes advective tritium transport within the liquid itself. The process is affordable, mechanically simple, and well documented in the chemical engineering literature \cite{deckwer_mixing_1974}.
 
 \section{Problem definition}
 % roadmap: 1 sentence/chapter 
@@ -357,7 +357,7 @@ The model developed in this work descends directly from this line of work. \text
 
 One feature of the lithium-lead work carries over and is worth keeping in mind: doping the stripping gas with \ce{H2} increases the net tritium flux at the interface, because isotopic exchange lets the liquid give up tritium while absorbing protium\cite{ricapito_tritium_2011}. The same mechanism reappears in \cref{sec:LIBRAPi_permeation}, this time on the metal side, where the composition of the sweep gas decides whether the permeated tritium is collected or lost.
 
-Because hydrodynamic measurements in molten salts are scarce, the closure relations used here are borrowed from the chemical engineering literature on bubble columns, which is mature and largely empirical. Interfacial transfer is described by the two-film model of \textcite{lewis_principles_1924} and the transport along the column by the axial dispersion model popularized by Levenspiel, both of which are bases for the standard models of bubble column reactors\cite{levenspiel_chemical_1999,schluter_modeling_1992}. The individual quantities they require, namely the interfacial area, the mass transfer coefficient and the axial dispersion coefficients, are given by correlations fitted on air-water and on viscous organic systems \cite{calderbank_continuous_1961,deckwer_mixing_1974,bhavaraju_design_1978,hebrard_characterization_1999}. Applying them to a molten fluoride salt is an extrapolation, and one that this work does not attempt to justify beyond checking that the resulting dimensionless groups stay within the range where the correlations were established.
+Because hydrodynamic measurements in molten salts are scarce, the closure relations used here are borrowed from the chemical engineering literature on bubble columns, which is mature and largely empirical. Interfacial transfer is described by the two-film model of \textcite{lewis_principles_1924} and the transport along the column by the axial dispersion model popularized by Levenspiel, both of which are bases for the standard models of bubble column reactors\cite{levenspiel_chemical_1999,schluter_modeling_1992}. The individual quantities they require, namely the interfacial area, the mass transfer coefficient and the axial dispersion coefficients, can be obtained by correlations fitted on air-water and on viscous organic systems \cite{calderbank_continuous_1961,deckwer_mixing_1974,bhavaraju_design_1978,hebrard_characterization_1999}. Applying them to a molten fluoride salt is an extrapolation, and one that this work does not attempt to justify beyond checking that the resulting dimensionless groups stay within the range where the correlations were established.
 
 
 \section{State of modelling}
@@ -399,6 +399,23 @@ A schematic of the problem at hand along with the main quantities of interest is
 \label{sec:sparging_maths}
 
 \subsection{Mass transfer}
+
+\begin{figure}[ht]
+    \begin{subfigure}[t]{0.48\linewidth}
+        \centering
+        \includegraphics[height=5.5cm]{fig/boundary_layer.png}
+        \caption{Illustration of the Lewis-Whitman two-film mass transfer model for a bubble in a liquid, taken from \textcite{evans_physics_2026}.}
+        \label{fig:two_film_model}
+    \end{subfigure}
+    \hspace{1 em}
+    \begin{subfigure}[t]{0.48\linewidth}
+      \centering
+      \includegraphics[height=5.5cm]{fig/equilibrium_curve.pdf}
+      \caption{Interfacial equilibrium between the liquid and a bubble, the interface sits on the Henry line, so the driving force of the two-film model is the vertical distance between the bulk liquid concentration and the concentration that would be in equilibrium with the bubble.}
+      \label{fig:equilibrium}
+    \end{subfigure}
+\end{figure}
+
 % expose diffusivity, boundary layer model, then advective transport 
 Transport through the liquid-gas interface created by bubbles is what directly allows tritium extraction from the liquid breeder. 
 It relies primarily on diffusion, where the density gradient occurring at the interface drives a particle flux $\JT \:\mathrm{[mol/m^2/s]}$ from the tritium-rich liquid to the tritium-poor gas, hereafter the \textit{interfacial flux}. On top of pure diffusion, turbulence at the liquid-gas interface tends to promote mass exchange between phases. 
@@ -406,13 +423,6 @@ It relies primarily on diffusion, where the density gradient occurring at the in
 \\
 Transport of solute gases through liquid-gas interfaces is commonly described by the the Lewis-Whitman two-film model\cite{lewis_principles_1924} illustrated in \cref{fig:two_film_model}. In molten salts, \ce{H_2} has a low solubility \cite{malinauskas_solubilities_1974}, so mass transfer through the interface is limited by the liquid film, the interfacial flux is therefore expressed using the liquid side mass transfer coefficient $h_l \:\mathrm{[m/s]}$ which characterized both molecular diffusion and turbulent transport through the liquid film. The interfacial flux is expressed as:
 
-\todo{can I just copy/paste a figure like that ?}
-\begin{figure}[ht]
-  \centering
-  \includegraphics[width=0.5\linewidth]{fig/boundary_layer.png}
-  \caption{Illustration of the Lewis-Whitman two-film mass transfer model for a bubble in a liquid, taken from \textcite{evans_physics_2026}.}
-  \label{fig:two_film_model}
-\end{figure}
 
 \begin{equation*}
     \JT = h_l \,(\CT-c_\mathrm{T_2,i})
@@ -428,12 +438,6 @@ Concentration at the liquid-gas interface is assumed to be always at equilibrium
 
 In \cref{eq:JT2}, \JT and \PT are the unknown to be solved in the 1D-ARD model; $K_s$ is a salt property; $h_l$ is a parameter that depends on tritium diffusivity and fluid dynamic characteristics of the salt. 
 % -> transition to next section
-\begin{figure}[htbp]
-  \centering
-  \includegraphics[width=0.55\linewidth]{fig/equilibrium_curve.pdf}
-  \caption{Interfacial equilibrium between the liquid and a bubble, drawn at the nominal LIBRA Pi solubility. The interface sits on the Henry line, so the driving force of the two-film model is the vertical distance between the bulk liquid concentration and the concentration that would be in equilibrium with the bubble.}
-  \label{fig:equilibrium}
-\end{figure}
 
 \subsection{Fluid dynamics}
 % expose correlations
@@ -729,7 +733,7 @@ As will be elaborated throughout this work, \PI is a pivotal quantity to charact
 
 
 \paragraph{Derivation}
-
+\todo{re-introduce old\_analytical\_derivation.tex and incorporate it here instead of the more complicated derivation, we only need to obtain eq\_tau\_ana at the end, this complicated derivation can be moved to the appendix}
 Using the uniform \CT assumption (\cref{as:c_is_uniform}), \cref{eq:Pb_ODE_sparger} reduces to:
 \begin{equation}
 \label{eq:PT_steady}
@@ -748,13 +752,13 @@ which is integrated with the factor $e^{\Pi^\star(z)}$. Gas dispersion being neg
 \end{equation}
 The exponential weight of \cref{eq:PT_profile} expresses that the tritium transferred to a bubble at height $s$ is progressively "forgotten" as the bubble keeps rising towards equilibrium with the liquid. Should the hydrodynamic parameters be uniform (\cref{as:uniform_hydrodynamic}), \cref{eq:PT_profile} reduces to the single bubble result $\PT(z)=\frac{\langle\CT\rangle^l}{K_s}\left(1-e^{-\Pi^\star(z)}\right)$.
 
-\Cref{eq:PT_profile} can be evaluated at the gas outlet and plugged into the expression of the outgoing tritium flux (\cref{eq:dotNT}). Carrying the integration through, which is done in \cref{app:tau_full}, the inventory again decays exponentially, with an extraction time given by an exact but integral expression (\cref{eq:tau_full}). That expression behaves as expected in both saturation limits, and it is the reference against which the compact form below is obtained.
+\Cref{eq:PT_profile} can be evaluated at the gas outlet and plugged into the expression of the outgoing tritium flux (\cref{eq:dotNT}). Carrying the integration through, which is done in \cref{sec:appendix} A \todo{appendix reference with cref doesn't work well, it should print "Appendix A"}, the inventory again decays exponentially, with an extraction time given by an exact but integral expression (\cref{eq:tau_full}). That expression behaves as expected in both saturation limits, and it is the reference against which the compact form below is obtained.
 
 If we make the assumption that \assumption{the hydrodynamic parameters are well approximated by their spatial average\label{as:uniform_hydrodynamic}} (\cref{as:uniform_hydrodynamic}), then $a\,h_l\approx\langle a\,h_l \rangle$ can be taken out of the integral of \cref{eq:tau_full} and $\Pi^\star(z)\approx\langle\Pi\rangle\,\frac{z}{H}$, which reveals a compact expression in terms of the SPP extraction time:
 \begin{keyresult}
 \begin{equation}
 \label{eq:tau_ana}
-    \tau \approx \tau_\mathrm{SPP}\,\frac{\langle\Pi\rangle}{1-e^{-\langle\Pi\rangle}}
+    \tau =\tau_\mathrm{SPP}\,\frac{\langle\Pi\rangle}{1-e^{-\langle\Pi\rangle}}
 \end{equation}
 \end{keyresult}
 This latter form is used as the reference analytical solution in the rest of this work, denoted \Tana for distinction with values that might be obtained numerically. 
@@ -799,7 +803,7 @@ Eventually, what is required by the sparging model are the ARD parameters that a
 \end{enumerate}
 The parameters resolution algorithm will fail if the user provides a set of known parameters and relations that is insufficient to compute the ARD parameters (\textit{incomplete}). 
 
-The \verb|from_parameters()| method of the \verb|SimulationInput| class implements this graph discovery, the recursive part of the algorithm is summarized in \cref{fig:graph_search}.
+The \verb|from_parameters()| method of the \verb|SimulationInput| class implements this graph discovery, the recursive part of the algorithm is summarized in \cref{fig:graph_search}. An example resolution of the closure relations used in the LIBRA Pi sparging model in \cref{sec:LIBRAPi_sparging} can be found in \cref{fig:closure_graph}. 
 
 \input{diag_closure_graph}
 
@@ -1632,10 +1636,9 @@ In Li 2026, \cref{as:T2_press_is_negligible} doesn't hold as the tritium concent
 
 % Appendices are optional
 \appendix
-
+\label{sec:appendix}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \chapter{Exact form of the extraction time}
-\label{app:tau_full}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 This appendix carries the integration of \cref{eq:PT_profile} through to the extraction time, without the uniform hydrodynamics assumption (\cref{as:uniform_hydrodynamic}) used to reach the compact form of \cref{eq:tau_ana}.

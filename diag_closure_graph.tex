@@ -89,6 +89,7 @@
 % =========== hydrodynamics -> ARD parameters ===========
 \draw[arr] (ug) to[bend right=10] (eps);
 \draw[arr] (vg) to[bend left=6]  (eps);
+\draw[arr] (vg) to[bend right=6]  (ug);
 \draw[arr] (eps) to[bend left=10] (a);
 \draw[arr] (db) to[bend left=6]  (a);
 
@@ -136,6 +137,6 @@
 
 \end{tikzpicture}%
 }
-\caption{Dependency network of the closure relations, resolved for the standard correlation set of this work. It is the \textbf{closure relations} stage of \cref{fig:model_overview} seen from close up: the model inputs on the left propagate through the material properties and the hydrodynamics to the parameters the 1D ARD equations consume on the right. Only the physical parameters are shown; the dimensionless groups they are built from (Eo, Mo, Sc) and the intermediate pressures are omitted.}
+\caption{Dependency network of the closure relations, resolved for the standard correlation set of this work (\cref{tab:correlations,tab:correlations_hydro}). It is the \textbf{closure relations} stage of \cref{fig:model_overview} seen from close up: the model inputs on the left propagate through the material properties and the hydrodynamics to the required parameters of the 1D ARD equations on the right.}
 \label{fig:closure_graph}
 \end{figure}
