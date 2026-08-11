@@ -814,9 +814,26 @@ The \verb|from_parameters()| method of the \verb|SimulationInput| class implemen
 % something like: closure relations presented in table 1 and 2 (mass transfer and fluid dynamics paragraph respectively) form a complete set of closure relations that uniquely define the input parameters of the 1D-ARD model. 
 
 
-\subsection{Numerical scheme}
-% FEM
-% derivation of the weak formulation
+\subsection{Numerical scheme for the ARD equations}
+\label{sec:numerical_scheme}
+
+The ARD equations (\cref{eq:ARD_CT,eq:ARD_PT}) are discretised with the finite element method, built on FEniCSx/DOLFINx. The weak formulation is obtained by multiplying each equation by a test function $v_c$ and $v_y$ and integrating over the column, the two dispersion terms being integrated by parts so that the zero-gradient conditions of \cref{eq:BC2,eq:BC3,eq:BC4} are enforced naturally, by dropping the resulting boundary terms.
+
+The gas phase unknown is not the partial pressure itself but the \ce{T2} molar fraction $y_\mathrm{T_2}$, with $\PT=P_g(z)\,y_\mathrm{T_2}$, as it is the practice in bubble column reactor modeling\cite{malara_tritium_1995}. Writing $\Delta t$ for the time step and $(c^{k+1},y^{k+1})$ for the fields at $t_{k+1}$, the discrete system solved at each step is:
+
+\begin{align}
+\label{eq:weak_form}
+    F = &\stackrel{\mathrm{(1a)}}{\int_0^H \varepsilon_l\,\frac{c^{k+1}-c^{k}}{\Delta t}\,v_c \,\mathrm{d}z} + \stackrel{\mathrm{(1b)}}{\int_0^H \frac{\varepsilon_g\,P_g}{R\,T}\,\frac{y^{k+1}-y^{k}}{\Delta t}\,v_y \,\mathrm{d}z} \nonumber\\
+    &+ \stackrel{\mathrm{(2a)}}{\int_0^H \varepsilon_l\,E_l\,\nabla c^{k+1}\cdot\nabla v_c \,\mathrm{d}z} + \stackrel{\mathrm{(2b)}}{\int_0^H \frac{\varepsilon_g\,E_g}{R\,T}\,\nabla\!\left(P_g\,y^{k+1}\right)\cdot\nabla v_y \,\mathrm{d}z} \nonumber\\
+    &+ \stackrel{\mathrm{(3)}}{\int_0^H \frac{1}{R\,T}\,\frac{\partial}{\partial z}\!\left(u_g\,P_g\,y^{k+1}\right) v_y \,\mathrm{d}z} + \stackrel{\mathrm{(4)}}{\int_0^H a\,\JT\,(v_c - v_y) \,\mathrm{d}z} - \stackrel{\mathrm{(5)}}{\int_0^H S_\mathrm{T_2}\,v_c \,\mathrm{d}z} \nonumber\\
+    &+ \stackrel{\mathrm{(6)}}{\left[\frac{u_g}{R\,T}\,\left(P_g\,y^{k+1} - \PT\rvert_\mathrm{inlet}\right) v_y\right]_{z=0}} \;=\; 0
+\end{align}
+
+With (1a) and (1b) the transient terms for each phase; (2a) and (2b) the dispersion terms; (3) the advection term of the gas phase, written in conservative form to accounts for gas expansion; (4) the interfacial coupling term; (5) the neutron irradiation source term; and (6) the Danckwerts condition of \cref{eq:BC1}, imposed weakly as a boundary term. With a tritium-free sparging gas, $\PT\rvert_\mathrm{inlet}=0$. Note that the two equations share the same interfacial term with opposite signs, through the factor $(v_c-v_y)$, so that the transfer between phases is conserved: whatever leaves the liquid enters the gas.
+
+Space is discretised on a uniform mesh of $N_x=H/\Delta x$ cells, over which both unknowns are represented by Lagrange elements of degree 1. Time is solved with the backward Euler scheme, first order and unconditionally stable, whose systematic $+\Delta t/2$ bias on the fitted extraction time is derived and removed in \cref{sec:numerical_error}. 
+
+The resulting system is assembled by DOLFINx and solved with a Newton method at each time step. The ARD equations and the boundary conditions are linear, therefore \cref{eq:weak_form} is linear in $(c_\mathrm{T_2},y_\mathrm{T_2})$ making the Newton iterations converge in a single step. That linearity is also why the extraction time is independent of the initial inventory, and why the Monte Carlo studies of \cref{sec:sparging_expl,sec:LIBRAPi_sparging} are affordable. No stabilization technique is used, the mesh Peclet criterion of \cref{sec:numerical_error} is what fixes $\Delta x$.
 
 \subsection{Verification of the ARD implementation}
 \subsubsection{Numerical error estimate}
@@ -862,27 +879,15 @@ Two consequences are worth keeping in mind when reading the results that follow.
 
 \subsubsection{Comparison with the analytical solution}
 
-The analytical solution derived in \cref{sec:analytical_solution} rests on a set of assumptions that the numerical 1D ARD model does not make. A \textbf{virtual} reference case is therefore built in which all of them are satisfied, so that any remaining discrepancy can be attributed to the implementation rather than to the modelling. Its parameters are given in \cref{tab:model_input}. They are those of the LIBRA Pi experiment (see \cref{tab:model_input}), except for the tank height which is divided by ten, and for the solubility constant $K_s$ which takes two values in order to probe both partial pressure regimes. The $z$ dependent parameters vary by about one percent over such a short column, so only their value at the sparger ($z=0$) is reported.
-
-
-Each assumption can be checked against \cref{tab:model_input}.
-\begin{enumerate}
-    \item The liquid concentration is uniform (\cref{as:c_is_uniform}): the dispersive mixing time $H^2/E_l$ is $0.62\ \mathrm{s}$ against an extraction time of the order of a day, i.e. $\Gmix\simeq5\times10^{-6}$, so the liquid homogenises some five orders of magnitude faster than tritium leaves it;
-    \item The bubble residence time $H/v_b=0.35\ \mathrm{s}$ is more than five orders of magnitude shorter than $\tau$ (\cref{as:short_res_time}), which justifies both the quasi-steady gas phase and the neglect of the gas inventory in front of the liquid one;
-    \item Finally, the gas Bodenstein number is $\mathrm{Bo}=4.7\times10^{3}$, so gas dispersion is negligible in \cref{eq:ARD_PT}: the ratio of the dispersive to the advective term is $1/\mathrm{Bo}\simeq2\times10^{-4}$ (\cref{as:no_gas_dispersion})
-    \item The hydrodynamic parameters are close to uniform (\cref{as:uniform_hydrodynamic}): the hydrostatic head over the column is $1.5\ \%$ of the pressure at the top, which is also the order of the variation of $\varepsilon_g$, $a$ and $u_g$ along $z$. Accordingly $\Pi(0)$ and $\langle\Pi\rangle$ agree to within $0.4\ \%$;
-\end{enumerate}  .
-
-\Cref{fig:verification_profile} compares the tritium partial pressure profile in the gas phase with \cref{eq:PT_profile}, the mean liquid concentration $\langle\CT\rangle^l$ being taken from the simulated inventory at the same instant. The two regimes are clearly distinguished: at $\langle\Pi\rangle\ll1$ the bubbles stay far from equilibrium and \PT grows almost linearly with height, whereas at $\langle\Pi\rangle\simeq1$ the saturation of the bubbles bends the profile. In both cases the model and the analytical solution agree to better than $8\times10^{-3}$ of the peak partial pressure.
 
 \begin{figure}[htbp]
   \centering
-  \includegraphics[width=\linewidth, trim={0.2cm 0 0 0}, clip]{fig/verification_P_T2_profile.pdf}
+  \includegraphics[width=\linewidth, trim={0.2cm 1cm 0 1cm}, clip]{fig/verification_P_T2_profile.pdf}
   \caption{Tritium partial pressure profile in the gas phase at three instants, computed by the 1D ARD model (solid) and given by the analytical solution \cref{eq:PT_profile} (dotted), in the small partial pressure regime (a) and close to the partial pressure limited regime (b).}
   \label{fig:verification_profile}
 \end{figure}
+\todo{redo fig_verification_profile with the panels stacked vertically (shared x axis), then fig_verification_inventory will be put on the right panel (keep the two figures separate pdfs, just use subfigures in latex}
 
-\Cref{fig:verification_inventory} compares the decay of the tritium inventory with the exponential law of \cref{eq:tau_ana}. The residual grows linearly with time, as expected of a small error on a decay rate, and reaches $1.2\ \%$ after five extraction times in the SPP case. This residual is numerical, not physical: replacing $\tau$ by $\tau+\Delta t/2$, the decay time that a backward Euler scheme actually reproduces (\cref{eq:tau_delta_expansion}), brings the deviation down to $1.2\times10^{-4}$ over the same interval, a hundredfold reduction. The PPL case behaves the same way up to a residual of $5\times10^{-3}$ at $t=5\tau$, which corresponds to \cref{eq:tau_ana} overestimating the extraction time by $0.11\ \%$, a consequence of the assumptions listed above, and an acceptable one.
 
 \begin{figure}[htbp]
   \centering
@@ -891,10 +896,19 @@ Each assumption can be checked against \cref{tab:model_input}.
   \label{fig:verification_inventory}
 \end{figure}
 
-\paragraph{Relaxing the assumptions} \todo{adapt with the new analytical study data}
-Once the +dt/2 discretisation bias of the backward Euler scheme is removed from $\tau_\mathrm{fitted}$, \Tana (\cref{eq:tau_ana}) reproduces the fitted decay time of the full 1D ARD model to a median relative error of 8e-6 (worst case 3.5e-4) over the 182 samples of the 0D validity study for which the liquid is well mixed ($\Gmix$ < 1e-3), spanning \Gp from 7e-4 to 1.4 and $\langle\Pi\rangle$ from 2e-5 to 2.6.
+The analytical solution derived in \cref{sec:analytical_solution} rests on a set of assumptions that the numerical 1D ARD model does not make. A \textbf{virtual} reference case is therefore built in which all of them are satisfied, so that any remaining discrepancy can be attributed to the implementation rather than to the modelling: we use the ARD input corresponding to the LIBRA Pi experiment (see \cref{tab:model_input}), except for the \textbf{tank height which is divided by ten} to satisfy \cref{as:uniform_hydrodynamic}, and for the solubility constant $K_s$ which takes two values in order to probe the implementation correctness in both partial pressure regimes. Each assumption can be checked against \cref{tab:model_input}.
+\begin{enumerate}
+    \item The liquid concentration is uniform (\cref{as:c_is_uniform}): the dispersive mixing time $H^2/E_l$ is $0.62\ \mathrm{s}$ against an extraction time of the order of a day, so the liquid homogenizes five orders of magnitude faster than tritium leaves it;
+    \item The bubble residence time $H/v_b=0.35\ \mathrm{s}$ is more than five orders of magnitude shorter than $\tau$ (\cref{as:short_res_time}), which justifies both the quasi-steady gas phase and the neglect of the gas inventory in front of the liquid one;
+    \item The gas Bodenstein number is $\mathrm{Bo}=4.7\times10^{3}$, the ratio of the dispersive to the advective term is $1/\mathrm{Bo}\simeq2\times10^{-4}$ so gas dispersion is negligible (\cref{as:no_gas_dispersion})
+    \item The hydrodynamic parameters are close to uniform (\cref{as:uniform_hydrodynamic}): the hydrostatic head over the column is $1.5\ \%$ of the pressure at the top, this dictates the order of the variation of $d_b$, $\varepsilon_g$, $a$ and $u_g$ along $z$.
+\end{enumerate}  .
 
-The implementation therefore reproduces the analytical solution, in both the partial pressure regimes and for both the gas phase profile and the integral quantity of interest, down to the discretisation error quantified in \cref{sec:numerical_error}.
+\Cref{fig:verification_profile} compares the tritium partial pressure profile in the gas phase with \cref{eq:PT_profile}, the mean liquid concentration $\langle\CT\rangle^l$ being taken from the simulated inventory at the same instant. The two regimes are clearly distinguished: at $\langle\Pi\rangle\ll1$ the bubbles stay far from equilibrium and \PT grows almost linearly with height, whereas at $\langle\Pi\rangle\simeq1$ the saturation of the bubbles bends the profile. In both cases the model and the analytical solution agree to better than $8\times10^{-3}$ of the peak partial pressure.
+
+\Cref{fig:verification_inventory} compares the decay of the tritium inventory with the exponential law of \cref{eq:tau_ana}. The residual grows linearly with time, as expected of a small error on a decay rate, and reaches $1.2\ \%$ after five extraction times in the SPP case. This residual is numerical, not physical: replacing $\tau$ by $\tau+\Delta t/2$, the decay time that a backward Euler scheme actually reproduces (\cref{eq:tau_delta_expansion}), brings the deviation down to $1.2\times10^{-4}$ over the same interval, a hundredfold reduction. The PPL case behaves the same way up to a residual of $5\times10^{-3}$ at $t=5\tau$, which corresponds to \cref{eq:tau_ana} overestimating the extraction time by $0.11\ \%$. This is attributed as a consequence of the assumptions listed above being not perfectly realized for the analytical solution to hold, rather than a numerical inacurracy. 
+
+This verifies the numerical implementation in both the partial pressure regimes and for both the gas phase profile and the integral quantity of interest, down to the discretisation error quantified in \cref{sec:numerical_error}.
 
 
 \subsection{Summary of the code structure}
