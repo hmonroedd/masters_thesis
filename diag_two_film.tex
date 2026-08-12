@@ -11,7 +11,7 @@
     prof/.style={very thick, orange!70!black},
     iface/.style={line width=1.6pt, orange!70!black},
     dim/.style={<->, black!70, line width=0.5pt},
-    tend/.style={->, line width=1.1pt, orange!70!black},
+    flux/.style={->, line width=1.1pt, violet!70!black},
     font=\small,
 ]
 \def\YT{5.4}
@@ -44,8 +44,8 @@
 \draw[dim] (4.3,-0.35) -- (5.9,-0.35) node[midway, below, inner sep=2pt] {$\delta_g$};
 
 % net transfer, in the same colour and style as the arrow of the equilibrium panel
-\draw[tend] (3.05,4.70) -- (5.55,4.70);
-\node[anchor=south, orange!70!black, inner sep=3pt] at (3.55,4.74) {\JT};
+\draw[flux] (3.05,4.70) -- (5.55,4.70);
+\node[anchor=south, violet!70!black, inner sep=3pt] at (3.55,4.74) {\JT};
 
 % the two sides of the interface are always at equilibrium, which is what fixes the jump
 \node[anchor=north, font=\footnotesize, orange!70!black] at (4.3,-1.05)

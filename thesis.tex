@@ -298,11 +298,15 @@ The viability of gas sparging as a tritium extraction system for LIBRA Pi has no
     \item \textit{What are the limitations of this prediction and how can it be improved ?}
 \end{itemize}
 
-\Cref{sec:background} will introduce the prior work on gas sparging upon which this work is built. 
+\Cref{sec:background} reviews the prior work this model is built on: what is known of the tritium transport properties of fluoride salts, what the MSRE and the molten salt reactor literature established about gas sparging, what the lithium-lead work on gas-liquid contactors contributes, where the existing models sit in cost and fidelity, and what the LIBRA programme requires.
 
-\Cref{sec:sparging_model} will present the general gas sparging species extraction model developed in this work, beginning with the description of the underlying mathematical model (\cref{sec:sparging_maths}), following with its practical implementation (\cref{sec:sparging_impl}), then presenting the engineering insights that can be learnt from this model (\cref{sec:sparging_expl}). 
+\Cref{sec:sparging_model} builds the sparging model itself: the mathematical framework of the two-phase transport (\cref{sec:sparging_maths}), from the interfacial mass transfer to the 1D ARD equations, their boundary conditions and the assumptions they rest on (\cref{sec:sparging_assumptions}); an analytical solution of those equations under four of these assumptions (\cref{sec:analytical_solution}), which yields a closed form for the extraction time; and the numerical implementation (\cref{sec:sparging_impl}), covering the automatic resolution of the closure relations, the discretisation scheme, its verification against the analytical solution and the resulting code structure.
 
-\Cref{sec:LIBRAPi_sparging} will apply the developed model to the LIBRA Pi experiment, focusing on extraction time prediction. This will then be used to inform a study of tritium permeation in LIBRA Pi (\cref{sec:LIBRAPi_permeation}). 
+\Cref{sec:sparging_expl} explores the design space of a generic sparging system with that model, mapping in turn the effect of bubble saturation (\cref{sec:impact_of_sat_Pi}), of liquid mixing (\cref{sec:impact_of_mixing}) and of the hydrostatic pressure variation along the column (\cref{sec:impact_of_pressure}), and summarising where the analytical solution can be trusted and how a sparging system should be designed.
+
+\Cref{sec:LIBRAPi_sparging} applies the model to LIBRA Pi: the model input and the sparging regimes the experiment can reach, then a sensitivity analysis that ranks the four controllable operating parameters, an operating map of the extraction time over the two that dominate, and the limitations of that prediction.
+
+\Cref{sec:LIBRAPi_permeation} puts the extraction time in competition with permeation through the double-walled vessel: the 3D transport model, its geometry and its coupling to sparging, then the results, namely that the salt side alone sets how much tritium permeates (\cref{sec:perm_salt_side}), that the sweep gas composition decides whether it is collected or lost (\cref{sec:perm_sweep}), that most of it never leaves the wall (\cref{sec:perm_retention}) and how the two removal pathways compare (\cref{sec:perm_vs_sparging}).
 
 %%%%%%%%%%%%%%%%%%%%
 \chapter{Background: tritium and molten salts}
@@ -317,7 +321,6 @@ The viability of gas sparging as a tritium extraction system for LIBRA Pi has no
 % the literature review goes here, not in the intro
 
 \section{Tritium transport properties of fluoride salts}
-\todo{adjust/crop so that they are well aligned}
 \begin{figure}[htbp]
     \centering
     \begin{subfigure}[t]{0.48\linewidth}
@@ -1243,7 +1246,7 @@ The initial tritium inventory is fixed to $3.6\cdot10^{-12} \ \mathrm{molT2}$ (e
 
 Considering the range of attainable operating parameters presented in \cref{tab:model_input}, the LIBRA Pi sparging system is characterized by the following ranges on its dimensionless groups:
 \begin{itemize}
-    \item $\Gmix=3.5-6.5\times10^{-4}$: the aspect ratio of the tank is such that the salt is well mixed at any operating point. The liquid concentration is uniform and the 0D description of the salt inventory holds;
+    \item $\Gmix=1.7\times10^{-4}-4.0\times10^{-3}$: the aspect ratio of the tank is such that the salt is well mixed at any operating point. The liquid concentration is uniform and the 0D description of the salt inventory holds;
     \item $\Gp=0.09-0.18$: growth of $a$ and $u_g$ as  gas expands along $z$ is non-negligible. The numerical model will catch this. 
     \item As for $\PI$, it is the uncertain parameter that motivates the 2 scenarios:
     \begin{itemize}

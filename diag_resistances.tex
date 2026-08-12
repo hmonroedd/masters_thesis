@@ -1,7 +1,6 @@
-% Summary of the permeation chapter as a resistance network. Fills encode the tritium
-% concentration, which falls along every pathway; R3 is drawn as a variable resistance because
-% the sweep gas chemistry is what sets it, and the wall is drawn as a tank because when R3 is
-% large it stores instead of conducting.
+% Summary of the permeation chapter as a resistance network. R3 is drawn as a variable
+% resistance because the sweep gas chemistry is what sets it, and the wall carries a capacitor
+% in parallel with R2 because when R3 is large it stores tritium instead of conducting it.
 % Requires in the preamble: \usepackage{tikz}
 %   \usetikzlibrary{positioning, fit, backgrounds, arrows.meta}
 \begin{tikzpicture}[
@@ -21,41 +20,57 @@
 \node[align=center] at (1.25,1.95) {\textbf{salt}};
 \node[note, align=center] at (1.25,1.25) {the whole bred\\inventory};
 
-\filldraw[tank, fill=orange!45] (6.0,0) rectangle (7.1,3.0);
-\node[rotate=90] at (6.55,1.5) {\textbf{wall}};
-\node[note, anchor=south east, align=right] at (7.15,3.12) {$R_2$, diffusion\\in inconel, fast};
+% the wall is not a plain node: R2 carries tritium through it, and in parallel a capacitor
+% holds what it stores, which is the retention result
+\filldraw[tank, fill=black!8, dashed, draw=black!50] (5.85,-0.20) rectangle (8.25,2.30);
+\node[anchor=north west] at (5.95,2.22) {\textbf{wall}};
+\node[res, minimum width=1.15cm, minimum height=0.55cm] at (7.15,1.5) {$R_2$};
+\node[note, anchor=south, align=center] at (7.05,2.40) {$R_2$, diffusion in\\inconel, fast};
+% the parallel capacitor: the inventory the wall holds instead of passing on
+\draw[wire] (6.35,1.5) -- (6.35,0.80);
+\draw[wire] (7.95,1.5) -- (7.95,0.80);
+\draw[wire] (6.35,0.80) -- (6.97,0.80);
+\draw[wire] (7.33,0.80) -- (7.95,0.80);
+\draw[line width=1.1pt, black!65] (6.97,0.48) -- (6.97,1.12);
+\draw[line width=1.1pt, black!65] (7.33,0.48) -- (7.33,1.12);
+\node[note, anchor=north] at (7.15,0.26) {stored};
 
 % ---- sparging, straight out of the salt ------------------------------------------------ %
-\draw[wire, ->] (1.25,3.0) -- (1.25,4.15);
-\node[sink, fill=black!4, minimum width=2.7cm] at (1.25,4.68)
-    {extracted by sparging, $\tau$};
+\draw[wire, ->] (1.25,3.0) -- (1.25,4.75);
+\node[res, fill=white, rotate=90] at (1.25,3.62) {$R_0$};
+\node[val, anchor=west] at (1.62,3.62) {$R_0\propto\tau$};
+\node[sink, fill=black!4, minimum width=2.7cm] at (1.25,5.28)
+    {extracted by sparging};
 
 % ---- R1: salt to wall, the one that decides how much permeates -------------------------- %
-\draw[wire] (2.5,1.5) -- (6.0,1.5);
-\node[res, fill=red!12] at (4.25,1.5) {$R_1$};
+\draw[wire] (2.5,1.5) -- (6.35,1.5);
+\node[res, fill=white] at (4.25,1.5) {$R_1$};
 \node[val, anchor=south] at (4.25,1.88) {$1/k_\mathrm{eff}$, $k_\mathrm{eff}=k_m/\mathrm{PRF}$};
 
 % ---- the divider: R3 to the OV gas, R4 to the room -------------------------------------- %
-\draw[wire] (7.1,2.35) -- (8.05,2.35);
-\draw[wire, ->] (9.55,2.35) -- (10.3,2.35);
-\node[res, fill=orange!12] at (8.8,2.35) {$R_3$};
-\draw[->, black!75, line width=0.7pt] (8.15,1.98) -- (9.45,2.72);   % variable resistance
-\node[val, anchor=south] at (8.8,2.98) {sweep gas chemistry};
+\draw[wire] (7.95,1.5) -- (8.55,1.5);
+\draw[wire] (8.55,2.35) -- (8.55,0.65);
 
-\draw[wire] (7.1,0.65) -- (8.05,0.65);
-\draw[wire, ->] (9.55,0.65) -- (10.3,0.65);
-\node[res, fill=orange!12] at (8.8,0.65) {$R_4$};
-\node[val, anchor=north] at (8.8,0.30) {spacer ribs, set by $\chi$};
+\draw[wire] (8.55,2.35) -- (8.85,2.35);
+\draw[wire, ->] (10.35,2.35) -- (11.0,2.35);
+\node[res, fill=white] at (9.6,2.35) {$R_3$};
+\draw[->, black!75, line width=0.7pt] (8.95,1.98) -- (10.25,2.72);   % variable resistance
+\node[val, anchor=south] at (9.6,2.98) {sweep gas chemistry};
 
-\node[sink, fill=black!4] at (11.45,2.35) {collected\\in the OV gas};
-\node[sink, fill=black!4, draw=red!70!black] at (11.45,0.65)
+\draw[wire] (8.55,0.65) -- (8.85,0.65);
+\draw[wire, ->] (10.35,0.65) -- (11.0,0.65);
+\node[res, fill=white] at (9.6,0.65) {$R_4$};
+\node[val, anchor=north] at (9.6,0.30) {spacer ribs, set by $\chi$};
+
+\node[sink, fill=black!4] at (12.15,2.35) {collected\\in the OV gas};
+\node[sink, fill=black!4, draw=red!70!black] at (12.15,0.65)
     {\textcolor{red!70!black}{leaked}\\to the environment};
 
 % ---- the two statements the network makes ----------------------------------------------- %
 \node[note, anchor=north, align=center] at (4.25,-0.30)
     {$R_1$ \textbf{dominates}: it alone sets \emph{how much}\\
      permeates, whatever the sweep gas is};
-\node[val, anchor=north west, align=left] at (9.55,-0.30)
+\node[val, anchor=north west, align=left] at (10.25,-0.30)
     {\textbf{share that leaks}\\
      He only \quad $\sim100\ \%$\\
      $+$\,\ce{H2O} \quad $35-45\ \%$\\
@@ -63,10 +78,4 @@
 \node[note, anchor=north west, align=left] at (0,-1.55)
     {$R_3$ large (He only): the wall stops passing tritium on and\\
      fills up instead, holding $84\ \%$ of the bred inventory after 4 days};
-
-% ---- the concentration gradient the fills encode ---------------------------------------- %
-\shade[left color=red!45, right color=black!4] (0,-2.85) rectangle (2.4,-2.58);
-\draw[black!55, line width=0.5pt] (0,-2.85) rectangle (2.4,-2.58);
-\node[note, anchor=west] at (2.55,-2.72)
-    {fill colour: tritium concentration, and with it the potential to leak};
 \end{tikzpicture}
