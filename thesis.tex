@@ -144,17 +144,22 @@ This work addresses gas sparging as an in-situ tritium extraction system for bre
 % This section is usually 3-5 pages.
 \section{Motivation: fusion energy}
 % what is nuclear fusion
-Nuclear fusion is the process in which 2 light atom nuclei (reactant) combine together to form 1 heavier nucleus (product). The mass difference $\Delta m$ between reactant and product is converted into energy $E=\Delta m \, c^2$. Fusion reactions happen at the core of our sun and the energy they release is what gives us daylight and enables any life on earth. Artificial fusion reactions were first achieved by humans in the 1930s, at that time research in nuclear fusion was mainly motivated by military purposes. But just like nuclear fission found a peaceful use in nuclear reactors for energy production, nuclear fusion can be used as a carbon-free and virtually inexhaustible energy source.
+Nuclear fusion is the process in which 2 light atom nuclei (reactant) combine together to form 1 heavier nucleus (product). The mass difference $\Delta m$ between reactant and product is converted into energy $E=\Delta m \, c^2$. Fusion reactions happen at the core of our the stars and the energy they release is what gives us daylight and enables any life on earth. Artificial fusion reactions were first achieved by humans in the 1930s, at that time research in nuclear fusion was mainly motivated by military purposes. But just like nuclear fission found a peaceful use in nuclear reactors for energy production, nuclear fusion can be used as a carbon-free and virtually inexhaustible energy source.
 
 % where are we with fusion
 It requires extreme temperature and pressure conditions comparable to that of our Sun for fusion reactions to happen. This makes controlled fusion a problem of unprecedented complexity, with challenges still to be overcome before a commercially viable fusion power plant (FPP) becomes possible. Conventional nuclear reactors on the other hand, which are based on the reverse process of nuclear fission where a heavy nucleus splits into 2 lighter nuclei, have been providing electricity to the grid for more than 70 years. Nevertheless, compared to well-proven fission power plants, the fusion approach would present the advantage of lower and shorter radiotoxicity of its byproducts, increased safety and abundance of fuel. As humanity is facing the need of reducing its carbon emission while maintaining its energy supply, fusion power is increasingly seen as a promising candidate to fulfill this need: in 2026, the Fusion Industry Association numbered 56 private fusion companies for a total funding of \$14.2bn worldwide, which is \$4.5bn more than in 2025\cite{noauthor_2026_2026}. 
 
 % introducing tritium
-Among these 56 companies, 40 of them envision deuterium-tritium (D-T) as reactants of the fusion reactions. Indeed, the D-T couple offers a favorable cross section for fusion reactions, i.e it is the fuel choice that maximizes the likeliness of fusion reactions to happen at the conditions that can be achieved with the currently available technology. 
+Among these 56 companies, 40 of them envision deuterium-tritium (D-T) as reactants of the fusion reactions. Indeed, the D-T couple offers a favorable cross section for fusion reactions as evidenced by \cref{fig:cross_sections}, i.e it is the fuel choice that maximizes the likeliness of fusion reactions to happen at the conditions that can be achieved with the currently available technology. 
 
-Deuterium is present in small proportions in seawater (\needcite{how many ppm ?}) and its extraction is a well known process, as evidenced by the fleet of 44 Pressurized Heavy Water Reactors (PHWR) operating worldwide. Tritium fuel supply on the other hand faces a fundamental scarcity problem. 
+Deuterium is present in small proportions in seawater (\needcite{how many ppm ?}) and its extraction is a well known process: it is used as a neutron moderator in the 44 Pressurized Heavy Water Reactors (PHWR) operating worldwide. Tritium fuel supply on the other hand faces a fundamental scarcity problem. 
 
-\todo{insert representation of H and T nucleus + isotope chart along with energy barrier}
+\begin{figure}[htbp]
+  \centering
+  \includegraphics[width=0.7\linewidth]{fig/cross_sections_vs_temperature__Bosch.png}
+  \caption{Fusion reaction cross-sections of reactants envisioned in power plants \cite{kohn-seemann_alfkoehnfusion_plots_2021}}
+  \label{fig:cross_sections}
+\end{figure}
 
 
 \section{The tritium isotope}
@@ -164,7 +169,7 @@ Tritium is a radioactive isotope of hydrogen, its nucleus is made of 1 proton an
 Because of its short half life and its absence of any decay chain, tritium can't be naturally found in concentrated quantities unlike other radioactive isotopes (e.g. uranium-238, radon-222), and is therefore extremely scarce. It is unintentionally produced: 
 \begin{itemize}
     \item naturally: from highly energetic cosmic neutrons interacting with atmospheric nitrogen (\ce{^14_7N(n,T)^12_6C} reaction, contribution estimated at 0.2 kg of T/year)
-    \item artificially: in all fission reactors, tritium is a low yield product of fission reactions ($10^{-4}$ to $10^{-6}$ T/fission event \needcite{IAEA database}). In that context, it is an undesirable product due to its radioactivity: tritium can substitute to hydrogen in water, which if spread in the environment can contaminate the food chain and become a radiological hazard once ingested. %https://www-nds.iaea.org/relnsd/vcharthtml/VChartHTML.html
+    \item artificially: in all fission reactors, tritium is a low yield product of fission reactions ($10^{-4}$ to $10^{-6}$ T/fission event\needcite{IAEA, JANIS?}). In that context, it is an undesirable product due to its radioactivity: tritium can substitute to hydrogen in water, which if spread in the environment can contaminate the food chain and become a radiological hazard once ingested. %https://www-nds.iaea.org/relnsd/vcharthtml/VChartHTML.html
 \end{itemize}
 Both these tritium sources are too marginal to make a technically/economically feasible tritium stream. 
 
@@ -180,9 +185,10 @@ A typical FPP would require important amounts of tritium, estimated at $\sim$55 
     \ce{^7Li + n &-> T + \alpha} + \mathrm{n} - 2.5~\mathrm{MeV} \label{eq:Li7_capture}
 \end{align}
 
-As of now, the existing commercially available tritium is produced as a byproduct of heavy water moderated reactors through neutron capture (\cref{eq:D2_capture}), specifically in CANada Deuterium Uranium,(CANDU) reactors (estimated at 130 g of tritium/reactor/year) \needcite{https://www.neimagazine.com/analysis/answering-the-big-tritium-question/?cf-view}. But the small cross section of this reaction (0.5 millibarns for thermal neutrons) makes it unsuitable for large scale production. \Cref{eq:Li6_capture} on the other hand  has a 1000~barns thermal neutron cross section \needcite{JANIS database (https://www.oecd-nea.org/janisweb/book/neutrons/H2/MT102/renderer/3458)}, it is used for military tritium production and is also the privileged path to tritium breeding for controlled fusion. Industrial tritium production would therefore rely on thermal neutron capture in a lithium-6 rich material, the cross section for \cref{eq:Li7_capture} being marginal (300 millibarns, for fast neutrons). 
+As of now, the existing commercially available tritium is produced as a byproduct of heavy water moderated reactors through neutron capture (\cref{eq:D2_capture}). The contribution of CANada Deuterium Uranium (CANDU) reactors specifically is estimated at 130 g of tritium/GWe/year from \ce{D(n,\gamma)T} reaction in heavy water\cite{abdou_physics_2020}. But the small cross section of this reaction (0.5 millibarns for thermal neutrons) makes it unsuitable for large scale production. \Cref{eq:Li6_capture} on the other hand  has a 1000~barns thermal neutron cross section\cite{noauthor_janis_nodate}, it is used for military tritium production and is also the privileged path to tritium breeding for controlled fusion. Industrial tritium production would therefore rely on thermal neutron capture in a lithium-6 rich material, the (n,T) reaction of \ce{7^Li} being endothermic, its cross section becomes significant only in the fast region of the neutron spectrum.
 
-\todo{paragraph on lithium (scarcitiy of Li6, 8\% naturally}
+Lithium itself is abundant, but the isotope that matters is not. Natural lithium contains only $7.5\%$ of \ce{^6Li}, the isotope with the large thermal capture cross section, the rest being \ce{^7Li} whose own tritium-producing reaction is endothermic and a hundred times less likely. A breeding blanket therefore relies on isotopic \ce{^6Li} enrichment up to 90\%\cite{forsberg_fusion_2020}, which is an industrial process performed by very few actors. On the other hand, tritium is an unwanted byproduct in advanced fission reactor based on molten salts, requiring the use of \ce{^6Li} depleted or \ce{^7Li} enriched salts up to 99.99\% \ce{^7Li}\cite{dolan_experimental_2023}. This emphasizes the need for isotopic separation facilities, from  which  both the fusion and fission industries would benefit\cite{forsberg_fusion_2020}.
+
 % where do we get the neutrons from
 Aforementioned transmutation reactions all need neutrons as a reactant. Neutrons can be found in fission reactors, but producing tritium there poses the problem of introducing large amounts of tritium in an environment where it is usually unwanted because of its handling difficulties and the associated radiological concern presented above. Tritium production in fission reactors is anyway constrained to relatively low amounts ($\sim$1 kg/reactor/year using Tritium Producing Burnable Absorbers Rods)\needcite{NRC?}, as transmutation reactions consume neutrons that are also needed for fission to self-sustain. For those reasons, tritium production in fission reactors is restricted to military programs.
 
@@ -215,7 +221,8 @@ From the perspective of tritium production optimization, the choice of breeding 
 % the other roles of the BB
 Beyond the tritium production aspect, a breeding blanket must shield the 14 MeV neutrons produced by the fusion core, i.e. 80\% of the fusion energy (see \cref{eq:DT_fusion}) dissipates in it as heat. In that regard, liquid materials offer the advantage of being both tritium breeding materials and coolant. Molten salts in particular have a heat capacity superior to that of LiPb and don't conduct electricity which makes them favorable for compact and magnetically confined FPP designs, such as the Affordable-Robust-Compact (ARC) tokamak concept\cite{sorbom_arc_2015}. 
 
-\todo{paragraph about LIB in particular} % see Gabriele thesis
+Among liquid breeder concepts, the liquid immersion blanket takes the idea to its limit: rather than circulating the breeder through channels inside a structured blanket, it immerses the entire fusion core in a large volume of molten salt. The advantages of this design is its simplicity: there is no complex blanket structure to be qualified under neutron irradiation, the same fluid breeds, shields and cools, and the solid angle covered around the core approaches unity, which directly raises the achievable breeding ratio\cite{ferrero_multiphysics_2025}. The cost is a very large tritium inventory dissolved in a very large volume of salt, which is precisely what makes both its extraction and its accountancy difficult\cite{ferry_libra_2023}.
+
 
 \section{Challenges of the tritium fuel cycle}
 The fusion fuel cycle is the set of processes that supplies tritium to the plasma, divided in two independent closed loops: % "independent": outer loop doesn't have the output of inner loop as input, contrary to what the "inner" and "outer" denominations suggest
@@ -240,7 +247,7 @@ For the fusion power industry to be able to scale, individual FPPs have to produ
 
 Where $\eta$ accounts for losses in the outer fuel cycle. 
 
-$\mathrm{TBR_{neutronics}}$>1 is necessary, but it is not sufficient. A self sufficient FPP needs to achieve $\mathrm{TBR_{real}}$>1 by maximizing both its components:
+Common breeding blanket designs manage to achieve $\mathrm{TBR_{neutronics}}\approx1.1$\cite{forsberg_fusion_2020}. Nevertheless, $\mathrm{TBR_{neutronics}}$>1 is necessary but not sufficient. A self sufficient FPP needs to achieve $\mathrm{TBR_{real}}$>1 by maximizing both its components:
 \begin{itemize}
     \item $\mathrm{TBR_{neutronics}}$ is purely neutronics dependent, it is optimized by use of \ce{^6Li} enrichment and by maximizing its thickness as well as the solid angle it covers around the fusion core;
     \item $\eta$ is optimized by reducing permeation losses throughout the fuel cycle (e.g. by means of dedicated structural materials and coatings) and optimizing tritium extraction from the breeder.
@@ -261,13 +268,12 @@ Permeation represents a significant part of outer fuel cycle losses (i.e. degrad
 \subsection{Tritium extraction}
 On top of directly retrieving tritium, maximizing the efficiency of the tritium extraction system (TES) has the indirect positive effect of reducing the amount of tritium available for permeation, therefore decreasing tritium permeation losses in the outer fuel cycle. A performant TES is therefore needed to achieve a sufficiently high $\eta$. 
 
-Several TES technologies exist, with various maturities:
+The existing TES technologies for liquid breeders are \cite{ricapito_tritium_2011}:
 \begin{itemize}
-    \item Vacuum permeators:
-    \item Gas-liquid contactors: 
-    \item Vacuum sieve tray: 
+    \item \textbf{Vacuum permeators}: the tritium-bearing liquid flows past a membrane, usually a thin metal wall, on the other side of which a vacuum is maintained. Tritium permeates through the membrane and is pumped away. The technology is passive and produces a pure tritium stream, but it relies on a large membrane area and on that membrane staying free of the oxide layers that would throttle it.
+    \item \textbf{Gas-liquid contactors}: an inert gas is brought into contact with the liquid over as large an interfacial area as possible, and carries the tritium away. Bubble columns disperse the gas in the liquid, packed columns disperse the liquid over a packing. They are mechanically simple and well documented in the chemical engineering literature, at the cost of diluting the tritium in a large gas stream. Gas sparging, the object of this work, belongs to this family.
+    \item \textbf{Vacuum sieve trays}: the liquid is broken into a rain of droplets falling through a vacuum, so that the tritium escapes from a surface that is renewed continuously. The efficiency per pass is high, but the technology requires handling a free-falling liquid metal or salt under vacuum.
 \end{itemize}
-\todo{elaborate a bit}
 
 \section{Existing gaps}
 
@@ -1237,8 +1243,7 @@ Considering the range of attainable operating parameters presented in \cref{tab:
     \end{itemize}
 \end{itemize}
 
-It follows that LIBRA Pi can potentially be in regions 3 or 4 of \cref{fig:venn}, where the analytical model might underestimates the extration speed. It must therefore be simulated using the numerical ARD model. As in \cref{sec:sparging_expl}, we use a Monte Carlo-like approach to cover the entire 4-dimensional parameter space for each of the 2 bounding scenarios. \todo{1 or 2 sentence about the sampling scheme used (saltelli, log and uniform)}. Each sample is run for a transient duration of $5\Tana$, enough to observe the inventory decay below 1\% of its original value. 
-
+It follows that LIBRA Pi can potentially be in regions 3 or 4 of \cref{fig:venn}, where the analytical model might underestimates the extraction speed. It must therefore be simulated using the numerical ARD model. As in \cref{sec:sparging_expl}, we use a Monte Carlo-like approach to cover the entire 4-dimensional parameter space for each of the 2 bounding scenarios. The four operating parameters are sampled with a Saltelli design, which is the sampling scheme the Sobol estimator requires: it draws two independent base matrices and builds from them the cross-sampled matrices that isolate the contribution of each input. With $N=256$ base samples and $d=4$ inputs this gives $N(d+2)=1536$ model evaluations per scenario. Temperature, head space pressure and nozzle diameter are drawn uniformly over their attainable range, while the gas flow rate is drawn log-uniformly since it spans a decade. Each sample is run for a transient duration of $5\Tana$, enough to observe the inventory decay below 1\% of its original value. 
 
 
 \section{Results}
@@ -1252,15 +1257,17 @@ It follows that LIBRA Pi can potentially be in regions 3 or 4 of \cref{fig:venn}
   \label{fig:sobol}
 \end{figure}
 
-% sobol plot of operating parameters
+A sensitivity study was run on the 4 operating parameters in their respective range, to reveal: (1) what parameters matter most for the sparging system performance; (2) quantify in what extent uncertainty on an operating parameter propagates to the extraction time. Sensitivity of a function on its variables can be characterized by Sobol indices. It is a variance based sensitivity metric, quantifying the variance that propagates to the output when varying one of its inputs, therefore measuring the sensitivity of a fonction to each of its individual variables.
 
-Sobol indices measure the relative sensitivity of a fonction to each of its individual variables. It is a variance based sensitivity metric, quantifying the variance that propagates to the output when varying one of its inputs. \todo{write a quick and intuitive paragraph about what sobol indices are and how they can be interpreted, give mathematical definition for first and total order indices}
+In the present case, the sensitivity study in \cref{fig:sobol} shows that 2 input parameters dominate the system's performance, regardless of the scenario: in the considered parameter space, variations in $T$ and \ndotg are responsible for most of the extraction time variance, indicating that the contribution of \Ptop and \dnoz can be ignored to a certain extent. The two orders overlap within their confidence intervals for every parameter, and $\sum_i S_i$ reaches $0.96$ in the pessimistic scenario and $0.94$ in the optimistic one, so \textbf{interactions account for only 4 to 6\% of the variance of $\tau_{99}$} and the response can be read as essentially additive: the effect of each operating parameter can be considered separately from the others. This allows to isolate $T$ and \ndotg as the most important operating parameters, reducing the parameter space from 4D to 2D to simplify the analysis.
+
+It can also be observed that the relative importance of \ndotg and $T$ flips from the pessimistic to the optimistic scenario. This matches the analysis of \cref{sec:impact_of_sat_Pi}, stating that as the extraction starts being limited by tritium partial pressure (high \PI, the pessimistic scenario), sparger gas flow rate becomes the main extraction driver and increasing temperature becomes counter-productive.  
+
+\paragraph{Note on Sobol indices}
+
+Sobol indices decompose the variance of a model output over its inputs. Writing $Y=f(X_1,\dots,X_d)$ for the output and $\mathrm{Var}(Y)$ for its total variance, the first order index of an input measures the part of that variance removed on average by fixing it, $S_i=\mathrm{Var}_{X_i}\!\left(\mathbb{E}[Y|X_i]\right)/\mathrm{Var}(Y)$, i.e. what that input explains on its own. The total order index measures instead the variance that remains when every other input is fixed, $S_{T_i}=\mathbb{E}\!\left[\mathrm{Var}(Y|X_{\sim i})\right]/\mathrm{Var}(Y)$, and therefore includes everything the input contributes through its interactions with the others. The two coincide when the model is additive, and $S_{T_i}>S_i$ signals interaction; $\sum_i S_i=1$ for a perfectly additive model and falls below 1 otherwise, the deficit being the share of variance carried by interactions.
 
 It should be noted that the width of the sampling space for each parameter conditions the indices the Sobol study will yield: in a function $f(a,b)=a+e^b$, if $a\in[1,10^5]$ and $b\in[1,1.01]$, $a$ will have the dominating Sobol index even though $f$ depends exponentially on $b$ and only linearly on $a$. The sample space for a simulation must be representative of what is expected to be encountered in the experiment. It is the case here.
-
-In the present case, the sensitivity study in \cref{fig:sobol} shows that 2 input parameters dominate the system's performance, regardless of the scenario: in the considered parameter space, variations in $T$ and \ndotg are responsible for most of the extraction time variance, indicating that the contribution of \Ptop and \dnoz can be ignored to a certain extent. This allows to reduce the parameter space from 4D to 2D, simplifying the analysis. 
-
-It can be observed that the relative importance of \ndotg and $T$ flips from the pessimistic to the optimistic scenario. This matches the analysis of \cref{sec:impact_of_sat_Pi}, stating that as the extraction starts being limited by tritium partial pressure (high \PI, the pessimistic scenario), sparger gas flow rate becomes the main extraction driver and increasing temperature becomes counter-productive.  
 
 \subsection{Operating point}
 % tau vs (n,T) map
@@ -1271,7 +1278,7 @@ It can be observed that the relative importance of \ndotg and $T$ flips from the
   \label{fig:abaque}
 \end{figure}
 
-Following the results of the sensitivity analysis, a map of the 2D-reduced operational space of LIBRA Pi is proposed in \cref{fig:abaque}, made to inform the operation of its sparging system. Here we define the \textit{tritium removal time} $\tau_{99}$ as the time taken to extract 99\% of the initially bred tritium. The 2D reduction comes at the cost of a 0.6\% error in the worst case, so the interpolation performed in \cref{fig:abaque} is negligible against the transport property uncertainty that separates the two scenarios. The prediction of the numerical ARD model for each scenario are summarized as follows:
+Following the results of the sensitivity analysis, a map of the 2D-reduced operational space of LIBRA Pi is proposed in \cref{fig:abaque}, made to inform the operation of its sparging system. Here we define the \textit{tritium removal time} $\tau_{99}$ as the time taken to extract 99\% of the initially bred tritium. The surface drawn there is a quintic radial basis interpolant of $\log_{10}\tau_{99}$ over the 1536 sampled operating points of each scenario. The \textcite{kanai_establishment_2017} correlation for the bubble size is extrapolated below its 3-10 $\mathrm{cm^3/s}$ validity range for $\ndotg\lesssim350$ sccm. The 2D reduction comes at the cost of a 0.6\% error in the worst case, so the interpolation performed in \cref{fig:abaque} is negligible against the transport property uncertainty that separates the two scenarios. The prediction of the numerical ARD model for each scenario are summarized as follows:
 \begin{itemize}
     \item Fastest case: in the optimistic scenario and under optimal operational conditions (high $T$, high \ndotg) it can take only \textbf{$\sim$20 hours} to remove tritium from LIBRA Pi;
     \item Slowest case: up to \textbf{tens of days} in case of adverse tritium transport properties of ClLiF and sustained degraded operational conditions;
@@ -1608,22 +1615,22 @@ Adding \ce{H2} to the sweep gas divides the leaked fraction by $\sim30$ and turn
     $\Rightarrow$ \textbf{a reducing OV sweep gas is required to meet the robust accountancy goal}
 \end{keyresult}
 
-%%%%%%%%%%%%%%%%%%%%%%
-\chapter{Related Work}
-%%%%%%%%%%%%%%%%%%%%%%
+% %%%%%%%%%%%%%%%%%%%%%%
+% \chapter{Related Work}
+% %%%%%%%%%%%%%%%%%%%%%%
 
-The related work section covers closely related work. Here you can highlight
-the related work, how it solved the problem, and why it solved a different
-problem. Do not play down the importance of related work, all of these
-systems have been published and evaluated! Say what is different and how
-you overcome some of the weaknesses of related work by discussing the 
-trade-offs. Stay positive!
+% The related work section covers closely related work. Here you can highlight
+% the related work, how it solved the problem, and why it solved a different
+% problem. Do not play down the importance of related work, all of these
+% systems have been published and evaluated! Say what is different and how
+% you overcome some of the weaknesses of related work by discussing the 
+% trade-offs. Stay positive!
 
-This section is usually 3-5 pages.
+% This section is usually 3-5 pages.
 
-% discuss Li 2026: file:///C:/Users/hippo/Zotero/storage/2UQWTFV4/Li%20et%20al.%20-%202026%20-%20Toward%20efficient%20tritium%20extraction%20High-fidelity%20simulation%20of%20gas-liquid%20contactors%20in%20molten%20sal.pdf
+% % discuss Li 2026: file:///C:/Users/hippo/Zotero/storage/2UQWTFV4/Li%20et%20al.%20-%202026%20-%20Toward%20efficient%20tritium%20extraction%20High-fidelity%20simulation%20of%20gas-liquid%20contactors%20in%20molten%20sal.pdf
 
-In Li 2026, \cref{as:T2_press_is_negligible} doesn't hold as the tritium concentration considered are much higher. 
+% In Li 2026, \cref{as:T2_press_is_negligible} doesn't hold as the tritium concentration considered are much higher. 
 
 
 %%%%%%%%%%%%%%%%%%%%
