@@ -1,0 +1,48 @@
+% Interfacial equilibrium, drawn generic: no solubility value and no numbered axes, since
+% neither has been introduced at this point of the document. The slope of the Henry line is
+% arbitrary and must stay so.
+% Requires in the preamble: \usepackage{tikz}
+%   \usetikzlibrary{positioning, fit, backgrounds, arrows.meta}
+\begin{tikzpicture}[
+    >=Stealth,
+    axis/.style={->, thick, black!55},
+    henry/.style={very thick, black!80},
+    guide/.style={dashed, black!45, line width=0.5pt},
+    drive/.style={<->, thick, orange!70!black},
+    tend/.style={->, line width=1.1pt, orange!70!black},
+    font=\small,
+]
+% the Henry line separates the plane in two: above it the liquid holds more tritium than the
+% bubble can balance, below it the bubble does
+\fill[teal!8] (0,0) -- (6.5,2.925) -- (0,4.1) -- cycle;
+
+\draw[axis] (0,0) -- (6.95,0) node[below left=1pt and -6pt] {$\PT$ in the bubble};
+\draw[axis] (0,0) -- (0,4.5) node[above right=-3pt and -18pt] {$\CT$ in the liquid};
+\draw[henry] (0,0) -- (6.5,2.925)
+    node[sloped, above, pos=0.74, inner sep=3pt, black] {$\CT=K_s\,\PT$};
+
+% state of the liquid and of the bubble it surrounds, taken above the line so that tritium
+% crosses the interface outwards, which is the extraction direction
+\draw[guide] (0,3.3) -- (1.6,3.3);
+\draw[guide] (1.6,3.3) -- (1.6,0);
+\filldraw[black!80] (1.6,3.3) circle (1.5pt);
+\filldraw[draw=black!80, fill=white, line width=0.7pt] (1.6,0.72) circle (1.5pt);
+\node[anchor=south east, inner sep=3pt] at (1.6,3.3) {bulk state};
+\node[anchor=north west, inner sep=3pt] at (1.6,0.72) {interface, at equilibrium};
+
+% driving force of the two-film model: the vertical gap to the Henry line
+\draw[drive] (1.6,3.3) -- (1.6,0.72);
+\node[rotate=90, anchor=south, orange!70!black, inner sep=4pt] at (1.6,2.0)
+    {$\CT-K_s\,\PT$};
+
+% where the state travels: the liquid gives up tritium and the bubble takes it, so the point
+% moves down and to the right until it reaches the line
+\draw[tend] (2.05,3.16) .. controls (3.0,2.95) and (3.3,2.70) .. (3.90,2.45);
+\node[anchor=south west, orange!70!black, font=\small\itshape, inner sep=1pt]
+    at (2.30,3.10) {tends to equilibrium};
+
+\node[anchor=north east, black!55, font=\footnotesize\itshape] at (6.95,4.5)
+    {liquid supersaturated};
+\node[anchor=east, black!55, font=\footnotesize\itshape] at (6.7,1.15)
+    {bubble supersaturated};
+\end{tikzpicture}

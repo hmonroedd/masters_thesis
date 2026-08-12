@@ -1,0 +1,53 @@
+% Lewis-Whitman two-film model, redrawn from the bitmap of Evans et al. with the notation of
+% this work: c_T2 in the bulk liquid, c_T2,li and c_T2,gi on the two sides of the interface.
+% The transfer arrow is the same one as in diag_equilibrium.tex, so the two panels read together.
+% The aspect ratio is kept close to that of diag_equilibrium.tex, so that side by side in the
+% same figure the two are scaled by a similar amount and their labels come out the same size.
+% Requires in the preamble: \usepackage{tikz}
+%   \usetikzlibrary{positioning, fit, backgrounds, arrows.meta}
+\begin{tikzpicture}[
+    >=Stealth,
+    block/.style={draw=black!65, line width=0.7pt},
+    prof/.style={very thick, orange!70!black},
+    iface/.style={line width=1.6pt, orange!70!black},
+    dim/.style={<->, black!70, line width=0.5pt},
+    tend/.style={->, line width=1.1pt, orange!70!black},
+    font=\small,
+]
+\def\YT{5.4}
+% the four regions: bulk phases shaded, the two films left white to read as the resistances
+\filldraw[block, fill=black!14] (0,0) rectangle (2.6,\YT);
+\filldraw[block, fill=white]    (2.7,0) rectangle (5.9,\YT);
+\filldraw[block, fill=black!6]  (6.0,0) rectangle (8.6,\YT);
+\draw[iface] (4.3,0) -- (4.3,\YT);
+
+\node at (1.3,2.7) {Bulk liquid};
+\node at (7.3,2.7) {Bulk gas};
+\node[rotate=90, font=\footnotesize] at (3.45,1.35) {liquid film};
+\node[rotate=90, font=\footnotesize] at (5.15,3.75) {gas film};
+\node[anchor=south, orange!70!black] at (4.3,\YT+0.10) {liquid gas interface};
+
+% the concentration profile: flat in the bulks, graded across the films, discontinuous at the
+% interface because the two phases do not dissolve tritium equally
+\draw[prof] (0,3.55) -- (2.7,3.55) .. controls (3.5,3.55) and (3.9,3.05) .. (4.3,2.62);
+\draw[prof] (4.3,1.62) .. controls (4.7,1.19) and (5.0,0.92) .. (5.9,0.92) -- (8.6,0.92);
+\filldraw[fill=white, draw=orange!70!black, line width=0.7pt] (4.3,2.62) circle (1.6pt);
+\filldraw[fill=white, draw=orange!70!black, line width=0.7pt] (4.3,1.62) circle (1.6pt);
+
+\node[anchor=east] at (-0.08,3.55) {\CT};
+\node[anchor=north east, inner sep=3pt] at (4.22,2.58) {$c_\mathrm{T_2,li}$};
+\node[anchor=south west, inner sep=3pt] at (4.38,1.66) {$c_\mathrm{T_2,gi}$};
+\node[anchor=west] at (8.68,0.92) {$c_\mathrm{T_2,g}$};
+
+% film thicknesses
+\draw[dim] (2.7,-0.35) -- (4.3,-0.35) node[midway, below, inner sep=2pt] {$\delta_l$};
+\draw[dim] (4.3,-0.35) -- (5.9,-0.35) node[midway, below, inner sep=2pt] {$\delta_g$};
+
+% net transfer, in the same colour and style as the arrow of the equilibrium panel
+\draw[tend] (3.05,4.70) -- (5.55,4.70);
+\node[anchor=south, orange!70!black, inner sep=3pt] at (3.55,4.74) {\JT};
+
+% the two sides of the interface are always at equilibrium, which is what fixes the jump
+\node[anchor=north, font=\footnotesize, orange!70!black] at (4.3,-1.05)
+    {at equilibrium: $c_\mathrm{T_2,li}=K_s\,R\,T\,c_\mathrm{T_2,gi}$};
+\end{tikzpicture}

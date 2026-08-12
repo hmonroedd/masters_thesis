@@ -20,57 +20,127 @@
 
 \endlastfoot
 
-$A$          & Tank (column) base area                     & m$^2$ \\
+$A$            & Tank (column) base area                    & m$^2$ \\
 $a$            & Specific interfacial area                  & m$^{-1}$ \\
 $c_{T_2}$      & Tritium concentration in liquid            & mol\,m$^{-3}$ \\
-$d_b$          & Sauter mean bubble diameter                       & m \\
-$d_n$          & Sparger nozzle diameter                    & m \\
+$d_b$          & Sauter mean bubble diameter                & m \\
+\dnoz          & Sparger nozzle diameter                    & m \\
+$d_t$          & Tank (column) diameter                     & m \\
 $D_l$          & Tritium diffusivity in liquid              & m$^2$\,s$^{-1}$ \\
-$E$            & Phase axial dispersion coeff.              & m$^2$\,s$^{-1}$ \\
+$E_\alpha$     & Axial dispersion coeff. of phase $\alpha$  & m$^2$\,s$^{-1}$ \\
+$g$            & Gravitational acceleration                 & m\,s$^{-2}$ \\
 $h_l$          & Liquid-side mass transfer coeff.           & m\,s$^{-1}$ \\
 $H$            & Liquid column height                       & m \\
-$K_s$          & Solubility constant                        & mol\,m$^{-3}$\,Pa$^{-1}$ \\
+$J_{T_2}$      & Interfacial tritium flux                   & mol\,m$^{-2}$\,s$^{-1}$ \\
+$k_e$          & Isotopic exchange coeff. at the sweep surface & m$^4$\,s$^{-1}$ \\
+$k_\mathrm{eff}$ & Effective salt-to-wall mass transfer coeff., $k_m/\mathrm{PRF}$ & m\,s$^{-1}$ \\
+$k_m$          & Salt-to-wall mass transfer coeff.          & m\,s$^{-1}$ \\
+$k_r$          & Recombination coeff. at the sweep surface  & m$^4$\,s$^{-1}$ \\
+$K_s$          & Solubility (Henry) constant                & mol\,m$^{-3}$\,Pa$^{-1}$ \\
+$m_k$          & Multiplier of unit cell $k$ at vessel scale & -- \\
 $M_{\mathrm{He}}$ & Molar mass of helium                    & kg\,mol$^{-1}$ \\
 $\dot n_g$     & Molar gas flow rate                        & mol\,s$^{-1}$ \\
-$N_\alpha$          & Total tritium inventory in phase $\alpha$                 & mol \\
-$N_n$          & Number of sparger nozzles                  & -- \\
+$n_{T_2}$      & Tritium inventory                          & mol \\
+$N_\alpha$     & Total tritium inventory in phase $\alpha$  & mol \\
+\Nnoz          & Number of sparger nozzles                  & -- \\
 $P$            & Pressure                                   & Pa \\
-$P_{\mathrm{top}}$ & Pressure at column top                & Pa \\
-$P_{\mathrm{bot}}$ & Hydrostatic pressure at column bottom & Pa \\
+$P_{\mathrm{top}}$ & Pressure at column top                 & Pa \\
+$P_{\mathrm{bot}}$ & Hydrostatic pressure at column bottom  & Pa \\
 $P_{T_2}$      & Tritium partial pressure in gas            & Pa \\
-$Q_\mathrm{T_2}$      & Integral tritium source            & mol \, s$^{-1}$\\
-$S_\mathrm{T_2}$      & Volumetric tritium source     & mol \, s$^{-1}$\, m$^{-3}$\\
+$Q_\mathrm{T_2}$ & Integral tritium source                  & mol\,s$^{-1}$ \\
+$R$            & Ideal gas constant                         & J\,mol$^{-1}$\,K$^{-1}$ \\
+$S_\mathrm{T_2}$ & Volumetric tritium source                & mol\,s$^{-1}$\,m$^{-3}$ \\
+$t$            & Time                                       & s \\
+$T$            & Temperature                                & K or $^\circ$C \\
 $u_g$          & Superficial gas velocity                   & m\,s$^{-1}$ \\
-$v_g$       & Bubble true (interstitial) velocity                   & m\,s$^{-1}$ \\
+$v_{g0}$       & Bubble true (interstitial) terminal velocity & m\,s$^{-1}$ \\
+$V_\alpha$     & Volume of phase $\alpha$                   & m$^3$ \\
 $\dot V_g$     & Volumetric gas flow rate                   & m$^3$\,s$^{-1}$ \\
+$y_{T_2}$      & Tritium molar fraction in gas              & -- \\
 $z$            & Axial coordinate                           & m \\
 
 \addlinespace[1em]
 \multicolumn{3}{@{}l}{\textit{\textbf{Greek symbols}}} \\
 \midrule
-$\varepsilon$ & Volumetric phase fraction                   & -- \\
-$\mu_l$       & Liquid dynamic viscosity                    & Pa\,s \\
-$\nu_l$       & Liquid kinematic viscosity                  & m$^2$\,s$^{-1}$ \\
-$\rho_g$      & Gas-phase density                           & kg\,m$^{-3}$ \\
-$\rho_l$      & Liquid-phase density                        & kg\,m$^{-3}$ \\
-$\Delta\rho$  & Liquid--gas density difference              & kg\,m$^{-3}$ \\
-$\sigma_l$    & Liquid surface tension                      & N\,m$^{-1}$ \\
+$\varepsilon_\alpha$ & Volumetric fraction of phase $\alpha$ & -- \\
+$\mu_l$        & Liquid dynamic viscosity                   & Pa\,s \\
+$\nu_l$        & Liquid kinematic viscosity                 & m$^2$\,s$^{-1}$ \\
+$\rho_g$       & Gas-phase density                          & kg\,m$^{-3}$ \\
+$\rho_l$       & Liquid-phase density                       & kg\,m$^{-3}$ \\
+$\Delta\rho$   & Liquid--gas density difference             & kg\,m$^{-3}$ \\
+$\sigma_l$     & Liquid surface tension                     & N\,m$^{-1}$ \\
+$\tau$         & Tritium extraction time (e-folding)        & s \\
+$\chi_i$       & Contact ratio of unit cell $i$, $A_\mathrm{contact}/A_\mathrm{total}$ & -- \\
 
 \addlinespace[1em]
-\multicolumn{3}{@{}l}{\textit{\textbf{Subscripts and abbreviations}}} \\
+\multicolumn{3}{@{}l}{\textit{\textbf{Extraction times}}} \\
 \midrule
-$0$    & Tank bottom (gas inlet)             & \\
-$b$    & Bubble                              & \\
-$g$    & Gas phase                           & \\
-$l$    & Liquid phase                        & \\
-$i$    & Liquid-gas interface                & \\
-$n$    & Nozzle                              & \\
-$t$    & Tank                                & \\
-\ce{T_2}  & Molecular tritium                   & \\
-ARD    & Advection--reaction--dispersion     & \\
-FLiBe  & Molten salt Li$_2$BeF$_4$           & \\
-$\mathrm{TBR}$ & Tritium breeding ratio       & -- \\
+\Tana          & Analytical extraction time, \cref{eq:tau_ana} & s \\
+\Tnum          & Extraction time fitted on the numerical solution & s \\
+$\tau_\mathrm{SPP}$ & Extraction time in the small partial pressure limit, \cref{eq:tau_SPP} & s \\
+$\tau_\mathrm{MTL}$ & Extraction time in the mass transfer limited regime & s \\
+$\tau_\mathrm{PPL}$ & Extraction time in the partial pressure limited regime & s \\
+$\tau_{99}$    & Time to extract 99\% of the tritium inventory & s \\
+$\tau_\mathrm{sat}$ & Bubble saturation time, $1/(a_b h_l R T K_s)$ & s \\
+$\tau_\mathrm{mix}$ & Liquid mixing time, $H^2/E_l$          & s \\
+
+\addlinespace[1em]
+\multicolumn{3}{@{}l}{\textit{\textbf{Dimensionless groups}}} \\
+\midrule
+\PI            & Saturation number: bubble saturation at the outlet, \cref{eq:Pi_def_macro} & -- \\
+\Gmix          & Mixing number: $\tau_\mathrm{mix}/\tau$, liquid uniformity & -- \\
+\Gp            & Hydrostatic number: $\rho_l g H/P_\mathrm{top}$, pressure variation along the column & -- \\
+$\mathrm{Bo}$  & Bodenstein number: gas advection over gas dispersion & -- \\
+$\mathrm{Pe}$  & P\'eclet number                             & -- \\
+$\mathrm{Sh}$  & Sherwood number                             & -- \\
+$\mathrm{Sc}$  & Schmidt number                              & -- \\
+$\mathrm{Re}$  & Reynolds number                             & -- \\
+$\mathrm{Eo}$  & E\"otv\"os number                           & -- \\
+$\mathrm{Mo}$  & Morton number                               & -- \\
+$\mathrm{TBR}$ & Tritium breeding ratio                      & -- \\
+$\mathrm{PRF}$ & Permeation reduction factor of the salt-metal interface & -- \\
+
+\addlinespace[1em]
+\multicolumn{3}{@{}l}{\textit{\textbf{Subscripts and superscripts}}} \\
+\midrule
+$0$            & Evaluated at the tank bottom (gas inlet)   & \\
+$\alpha$       & Any phase, liquid or gas                   & \\
+$b$            & Bubble                                     & \\
+$g$            & Gas phase                                  & \\
+$l$            & Liquid phase                               & \\
+$i$            & Liquid--gas interface                      & \\
+$gi$, $li$     & Gas side and liquid side of the interface  & \\
+noz            & Sparger nozzle                             & \\
+$t$            & Tank                                       & \\
+\ce{T2}        & Molecular tritium                          & \\
+$\langle\,\cdot\,\rangle$ & Average over the column height  & \\
+$\langle\,\cdot\,\rangle^\alpha$ & Intrinsic average over phase $\alpha$ & \\
+
+\addlinespace[1em]
+\multicolumn{3}{@{}l}{\textit{\textbf{Acronyms}}} \\
+\midrule
+ARD    & Advection--reaction--dispersion                    & \\
+BABY   & Litre-scale tritium breeding experiment of the LIBRA programme & \\
+CANDU  & CANada Deuterium Uranium reactor                   & \\
+FHR    & Fluoride-salt-cooled high-temperature reactor      & \\
+FLiBe  & Molten salt Li$_2$BeF$_4$                          & \\
+FPP    & Fusion power plant                                 & \\
+GCI    & Grid convergence index                             & \\
+HEX    & Structured hexahedral mesh                         & \\
+ITER   & International Thermonuclear Experimental Reactor   & \\
+IV, OV & Inner vessel, outer vessel                         & \\
+LIBRA  & Liquid Immersion Blanket: Robust Accountancy       & \\
+MSBR   & Molten Salt Breeder Reactor                        & \\
+MSRE   & Molten Salt Reactor Experiment                     & \\
+MTL    & Mass transfer limited regime                       & \\
+PFC    & Plug-flow contactor                                & \\
+PHWR   & Pressurized heavy water reactor                    & \\
+PPL    & Partial pressure limited regime                    & \\
+PRF    & Permeation reduction factor                        & \\
+REV    & Representative elementary volume                   & \\
+RMSE   & Root mean square error                             & \\
+SPP    & Small partial pressure                             & \\
+TES    & Tritium extraction system                          & \\
+TET    & Unstructured tetrahedral mesh                      & \\
 
 \end{xltabular}
-
-\todo{update for consistency with code refactoring and thesis notations}

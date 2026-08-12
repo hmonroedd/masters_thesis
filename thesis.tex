@@ -49,7 +49,6 @@
 \expert{The External Reviewer}
 
 % custom commands
-\newcommand{\sysname}{Gas sparging system\xspace}
 \newcommand{\PT}{\ensuremath{P_\mathrm{T_2}}}
 \newcommand{\CT}{\ensuremath{c_\mathrm{T_2}}}
 \newcommand{\JT}{\ensuremath{J_\mathrm{T_2}}}
@@ -68,6 +67,7 @@
 \newcommand{\PI}{\ensuremath{\langle \Pi \rangle}}
 \newcommand{\ndotg}{\ensuremath{\dot n_g}}
 \newcommand{\dnoz}{\ensuremath{d_\mathrm{noz}}}
+\newcommand{\Nnoz}{\ensuremath{N_\mathrm{noz}}}
 \newcommand{\Ptop}{\ensuremath{P_\mathrm{top}}}
 
 % -- assumption commands -- 
@@ -78,6 +78,8 @@
 
 \crefname{assumption}{assumption}{assumptions}
 \Crefname{assumption}{Assumption}{Assumptions}
+\crefname{appendix}{Appendix}{Appendices}
+\Crefname{appendix}{Appendix}{Appendices}
 
 % -- keyresult env (color box) -- 
 \usepackage[most]{tcolorbox}
@@ -144,7 +146,7 @@ This work addresses gas sparging as an in-situ tritium extraction system for bre
 % This section is usually 3-5 pages.
 \section{Motivation: fusion energy}
 % what is nuclear fusion
-Nuclear fusion is the process in which 2 light atom nuclei (reactant) combine together to form 1 heavier nucleus (product). The mass difference $\Delta m$ between reactant and product is converted into energy $E=\Delta m \, c^2$. Fusion reactions happen at the core of our the stars and the energy they release is what gives us daylight and enables any life on earth. Artificial fusion reactions were first achieved by humans in the 1930s, at that time research in nuclear fusion was mainly motivated by military purposes. But just like nuclear fission found a peaceful use in nuclear reactors for energy production, nuclear fusion can be used as a carbon-free and virtually inexhaustible energy source.
+Nuclear fusion is the process in which 2 light atom nuclei (reactant) combine together to form 1 heavier nucleus (product). The mass difference $\Delta m$ between reactant and product is converted into energy $E=\Delta m \, c^2$. Fusion reactions happen at the core of our stars and the energy they release is what gives us daylight and enables any life on earth. Artificial fusion reactions were first achieved by humans in the 1930s, at that time research in nuclear fusion was mainly motivated by military purposes. But just like nuclear fission found a peaceful use in nuclear reactors for energy production, nuclear fusion can be used as a carbon-free and virtually inexhaustible energy source.
 
 % where are we with fusion
 It requires extreme temperature and pressure conditions comparable to that of our Sun for fusion reactions to happen. This makes controlled fusion a problem of unprecedented complexity, with challenges still to be overcome before a commercially viable fusion power plant (FPP) becomes possible. Conventional nuclear reactors on the other hand, which are based on the reverse process of nuclear fission where a heavy nucleus splits into 2 lighter nuclei, have been providing electricity to the grid for more than 70 years. Nevertheless, compared to well-proven fission power plants, the fusion approach would present the advantage of lower and shorter radiotoxicity of its byproducts, increased safety and abundance of fuel. As humanity is facing the need of reducing its carbon emission while maintaining its energy supply, fusion power is increasingly seen as a promising candidate to fulfill this need: in 2026, the Fusion Industry Association numbered 56 private fusion companies for a total funding of \$14.2bn worldwide, which is \$4.5bn more than in 2025\cite{noauthor_2026_2026}. 
@@ -185,7 +187,7 @@ A typical FPP would require important amounts of tritium, estimated at $\sim$55 
     \ce{^7Li + n &-> T + \alpha} + \mathrm{n} - 2.5~\mathrm{MeV} \label{eq:Li7_capture}
 \end{align}
 
-As of now, the existing commercially available tritium is produced as a byproduct of heavy water moderated reactors through neutron capture (\cref{eq:D2_capture}). The contribution of CANada Deuterium Uranium (CANDU) reactors specifically is estimated at 130 g of tritium/GWe/year from \ce{D(n,\gamma)T} reaction in heavy water\cite{abdou_physics_2020}. But the small cross section of this reaction (0.5 millibarns for thermal neutrons) makes it unsuitable for large scale production. \Cref{eq:Li6_capture} on the other hand  has a 1000~barns thermal neutron cross section\cite{noauthor_janis_nodate}, it is used for military tritium production and is also the privileged path to tritium breeding for controlled fusion. Industrial tritium production would therefore rely on thermal neutron capture in a lithium-6 rich material, the (n,T) reaction of \ce{7^Li} being endothermic, its cross section becomes significant only in the fast region of the neutron spectrum.
+As of now, the existing commercially available tritium is produced as a byproduct of heavy water moderated reactors through neutron capture (\cref{eq:D2_capture}). The contribution of CANada Deuterium Uranium (CANDU) reactors specifically is estimated at 130 g of tritium/GWe/year from \ce{D(n,\gamma)T} reaction in heavy water\cite{abdou_physics_2020}. But the small cross section of this reaction (0.5 millibarns for thermal neutrons) makes it unsuitable for large scale production. \Cref{eq:Li6_capture} on the other hand  has a 1000~barns thermal neutron cross section\cite{noauthor_janis_nodate}, it is used for military tritium production and is also the privileged path to tritium breeding for controlled fusion. Industrial tritium production would therefore rely on thermal neutron capture in a lithium-6 rich material, the (n,T) reaction of \ce{^7Li} being endothermic, its cross section becomes significant only in the fast region of the neutron spectrum.
 
 Lithium itself is abundant, but the isotope that matters is not. Natural lithium contains only $7.5\%$ of \ce{^6Li}, the isotope with the large thermal capture cross section, the rest being \ce{^7Li} whose own tritium-producing reaction is endothermic and a hundred times less likely. A breeding blanket therefore relies on isotopic \ce{^6Li} enrichment up to 90\%\cite{forsberg_fusion_2020}, which is an industrial process performed by very few actors. On the other hand, tritium is an unwanted byproduct in advanced fission reactor based on molten salts, requiring the use of \ce{^6Li} depleted or \ce{^7Li} enriched salts up to 99.99\% \ce{^7Li}\cite{dolan_experimental_2023}. This emphasizes the need for isotopic separation facilities, from  which  both the fusion and fission industries would benefit\cite{forsberg_fusion_2020}.
 
@@ -278,7 +280,7 @@ Both inner and outer fuel cycle are the subject of intense research, with the ai
 
 On the outer fuel cycle side, the main focus is to better understand tritium handling and extraction, in other words to be able to predict and maximize $\mathrm{TBR_{real}}$. In the context of the International Thermonuclear Experimental Reactor (ITER), the OFC aspect of ceramic and liquid metal based breeders was investigated in several studies\cite{ricapito_tritium_2011,utili_tritium_2019,abdou_physics_2020}.
 
-There is however large uncertainties when it comes to molten salt based breeders, due to the challenges involved in experimenting with them: high temperatures, corrosion, Be toxicity and general tritium handling. This gap is addressed by the Liquid Immersion Blanket:Robust Accountancy (LIBRA) experiment, which main goal is to demonstrate accurate prediction of tritium breeding (the $\mathrm{TBR_{neutronics}}$ component) and extraction (the $\eta$ component), in a FLiBe salt breeder and DT fusion conditions (14 MeV neutrons)\cite{ferry_libra_2023}. 
+There is however large uncertainties when it comes to molten salt based breeders, due to the challenges involved in experimenting with them: high temperatures, corrosion, Be toxicity and general tritium handling. This gap is addressed by the Liquid Immersion Blanket: Robust Accountancy (LIBRA) experiment, which main goal is to demonstrate accurate prediction of tritium breeding (the $\mathrm{TBR_{neutronics}}$ component) and extraction (the $\eta$ component), in a FLiBe salt breeder and DT fusion conditions (14 MeV neutrons)\cite{ferry_libra_2023}. 
 
 Early results from this program are encouraging. The BABY 1L campaign, conducted on litre-scale salt volumes, showed good tritium recovery without any dedicated extraction system: tritium was collected simply by letting it diffuse through the salt to the free surface, or permeate through the container walls \cite{delaporte-mathurin_baby_2026}. At this scale, passive transport is sufficient.
 
@@ -298,7 +300,7 @@ The viability of gas sparging as a tritium extraction system for LIBRA Pi has no
 
 \Cref{sec:background} will introduce the prior work on gas sparging upon which this work is built. 
 
-\Cref{sec:sparging_model} will present the general gas sparging species extraction model developped in this work, beginning with the description of the underlying mathematical model (\cref{sec:sparging_maths}), following with its practical implementation (\cref{sec:sparging_impl}), then presenting the engineering insights that can be learnt from this model (\cref{sec:sparging_expl}). 
+\Cref{sec:sparging_model} will present the general gas sparging species extraction model developed in this work, beginning with the description of the underlying mathematical model (\cref{sec:sparging_maths}), following with its practical implementation (\cref{sec:sparging_impl}), then presenting the engineering insights that can be learnt from this model (\cref{sec:sparging_expl}). 
 
 \Cref{sec:LIBRAPi_sparging} will apply the developed model to the LIBRA Pi experiment, focusing on extraction time prediction. This will then be used to inform a study of tritium permeation in LIBRA Pi (\cref{sec:LIBRAPi_permeation}). 
 
@@ -339,7 +341,7 @@ Tritium transport models are built from two fundamental properties: diffusivity 
 
 Tritium transport properties are speciation dependent: \textit{ab initio} molecular dynamics calculations suggest that tritium might diffuse 3 to 5 times slower when present as \ce{TF} rather than \ce{T2}\cite{lam_impact_2021}. The \ce{TF}/\ce{T2} branching depends on redox control, usually performed using sacrificial \ce{Be} metal as reducing agent\cite{petti_jupiter-ii_2006}: the affinity of the highly electronegative \ce{F^-} ions for \ce{Be^{2+}} drives the redox potential toward formation of \ce{BeF2} and \ce{T2}/\ce{HT} rather than letting free \ce{T^+} form \ce{TF}. 
 
-This makes tritium transport measurements hard to reproduce, leading to large discrepancies in the measured transport properties depending on the experimental apparatus and redox control behind each measurements\cite{anderl_deuteriumtritium_2004,saraswat_permeation_2026}. Discrepancies are amplified by the fact that the transport properties are measured for a liquid that must be enclosed in a container: tritium first has to permeate trough the structural metal and potentially some Ni coating, which adds some experimental variability due to the uncertain kinetic of the reactions happening at the salt-metal interface\cite{fukada_diffusion_2005}. A comparison of the results across studies was compiled by \textcite{humrickhouse_tritium_2020} and replicated in \cref{fig:transport_params}, showing variations of the Henry's constant by up to 2 orders of magnitude. 
+This makes tritium transport measurements hard to reproduce, leading to large discrepancies in the measured transport properties depending on the experimental apparatus and redox control behind each measurements\cite{anderl_deuteriumtritium_2004,saraswat_permeation_2026}. Discrepancies are amplified by the fact that the transport properties are measured for a liquid that must be enclosed in a container: tritium first has to permeate through the structural metal and potentially some Ni coating, which adds some experimental variability due to the uncertain kinetic of the reactions happening at the salt-metal interface\cite{fukada_diffusion_2005}. A comparison of the results across studies was compiled by \textcite{humrickhouse_tritium_2020} and replicated in \cref{fig:transport_params}, showing variations of the Henry's constant by up to 2 orders of magnitude. 
 
 The modeling carried on in this work therefore builds on uncertain foundations, the large uncertainties on tritium transport properties will be dealt with by considering various correlations and propagating the impact of the correlation choice to the model's output. 
 
@@ -406,14 +408,14 @@ A schematic of the problem at hand along with the main quantities of interest is
 \begin{figure}[ht]
     \begin{subfigure}[t]{0.48\linewidth}
         \centering
-        \includegraphics[height=5cm]{fig/boundary_layer.png}
-        \caption{Illustration of the Lewis-Whitman two-film mass transfer model for a bubble in a liquid, taken from \textcite{evans_physics_2026}.}
+        \resizebox{\linewidth}{!}{\input{diag_two_film}}
+        \caption{The Lewis-Whitman two-film mass transfer model at a liquid gas interface, adapted from \textcite{evans_physics_2026}. The whole resistance to the transfer sits in the two films; the concentration is discontinuous at the interface itself, where the two sides stay at equilibrium. In molten salts the liquid film carries almost all of the resistance, so $\delta_g$ is neglected in this work and $c_\mathrm{T_2,gi}$ is taken as the bulk gas value.}
         \label{fig:two_film_model}
     \end{subfigure}
     \hspace{1 em}
     \begin{subfigure}[t]{0.48\linewidth}
       \centering
-      \includegraphics[height=5cm]{fig/equilibrium_curve.pdf}
+      \resizebox{\linewidth}{!}{\input{diag_equilibrium}}
       \caption{Interfacial equilibrium between the liquid and a bubble, the interface sits on the Henry line, so the driving force of the two-film model is the vertical distance between the bulk liquid concentration and the concentration that would be in equilibrium with the bubble.}
       \label{fig:equilibrium}
     \end{subfigure}
@@ -424,7 +426,7 @@ Transport through the liquid-gas interface created by bubbles is what directly a
 It relies primarily on diffusion, where the density gradient occurring at the interface drives a particle flux $\JT \:\mathrm{[mol/m^2/s]}$ from the tritium-rich liquid to the tritium-poor gas, hereafter the \textit{interfacial flux}. On top of pure diffusion, turbulence at the liquid-gas interface tends to promote mass exchange between phases. 
 % It depends on two fundamental properties of the solute-solvant couple (here tritium-molten salt): diffusivity $D_T \:\mathrm{[m^2/s]}$ and solubility $K_s$  ($\mathrm{[mol/m^3/Pa]}$ or $\mathrm{[mol/m^3/Pa^{0.5}]}$ depending on the solubility law).
 \\
-Transport of solute gases through liquid-gas interfaces is commonly described by the the Lewis-Whitman two-film model\cite{lewis_principles_1924} illustrated in \cref{fig:two_film_model}. In molten salts, \ce{H_2} has a low solubility \cite{malinauskas_solubilities_1974}, so mass transfer through the interface is limited by the liquid film, the interfacial flux is therefore expressed using the liquid side mass transfer coefficient $h_l \:\mathrm{[m/s]}$ which characterized both molecular diffusion and turbulent transport through the liquid film. The interfacial flux is expressed as:
+Transport of solute gases through liquid-gas interfaces is commonly described by the Lewis-Whitman two-film model\cite{lewis_principles_1924} illustrated in \cref{fig:two_film_model}. In molten salts, \ce{H_2} has a low solubility \cite{malinauskas_solubilities_1974}, so mass transfer through the interface is limited by the liquid film, the interfacial flux is therefore expressed using the liquid side mass transfer coefficient $h_l \:\mathrm{[m/s]}$ which characterized both molecular diffusion and turbulent transport through the liquid film. The interfacial flux is expressed as:
 
 
 \begin{equation*}
@@ -444,7 +446,7 @@ In \cref{eq:JT2}, \JT and \PT are the unknown to be solved in the 1D-ARD model; 
 
 \subsection{Fluid dynamics}
 % expose correlations
-Advective transport through fluid motion is expected to influence, if not dominate, the tritium concentration and partial pressure profiles in the liquid and gas phases respectively. In a 2D or 3D model, it would require to solve for the velocity field of both phases. Because this work's purpose is to be exploratory, a good pragmatic choice is the simpler one-dimensional axial dispersion model presented by Levenspiel \cite{levenspiel_chemical_1999}, broadly used in chemical reactors modeling \cite{schluter_modeling_1992}. The gas upward velocity is described by the bubble's terminal velocity $u_g \:\mathrm{[m/s]}$, and the liquid and gas mixing effects are described by empirical dispersion coefficients $E_l$ and $E_g$ ($\mathrm{[m^2/s]}$)\textbf{}. The temperature $T$ is assumed constant in time and space. $E_l$ is the single liquid transport mechanism, it carries the recirculation physics illustrated in \cref{fig:sparging_tank} and is therefore expected to be large; $E_g$ expresses as spread in the rise velocity of individual bubbles (e.g. due to a spread in bubble sizes), expected to be secondary. 
+Advective transport through fluid motion is expected to influence, if not dominate, the tritium concentration and partial pressure profiles in the liquid and gas phases respectively. In a 2D or 3D model, it would require to solve for the velocity field of both phases. Because this work's purpose is to be exploratory, a good pragmatic choice is the simpler one-dimensional axial dispersion model presented by Levenspiel \cite{levenspiel_chemical_1999}, broadly used in chemical reactors modeling \cite{schluter_modeling_1992}. The gas upward velocity is described by the bubble's terminal velocity $u_g \:\mathrm{[m/s]}$, and the liquid and gas mixing effects are described by empirical dispersion coefficients $E_l$ and $E_g$ ($\mathrm{[m^2/s]}$). The temperature $T$ is assumed constant in time and space. $E_l$ is the single liquid transport mechanism, it carries the recirculation physics illustrated in \cref{fig:sparging_tank} and is therefore expected to be large; $E_g$ expresses as spread in the rise velocity of individual bubbles (e.g. due to a spread in bubble sizes), expected to be secondary. 
 \par
 
 The net bubble velocity gives rise to an advective term, while phases mixing translates into a dispersion term. Mixing is expressed by a "dispersion" term that resembles molecular diffusion, as both phenomena have a Fickian behavior which tends to flatten the concentration profiles. They are however inherently different from a physical point of view and shouldn't be mixed up, as transport caused by phases mixing largely dominates molecular diffusion at macroscopic scales. This translates in dispersion coefficients being order of magnitude larger than diffusion coefficients. 
@@ -735,7 +737,6 @@ As will be elaborated throughout this work, \PI is a pivotal quantity to charact
 
 
 \paragraph{Derivation}
-\todo{re-introduce old\_analytical\_derivation.tex and incorporate it here instead of the more complicated derivation, we only need to obtain eq\_tau\_ana at the end, this complicated derivation can be moved to the appendix}
 Using the uniform \CT assumption (\cref{as:c_is_uniform}), \cref{eq:Pb_ODE_sparger} reduces to:
 \begin{equation}
 \label{eq:PT_steady}
@@ -743,27 +744,30 @@ Using the uniform \CT assumption (\cref{as:c_is_uniform}), \cref{eq:Pb_ODE_sparg
 \end{equation}
 Note this lands to the gas ARD equation (\cref{eq:ARD_PT}) in steady state and without the dispersion term. The fact that the gas phase is in (quasi-)steady state here is a consequence of the assumption of a short bubble residence time (\cref{as:short_res_time}). We also don't account for a possible spread in the bubble's velocity, assuming that \assumption{gas dispersion is negligible in front of gas advection\label{as:no_gas_dispersion}}(\cref{as:no_gas_dispersion}). This is justified by the gas Peclet number, which compares advective to dispersive transport along the column: $\mathrm{Pe}_g=v_b\,H/E_g=5.2\cdot10^{4}$ at the nominal LIBRA Pi operating point, so the dispersive term is $1/\mathrm{Pe}_g\simeq2\cdot10^{-5}$ of the advective one. 
 
-Introducing the tritium molar flux per unit area $G\equiv\frac{u_g\,\PT}{R\,T}$, and recognizing that $\frac{a\,h_l\,K_s\,R\,T}{u_g}=\frac{d\Pi^\star}{dz}$ (\cref{eq:Pi_cumul}), \cref{eq:PT_steady} takes the form of a first order linear ODE:
-\begin{equation}
-    \frac{dG}{dz}+\frac{d\Pi^\star}{dz}\,G=a\,h_l\,\langle\CT\rangle^l
-\end{equation}
-which is integrated with the factor $e^{\Pi^\star(z)}$. Gas dispersion being neglected, \cref{eq:BC1} imposes a tritium free sparging gas at the inlet, $G(0)=0$, and it comes:
+We further assume that \assumption{the hydrodynamic parameters are well approximated by their spatial average\label{as:uniform_hydrodynamic}} (\cref{as:uniform_hydrodynamic}), so that $u_g$, $a$ and $h_l$ come out of the derivative and the cumulated saturation grows linearly, $\Pi^\star(z)=\langle\Pi\rangle\,\frac{z}{H}$ (\cref{eq:Pi_cumul}). Gas dispersion being neglected, \cref{eq:BC1} imposes a tritium free sparging gas at the inlet, $\PT(0)=0$, and \cref{eq:PT_steady} integrates into an analytical expression for the concentration profile in the gas phase:
 \begin{equation}
 \label{eq:PT_profile}
-    \PT(z)=\frac{R\,T\,\langle\CT\rangle^l}{u_g(z)}\int_0^z a(s)\,h_l(s)\,e^{-\left(\Pi^\star(z)-\Pi^\star(s)\right)}\,ds
+    \PT(z)=\frac{\langle \CT\rangle^l}{K_s}\,\left(1-e^{-\Pi^\star(z)}\right)
 \end{equation}
-The exponential weight of \cref{eq:PT_profile} expresses that the tritium transferred to a bubble at height $s$ is progressively "forgotten" as the bubble keeps rising towards equilibrium with the liquid. Should the hydrodynamic parameters be uniform (\cref{as:uniform_hydrodynamic}), \cref{eq:PT_profile} reduces to the single bubble result $\PT(z)=\frac{\langle\CT\rangle^l}{K_s}\left(1-e^{-\Pi^\star(z)}\right)$.
+This is the single bubble result of \cref{eq:Pi_def_micro} transposed along the column: the bubble relaxes towards the equilibrium partial pressure $\frac{\langle \CT\rangle^l}{K_s}$, with the cumulated saturation $\Pi^\star(z)$ playing the role that $\frac{t}{\tau_\mathrm{sat}}$ played for a single bubble.
 
-\Cref{eq:PT_profile} can be evaluated at the gas outlet and plugged into the expression of the outgoing tritium flux (\cref{eq:dotNT}). Carrying the integration through, which is done in \cref{sec:appendix} A \todo{appendix reference with cref doesn't work well, it should print "Appendix A"}, the inventory again decays exponentially, with an extraction time given by an exact but integral expression (\cref{eq:tau_full}). That expression behaves as expected in both saturation limits, and it is the reference against which the compact form below is obtained.
+The now known gas concentration profile can be evaluated at the gas outlet and plugged into the expression of the outgoing tritium flux (\cref{eq:dotNT}) to work out the evolution of the tritium inventory:
+\begin{equation}
+    \dotNT=-A\,u_g\frac{\PT}{RT}\bigg\rvert_\mathrm{outlet}=-\frac{A\,u_g\,\langle \CT\rangle^l}{R\,T\,K_s}\,\left(1-e^{-\langle\Pi\rangle}\right)
+\end{equation}
+Given the assumed negligible bubble residence time (\cref{as:short_res_time}), we can consider that every tritium that goes into the gas phase is immediately evacuated out of the system, therefore $\NTg\ll\NTl \Rightarrow \NTl\approx\NT$. Simplifying $\langle \CT\rangle^l=\frac{\NTl}{V_l}=\frac{\NTl}{\langle \varepsilon_l\rangle V_t}$ with $V_t=A\,H$, and substituting $u_g=\frac{R\,T\,K_s\,\langle a\,h_l\rangle\,H}{\langle\Pi\rangle}$ from the definition of $\Pi$ (\cref{eq:Pi_def_macro}) yields:
+\begin{equation}
+    \dotNT=-\frac{\langle a\,h_l \rangle}{\langle \varepsilon_l \rangle}\,\frac{1-e^{-\langle\Pi\rangle}}{\langle\Pi\rangle}\,\NT
+\end{equation}
 
-If we make the assumption that \assumption{the hydrodynamic parameters are well approximated by their spatial average\label{as:uniform_hydrodynamic}} (\cref{as:uniform_hydrodynamic}), then $a\,h_l\approx\langle a\,h_l \rangle$ can be taken out of the integral of \cref{eq:tau_full} and $\Pi^\star(z)\approx\langle\Pi\rangle\,\frac{z}{H}$, which reveals a compact expression in terms of the SPP extraction time:
+Solving yields an exponential decay, as obtained previously under the small partial pressure approximation (\cref{sec:extraction_kinetics}), here generalized for any partial pressure regime. Recognizing the SPP extraction time $\tau_\mathrm{SPP}=\frac{\langle \varepsilon_l \rangle}{\langle a\,h_l\rangle}$ (\cref{eq:tau_SPP}), the extraction time reads:
 \begin{keyresult}
 \begin{equation}
 \label{eq:tau_ana}
     \tau =\tau_\mathrm{SPP}\,\frac{\langle\Pi\rangle}{1-e^{-\langle\Pi\rangle}}
 \end{equation}
 \end{keyresult}
-This latter form is used as the reference analytical solution in the rest of this work, denoted \Tana for distinction with values that might be obtained numerically. 
+This latter form is used as the reference analytical solution in the rest of this work, denoted \Tana for distinction with values that might be obtained numerically. \Cref{as:uniform_hydrodynamic} can be lifted: \cref{app:tau_full} carries the same reasoning through with $a$, $h_l$ and $u_g$ varying along the column, which gives an exact expression of $\tau$ in integral form (\cref{eq:tau_full}) and shows how it collapses back onto \cref{eq:tau_ana} once the profiles flatten.
 
 % it can be proven (see "derivation nT2-II") that this expression for P(H) holds even if c_T varies a lot along the height (ie we don't need assumption \label{as:c_is_uniform}) if Pi(H) is small enough (<0.1) -> in the general solution (with integral), we plug c = <c>+c', if the exponential is ~constant in the integration domain (Pi<0.1) then int(exp(pi) * c') = exp(pi)*int(c')=0 
 
@@ -910,11 +914,11 @@ The analytical solution derived in \cref{sec:analytical_solution} rests on a set
     \item The bubble residence time $H/v_b=0.35\ \mathrm{s}$ is more than five orders of magnitude shorter than $\tau$ (\cref{as:short_res_time}), which justifies both the quasi-steady gas phase and the neglect of the gas inventory in front of the liquid one;
     \item The gas Bodenstein number is $\mathrm{Bo}=4.7\times10^{3}$, the ratio of the dispersive to the advective term is $1/\mathrm{Bo}\simeq2\times10^{-4}$ so gas dispersion is negligible (\cref{as:no_gas_dispersion})
     \item The hydrodynamic parameters are close to uniform (\cref{as:uniform_hydrodynamic}): the hydrostatic head over the column is $1.5\ \%$ of the pressure at the top, this dictates the order of the variation of $d_b$, $\varepsilon_g$, $a$ and $u_g$ along $z$.
-\end{enumerate}  .
+\end{enumerate}
 
 \Cref{fig:verification_profile} compares the tritium partial pressure profile in the gas phase with \cref{eq:PT_profile}, the mean liquid concentration $\langle\CT\rangle^l$ being taken from the simulated inventory at the same instant. The two regimes are clearly distinguished: at $\langle\Pi\rangle\ll1$ the bubbles stay far from equilibrium and \PT grows almost linearly with height, whereas at $\langle\Pi\rangle\simeq1$ the saturation of the bubbles bends the profile. In both cases the model and the analytical solution agree to better than $8\times10^{-3}$ of the peak partial pressure.
 
-\Cref{fig:verification_inventory} compares the decay of the tritium inventory with the exponential law of \cref{eq:tau_ana}. The residual grows linearly with time, as expected of a small error on a decay rate, and reaches $1.2\ \%$ after five extraction times in the SPP case. This residual is numerical, not physical: replacing $\tau$ by $\tau+\Delta t/2$, the decay time that a backward Euler scheme actually reproduces (\cref{eq:tau_delta_expansion}), brings the deviation down to $1.2\times10^{-4}$ over the same interval, a hundredfold reduction. The PPL case behaves the same way up to a residual of $5\times10^{-3}$ at $t=5\tau$, which corresponds to \cref{eq:tau_ana} overestimating the extraction time by $0.11\ \%$. This is attributed as a consequence of the assumptions listed above being not perfectly realized for the analytical solution to hold, rather than a numerical inacurracy. 
+\Cref{fig:verification_inventory} compares the decay of the tritium inventory with the exponential law of \cref{eq:tau_ana}. The residual grows linearly with time, as expected of a small error on a decay rate, and reaches $1.2\ \%$ after five extraction times in the SPP case. This residual is numerical, not physical: replacing $\tau$ by $\tau+\Delta t/2$, the decay time that a backward Euler scheme actually reproduces (\cref{eq:tau_delta_expansion}), brings the deviation down to $1.2\times10^{-4}$ over the same interval, a hundredfold reduction. The PPL case behaves the same way up to a residual of $5\times10^{-3}$ at $t=5\tau$, which corresponds to \cref{eq:tau_ana} overestimating the extraction time by $0.11\ \%$. This is attributed as a consequence of the assumptions listed above being not perfectly realized for the analytical solution to hold, rather than a numerical inaccuracy. 
 
 This verifies the numerical implementation in both the partial pressure regimes and for both the gas phase profile and the integral quantity of interest, down to the discretisation error quantified in \cref{sec:numerical_error}.
 
@@ -925,7 +929,7 @@ This verifies the numerical implementation in both the partial pressure regimes 
 The model is implemented as a Python package, \verb|libra_sparging| (Python 3.12 or later), released under the MIT license at \url{https://github.com/LIBRA-project/libra_sparging}. The finite element discretisation is built on FEniCSx/DOLFINx \needcite{DOLFINx}, and the resolution of the closure relations on the graph library NetworkX \needcite{NetworkX}. Every physical quantity carries its units through Pint \needcite{Pint}, which performs the conversions and catches dimensional inconsistencies at run time (a useful safeguard given the number of empirical correlations involved, sometimes with archaic units). NumPy, SciPy, pandas and Matplotlib support the post-processing. Correctness is checked by a \verb|pytest| suite covering the resolution of the model input, the solver on cases with a known solution, and the
 serialisation of the results.
 
-The API of \verb|libra_sparging| package is synthesized in \cref{fig:code_structure}: the user describes the system with the four dataclasses of step~1, from which \texttt{from\_parameters} resolves the parameters (scalars and $z$-profiles) required by the 1D-ARD equations (step~3); any parameter left unspecified is filled with the default correlation of \texttt{correlations.py}. The dimensionless diagnostics of \texttt{SimulationInput} are available before any computation, and give the discretisation steps handed to \texttt{solve}, which returns a \texttt{SimulationResults} object holding the profiles and the requested exports. The dashed path is the shortcut used in practice: the pre-built cases of \texttt{example\_cases.py} return a ready \texttt{SimulationInput}. All quantities carry physical units, as \texttt{pint} objects built on the registry \texttt{ureg} of \texttt{config.py}.
+The API of \verb|libra_sparging| package is synthesized in \cref{fig:code_structure}: the user describes the system with the four dataclasses of step~1, from which \texttt{from\_parameters} resolves the parameters (scalars and $z$-profiles) required by the 1D-ARD equations (step~3); any parameter left unspecified is filled with the default correlation of \texttt{closure.py}. The dimensionless diagnostics of \texttt{SimulationInput} are available before any computation, and give the discretisation steps handed to \texttt{solve}, which returns a \texttt{SimulationResults} object holding the profiles and the requested exports. The dashed path is the shortcut used in practice: the pre-built cases of \texttt{example\_cases.py} return a ready \texttt{SimulationInput}. All quantities carry physical units, as \texttt{pint} objects built on the registry \texttt{ureg} of \texttt{config.py}.
 \todo{should this rather be in the caption ?}
 
 \input{diag_code_structure}
@@ -1041,7 +1045,7 @@ Toward high \Gmix however, many samples exhibit a normalized Root Mean Square Er
 
 This non-exponential behavior can be explained by examining one of these high-RMSE cases: sample 191 plotted in \cref{fig:nonexp}(b)(poor mixing, bubbles saturated) exhibits a tritium inventory decay that is faster than exponential (normalized RMSE = $2.7\cdot10^{-2}$), suggesting that in this case the characteristic extraction time decreases with time. Other samples from this study exhibit high \Gmix comparable to sample 191 and still follow an exponential decay that is well predicted by \Tana: sample 139, with \Gmix=25, \Gp=0.032, \PI=0.095, differs only significantly by its \PI, it is well fitted (normalized RMSE = $2.7\cdot10^{-5}$) and gives a good prediction ($e=4.3\cdot10^{-3}$). This confirms that the non-exponential nature of sample 191 comes from the high \PI: bubbles saturate soon after being generated, as shown by the spike in the reaction rate $a\,\JT$ in \cref{fig:nonexp}(a), moving up the column as the lower part gets stripped of its tritium. This sparging system behaves like a plug-flow contactor (PFC). At the end of the simulated time, the liquid phase is near fully depleted of its tritium ($\NT(2\Tana)\approx2\%\cdot\NT(0)$), where there should still be 13\% tritium remaining according to the "perfect mixing" result: the extraction is faster than predicted, meaning that \textbf{poor liquid mixing enhances extraction when operating in a saturated (PPL) regime}. This matches the classic chemical-engineering results that plug-flow contactors beat stirred tank (perfect mixing) whenever the process is equilibrium limited\cite{mohan_experimental_2010}. 
 
-Note that that the error of \Tana grows toward the $\PI>1$ region of \cref{fig:error_vs_groups}(b), even when the analytical assumptions are supposed to be valid. This is because \Tana scales linearly with it in the PPL regime, and therefore acts as an error amplifier: if the analytical assumptions are not perfectly valid, \Tana will be even more off as \PI is large. Here $\Gmix<0.1$ and $\Gp<0.1$ are taken as acceptable indicators of the assumption's validity, still they can be refined to restrict the analytical solution to a higher level of accuracy.  
+Note that the error of \Tana grows toward the $\PI>1$ region of \cref{fig:error_vs_groups}(b), even when the analytical assumptions are supposed to be valid. This is because \Tana scales linearly with it in the PPL regime, and therefore acts as an error amplifier: if the analytical assumptions are not perfectly valid, \Tana will be even more off as \PI is large. Here $\Gmix<0.1$ and $\Gp<0.1$ are taken as acceptable indicators of the assumption's validity, still they can be refined to restrict the analytical solution to a higher level of accuracy.  
 
 \begin{figure}[htbp]
   \centering
@@ -1049,7 +1053,17 @@ Note that that the error of \Tana grows toward the $\PI>1$ region of \cref{fig:e
   \caption{Sample 191 of the study, with \Gmix=25, \Gp=0.032 and \PI=16: (a) the concentration, partial pressure and volumetric transfer rate profiles at five instants, showing a mass transfer front travelling up the column; (b) the decay of the tritium inventory with its exponential fit, and the residual that fit leaves, which is where the departure from a single exponential is visible.}
   \label{fig:nonexp}
 \end{figure}
-\todo{run sample with high Gmix and Gp and export profiles, expected to shown the minimisation of aJ (throttling)}
+
+The opposite situation, where poor mixing \textit{impairs} extraction, is illustrated by sample 288 (\cref{fig:stratified}), which combines a badly mixed liquid ($\Gmix=1.2\cdot10^{3}$) with a strong hydrostatic head ($\Gp=14.5$) while the bubbles stay far from saturation ($\PI=0.017$). It shows the largest excess of \Tnum over \Tana of the whole study ($+11.9\ \%$ once the discretisation bias is removed, $+12.4\ \%$ as fitted). Because \Gp is large, the sparging gas expands on its way up: the superficial velocity $u_g$ grows by a factor 15 between the sparger and the free surface and the volumetric transfer coefficient $a\,h_l$ by a factor 4.6, so the tritium is stripped mostly from the top of the column. Mixing being far too slow to redistribute it, the liquid stratifies: \CT decreases with height (\cref{fig:stratified}(a)), and the profiles settle into a shape where $a\,\JT$ is almost uniform along $z$, the liquid being depleted exactly where the transfer coefficient is largest. The extraction is then slower than \Tana predicts, because the analytical solution evaluates the transfer with a uniform $\langle\CT\rangle^l$ while the actual $a\,h_l$ and \CT are anti-correlated: at $t=2\,\Tana$, $\int_0^H a\,h_l\,\CT\,dz$ is only $79\ \%$ of $\langle a\,h_l\rangle\,\langle\CT\rangle^l\,H$.
+
+The partial pressure panel of \cref{fig:stratified} separates the two assumptions that are violated here. \Cref{eq:PT_profile}, which assumes uniform hydrodynamics, cannot reproduce the profile at all: it is monotonic by construction, whereas the simulated \PT peaks at mid-height and then falls, the expanding gas diluting the tritium faster than the interface supplies it. The general form of \cref{eq:PT_profile_gen}, which keeps $u_g(z)$, follows the simulation to about $1\ \%$ of the peak at $t=0.05\,\Tana$ and only departs from it later, once the liquid has stratified enough that $\langle\CT\rangle^l$ no longer represents the concentration the bubbles actually see. \textbf{The hydrostatic head is therefore what breaks the gas profile, and poor mixing is what turns that into an error on the extraction time.}
+
+\begin{figure}[htbp]
+  \centering
+  \includegraphics[width=0.8\linewidth]{fig/stratified.pdf}
+  \caption{Sample 288 of the study, with \Gmix=$1.2\cdot10^{3}$, \Gp=14.5 and \PI=0.017: (a) the concentration, partial pressure and volumetric transfer rate profiles at three instants, showing the liquid stratifying until $a\,\JT$ is nearly uniform along the column. In the partial pressure panel the two analytical profiles are overlaid, the compact one of \cref{eq:PT_profile} and the general one of \cref{eq:PT_profile_gen} which keeps the gas expansion; (b) the decay of the tritium inventory with its exponential fit and with the analytical prediction \Tana, which the fitted decay is $12.4\ \%$ slower than.}
+  \label{fig:stratified}
+\end{figure}
 
 \begin{keyresult}
     \begin{align*}
@@ -1139,7 +1153,7 @@ The findings of the design study are summarized in \cref{fig:venn}, covering the
   \label{fig:parity}
 \end{figure}
 
-\paragraph{How to optimized the sparging system's design}
+\paragraph{How to optimize the sparging system's design}
 
 \begin{figure}[htbp]
   \centering
@@ -1153,7 +1167,7 @@ In a design problem, the tritium transport properties are not controlled directl
 
 The optimal design depends on the constraints: beside the obvious extraction time goal, there might be cases when the tritium concentration of the outlet gas becomes a strong constraint. For instance in the LIBRA Pi experiment, after being extracted from the vessel, tritium is stripped from its carrying gas by water bubblers (ready to be counted using a liquid scintillator). The gas rate drives evaporation in those bubblers, it is thus desirable that the tritium concentration in the gas is optimized so that the gas flow rate itself can be kept low enough, eventually enabling a higher tritium concentration in the water samples to be counted. 
 
-A ranking of the relative performance in each region of the design space is shown in \cref{fig:violin}, the fastest on the left. It reveals \Gp as being the primary lever for extraction performance, Within each half, the \PI<0.1 case comes first, with a factor $\sim 3$ improvement compared to the \PI>0.1 case. \Gmix on the otehr hand doesn't seem to significantly change extraction performance (cases 7 and 3 are barely distinguishable, as are 5 and 1). 
+A ranking of the relative performance in each region of the design space is shown in \cref{fig:violin}, the fastest on the left. It reveals \Gp as being the primary lever for extraction performance, Within each half, the \PI<0.1 case comes first, with a factor $\sim 3$ improvement compared to the \PI>0.1 case. \Gmix on the other hand doesn't seem to significantly change extraction performance (cases 7 and 3 are barely distinguishable, as are 5 and 1). 
 
 This answers the design optimization problem:
 \begin{itemize}
@@ -1192,7 +1206,7 @@ This will be used in \cref{sec:LIBRAPi_permeation} to inform a study on tritium 
 Salt height, $H$                 & 0.93 m\\
 Salt volume                      & 0.12 $\mathrm{m^3}$ \\
 Equivalent salt base area, $A$   & 0.13 $\mathrm{m^2}$ \\
-Number of nozzles, $N_n$         & 4 \\
+Number of nozzles, \Nnoz         & 4 \\
 Initial $T_2$ concentration, $c_{T_2,init}$   & $3\cdot10^{-11} \mathrm{molT_2/m^3}$ \\
 \midrule
 \multicolumn{2}{@{}l}{\textit{\textbf{Varied during operation}}} \\
@@ -1251,7 +1265,7 @@ It follows that LIBRA Pi can potentially be in regions 3 or 4 of \cref{fig:venn}
   \label{fig:sobol}
 \end{figure}
 
-A sensitivity study was run on the 4 operating parameters in their respective range, to reveal: (1) what parameters matter most for the sparging system performance; (2) quantify in what extent uncertainty on an operating parameter propagates to the extraction time. Sensitivity of a function on its variables can be characterized by Sobol indices. It is a variance based sensitivity metric, quantifying the variance that propagates to the output when varying one of its inputs, therefore measuring the sensitivity of a fonction to each of its individual variables.
+A sensitivity study was run on the 4 operating parameters in their respective range, to reveal: (1) what parameters matter most for the sparging system performance; (2) quantify in what extent uncertainty on an operating parameter propagates to the extraction time. Sensitivity of a function on its variables can be characterized by Sobol indices. It is a variance based sensitivity metric, quantifying the variance that propagates to the output when varying one of its inputs, therefore measuring the sensitivity of a function to each of its individual variables.
 
 In the present case, the sensitivity study in \cref{fig:sobol} shows that 2 input parameters dominate the system's performance, regardless of the scenario: in the considered parameter space, variations in $T$ and \ndotg are responsible for most of the extraction time variance, indicating that the contribution of \Ptop and \dnoz can be ignored to a certain extent. The two orders overlap within their confidence intervals for every parameter, and $\sum_i S_i$ reaches $0.96$ in the pessimistic scenario and $0.94$ in the optimistic one, so \textbf{interactions account for only 4 to 6\% of the variance of $\tau_{99}$} and the response can be read as essentially additive: the effect of each operating parameter can be considered separately from the others. This allows to isolate $T$ and \ndotg as the most important operating parameters, reducing the parameter space from 4D to 2D to simplify the analysis.
 
@@ -1320,7 +1334,7 @@ The quarter-annulus geometry of the LIBRA Pi experiment is shown in \cref{fig:li
     \begin{subfigure}[t]{0.48\linewidth}
         \centering
         \includegraphics[height=6cm, trim={0 8cm 0 1cm}, clip]{fig/cell.pdf}
-        \caption{Simulated unit cell and its dimensions: (a-a) perspective front view without the OV wall, showing one spacer rib with evenly spaced gas channels, the dotted-dashed line indicates the cross-section shown in (a-b) the top view. "spacer" is abreviated as "s"}
+        \caption{Simulated unit cell and its dimensions: (a-a) perspective front view without the OV wall, showing one spacer rib with evenly spaced gas channels, the dotted-dashed line indicates the cross-section shown in (a-b) the top view. "spacer" is abbreviated as "s"}
         \label{fig:cell}
     \end{subfigure}
     \hspace{1 em}
@@ -1380,7 +1394,7 @@ What makes the problem specific to LIBRA Pi are the boundary conditions and the 
 
 \subsubsection{Boundary conditions}
 
-The are 3 different boundary conditions, one per surface of the unit cell as labeled on \cref{fig:Bcs}. It is useful to read them as \textbf{three resistances in series}: tritium has to cross the salt to reach the wall, diffuse through the metal, and then leave it, either into the OV gas or into the environment:
+There are 3 different boundary conditions, one per surface of the unit cell as labeled on \cref{fig:Bcs}. It is useful to read them as \textbf{three resistances in series}: tritium has to cross the salt to reach the wall, diffuse through the metal, and then leave it, either into the OV gas or into the environment:
 
 \paragraph{salt surface BC} 
 Molten salts are tritium repellants and metals are tritium sponges. We can't consider the inconel surface concentration to be at equilibrium with the salt, it is physically unrealistic: after irradiation, the $3.6\cdot10^{13} \ \mathrm{T/m^3}$ in the salt becomes $4.0\cdot10^{20}\ \mathrm{T/m^3}$ in the metal if at equilibrium, which after a few timesteps represents a tritium inventory  of $\sim10^{18}$ T atoms in the mere IV wall, i.e. $\sim10^6$ times the total bred tritium actually available. \textbf{The tritium flux to the wall has to be limited by transport on the salt side}. This is enforced by considering a flux BC that accounts for salt transport:
@@ -1431,7 +1445,7 @@ All the structural material is considered made of inconel. In practice, the salt
 
 \subsubsection{Numerical scheme}
 
-The transport equation is discretised with linear Lagrange elements on the unit cell mesh and integrated in time with a backward Euler scheme, the resulting non-linear system being solved by a Newton method at each time step; the details of the FESTIM implementation are documented in \textcite{delaporte-mathurin_festim_2024}. Transient simulations a ran over 4 days, well above the $\tau_{99}$=55.6 hours sparging extraction time, so that effects of wall tritium inventory diffusing back to the salt can be observed. The time step is ramped geometrically from 30 s to 30 min, which resolves the initial loading of the wall without paying for it over the rest of the 4 days simulated.
+The transport equation is discretised with linear Lagrange elements on the unit cell mesh and integrated in time with a backward Euler scheme, the resulting non-linear system being solved by a Newton method at each time step; the details of the FESTIM implementation are documented in \textcite{delaporte-mathurin_festim_2024}. Transient simulations are run over 4 days, well above the $\tau_{99}$=55.6 hours sparging extraction time, so that effects of wall tritium inventory diffusing back to the salt can be observed. The time step is ramped geometrically from 30 s to 30 min, which resolves the initial loading of the wall without paying for it over the rest of the 4 days simulated.
 
 The coupling of \cref{eq:salt_balance} is the part specific to this work. The unit cells do not interact with each other, but they all draw from the same salt, so they cannot be run independently: they are stepped \textbf{in lockstep on a common time step}, and after each step the tritium that entered every cell is summed with the multipliers $m_k$ and removed from the 0D salt inventory, alongside what sparging extracted. The balance is integrated semi-implicitly, the sparging term implicitly and the permeation term explicitly, so that the extraction cannot overshoot and drive the inventory negative. The updated $c_\mathrm{salt}$ is then written back into the salt-side BC of every cell before the next step. 
 
@@ -1446,7 +1460,7 @@ Two different meshes are tested for the same geometry:
     \item Structured hexagonal mesh (HEX): for redundancy and because the tetrahedral mesh was showing poor numerical convergence performances. A trade-off is that the arched channel has to be approximated by a parallelepipedic one.
 \end{itemize}
 
-The parallelepipedic approximation of the channel's shape in the HEX mesh leads to a slight increase of the recombination surface even if the height of the parallelepiped ($w_\mathrm{gap}$) is allowed to vary. Its other dimensions ($H_\mathrm{s}$, $L_\mathrm{gap}$) can't change without corrupting the contact ratio $\chi_\mathrm{s}$ which would cause greater harm to the fidelity of the estimated leakage. It was therefore chosen to tune $w_\mathrm{gap}$ so that the the volume of the spacer is conserved between the two meshes.
+The parallelepipedic approximation of the channel's shape in the HEX mesh leads to a slight increase of the recombination surface even if the height of the parallelepiped ($w_\mathrm{gap}$) is allowed to vary. Its other dimensions ($H_\mathrm{s}$, $L_\mathrm{gap}$) can't change without corrupting the contact ratio $\chi_\mathrm{s}$ which would cause greater harm to the fidelity of the estimated leakage. It was therefore chosen to tune $w_\mathrm{gap}$ so that the volume of the spacer is conserved between the two meshes.
 
 % safety factor SF=1.25 as recommanded for GCI on 3 or more grids
 % we use P1 linear lagrange elements which theoretically give an L2 norm of the error in O(h^2) for the field themselves and O(h) for their gradient. Bounday fluxes are obtained from gradient so the results p=1-1.3 are consistent with the theory
@@ -1603,6 +1617,16 @@ Adding \ce{H2} to the sweep gas divides the leaked fraction by $\sim30$ and turn
     $\Rightarrow$ \textbf{a reducing OV sweep gas is required to meet the robust accountancy goal}
 \end{keyresult}
 
+\paragraph{The chapter in one picture}
+All four results above are statements about which of four resistances in series dominates, and \cref{fig:resistances} collects them. Tritium leaves the salt either with the bubbles or through the wall, and the wall itself is a reservoir rather than a simple conductor. $R_1$, the salt to wall step, is orders of magnitude larger than the other three, which is why the amount that permeates is set by $k_\mathrm{eff}$ alone and ignores the sweep gas entirely (\cref{sec:perm_salt_side}). What the sweep gas does control is the divider between $R_3$ and $R_4$, i.e. the split between the tritium that is collected and the tritium that is lost (\cref{sec:perm_sweep}). And when $R_3$ is large, which is the case with helium alone, the wall stops passing tritium on at all and stores it instead (\cref{sec:perm_retention}).
+
+\begin{figure}[htbp]
+  \centering
+  \resizebox{\linewidth}{!}{\input{diag_resistances}}
+  \caption{The permeation study as a resistance network. Fill colour follows the tritium concentration, which falls along every pathway. $R_1$ dominates, so it alone sets how much tritium permeates; $R_3$ is drawn as a variable resistance because the sweep gas chemistry is what sets it, and with it the share of the permeated tritium that leaks rather than being collected.}
+  \label{fig:resistances}
+\end{figure}
+
 % %%%%%%%%%%%%%%%%%%%%%%
 % \chapter{Related Work}
 % %%%%%%%%%%%%%%%%%%%%%%
@@ -1677,14 +1701,28 @@ Three practical recommendations for the operation of the experiment arise from t
 
 % Appendices are optional
 \appendix
-\label{sec:appendix}
+% a label placed before \chapter still points at the previous chapter's counter, and cleveref
+% needs to be told that chapters are appendices from here on
+\crefalias{chapter}{appendix}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \chapter{Exact form of the extraction time}
+\label{app:tau_full}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-This appendix carries the integration of \cref{eq:PT_profile} through to the extraction time, without the uniform hydrodynamics assumption (\cref{as:uniform_hydrodynamic}) used to reach the compact form of \cref{eq:tau_ana}.
+This appendix repeats the derivation of \cref{sec:analytical_solution} without the uniform hydrodynamics assumption (\cref{as:uniform_hydrodynamic}) used there to reach the compact form of \cref{eq:tau_ana}. The starting point is the same steady gas equation (\cref{eq:PT_steady}), but $a$, $h_l$ and $u_g$ now keep their dependence on $z$.
 
-\Cref{eq:PT_profile} can be evaluated at the gas outlet and plugged into the expression of the outgoing tritium flux (\cref{eq:dotNT}). The outlet velocity $u_g(H)$ cancels out, leaving the interfacial transfer integrated over the column height, damped by the saturation of the bubbles:
+Introducing the tritium molar flux per unit area $G\equiv\frac{u_g\,\PT}{R\,T}$, and recognizing that $\frac{a\,h_l\,K_s\,R\,T}{u_g}=\frac{d\Pi^\star}{dz}$ (\cref{eq:Pi_cumul}), \cref{eq:PT_steady} takes the form of a first order linear ODE:
+\begin{equation}
+    \frac{dG}{dz}+\frac{d\Pi^\star}{dz}\,G=a\,h_l\,\langle\CT\rangle^l
+\end{equation}
+which is integrated with the factor $e^{\Pi^\star(z)}$. Gas dispersion being neglected, \cref{eq:BC1} imposes a tritium free sparging gas at the inlet, $G(0)=0$, and it comes:
+\begin{equation}
+\label{eq:PT_profile_gen}
+    \PT(z)=\frac{R\,T\,\langle\CT\rangle^l}{u_g(z)}\int_0^z a(s)\,h_l(s)\,e^{-\left(\Pi^\star(z)-\Pi^\star(s)\right)}\,ds
+\end{equation}
+The exponential weight of \cref{eq:PT_profile_gen} expresses that the tritium transferred to a bubble at height $s$ is progressively "forgotten" as the bubble keeps rising towards equilibrium with the liquid. Should the hydrodynamic parameters be uniform, $a$, $h_l$ and $u_g$ come out of the integral and \cref{eq:PT_profile_gen} reduces to the single bubble result of \cref{eq:PT_profile}.
+
+\Cref{eq:PT_profile_gen} can be evaluated at the gas outlet and plugged into the expression of the outgoing tritium flux (\cref{eq:dotNT}). The outlet velocity $u_g(H)$ cancels out, leaving the interfacial transfer integrated over the column height, damped by the saturation of the bubbles:
 \begin{equation}
     \dotNT=-A\,u_g\frac{\PT}{R\,T}\bigg\rvert_\mathrm{outlet}=-A\,\langle\CT\rangle^l\int_0^H a(z)\,h_l(z)\,e^{-\left(\langle\Pi\rangle-\Pi^\star(z)\right)}dz
 \end{equation}
