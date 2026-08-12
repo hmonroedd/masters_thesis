@@ -928,23 +928,15 @@ The resulting system is assembled by DOLFINx and solved with a Newton method at 
 
 \input{convergence_table}
 
-\todo{review, move some stuff to appendix, make it shorter}
-The extraction time is not read directly from the simulated inventory but obtained by fitting an exponential decay to $\NT(t)$ over the window $[0,2\tau]$, and that fitted value carries a systematic error inherited from the time discretisation. The ARD equations being linear, once the initial transient has died out the space-discretised inventory relaxes along its slowest eigenmode $\dotNT=-\NT/\tau$; advancing it with the backward Euler scheme of the solver gives the geometric sequence $\NT^{k}=\NT^{0}(1+\Delta t/\tau)^{-k}$, so the discrete solution is still \emph{exactly} exponential, only with a modified time constant $\tau_\Delta$ such that $1/\tau_\Delta=\ln(1+x)/\Delta t$, writing $x\equiv\Delta t/\tau$. Expanding for $x\ll1$:
-\begin{equation}
-\label{eq:tau_delta_expansion}
-    \frac{\tau_\Delta}{\tau}=\frac{x}{\ln(1+x)}=1+\frac{x}{2}-\frac{x^{2}}{12}+O(x^{3})
-    \qquad \Longrightarrow \qquad
-    \tau_\Delta \simeq \tau+\frac{\Delta t}{2}
-\end{equation}
-The discretisation error on $\tau$ is therefore systematic rather than statistical: the fit itself contributes no scatter, since the numerical inventory is an exact exponential and the fit returns $\tau_\Delta$ rather than an estimate of it, and its sign is fixed because $x/\ln(1+x)>1$ for all $x>0$, so backward Euler always over-estimates the extraction time, by
+It can be shown that this discretisation error is \textbf{systematic rather than statistical}: the backward Euler scheme reproduces the inventory decay as an exact exponential, only with a time constant $\tau_\Delta\simeq\tau+\frac{\Delta t}{2}$, so it always over-estimates the extraction time by
 \begin{equation}
 \label{eq:e_delta}
     e_\Delta \equiv \frac{\tau_\Delta-\tau}{\tau}\simeq\frac{\Delta t}{2\,\tau}
 \end{equation}
-which is first order in $\Delta t$ and independent of the operating point, since it only involves the ratio of the time step to the extraction time being measured.
+which is first order in $\Delta t$ and independent of the operating point, since it only involves the ratio of the time step to the extraction time being measured. A short proof is given in \cref{app:dt_bias}. Being systematic, this bias can be subtracted rather than merely bounded, and every comparison of a fitted extraction time against the analytical solution in the following chapters is made on $\tau_\Delta-\frac{\Delta t}{2}$, so that what is left is the model error alone.
 
 
-A spatial and temporal convergence study of the LIBRA Pi case (\cref{tab:libra_pi_inputs}) was performed, it is shown in \cref{fig:convergence}. The corresponding results are reported in \cref{tab:convergence_gci}. The observed order of convergence is $0.998$ in time and $1.999$ in space, as expected of a backward Euler scheme and of P1 elements, and the measured ratio $e_\Delta/(\Delta t/\tau)$ is $0.501$. On the finest discretisations the Roache grid convergence index is $0.157\ \%$ in time and $1.2\times10^{-6}\ \%$ in space, suggesting that \textbf{the total discretisation error on $\tau$ is entirely set by the time step through \cref{eq:e_delta}, and the mesh contributes nothing}.
+A spatial and temporal convergence study of the LIBRA Pi case (\cref{tab:model_input}) was performed, it is shown in \cref{fig:convergence}. The corresponding results are reported in \cref{tab:convergence_gci}. The observed order of convergence is $0.998$ in time and $1.999$ in space, as expected of a backward Euler scheme and of P1 elements, and the measured ratio $e_\Delta/(\Delta t/\tau)$ is $0.501$. On the finest discretisations the Roache grid convergence index is $0.157\ \%$ in time and $1.2\times10^{-6}\ \%$ in space, suggesting that \textbf{the total discretisation error on $\tau$ is entirely set by the time step through \cref{eq:e_delta}, and the mesh contributes nothing}.
 
 The fact that the mesh contributes nothing can be explained by the intrinsic spatial dynamics of the ARD equations. The liquid phase has no advective term (\cref{eq:ARD_CT}), so no Peclet number can be defined for it. The liquid $E_l$ never sets the requirement, for the simple reason that dispersion only smooths, so the concentration profile can never be sharper than the interfacial source term $a\,h_l\,(\langle\CT\rangle^l-K_s\PT)$ that forces it. That term carries the gas phase length scales in \PT and $a\,h_l$: the length scale of the prior is dictated by the ratio $\frac{u_g}{E_g}$; the latter varies smoothly with hydrostatic pressure and is therefore described well enough by a coarse mesh. The limiting case $E_l\rightarrow0$, where each height decouples and the liquid simply inherits the gas profile, is therefore the worst case, and it is still governed by the gas. Therefore, \textbf{the spatial dynamics of the ARD equations are dictated by the gas phase characteristics only}, through the ratio $\frac{u_g}{E_g}$, suggesting that the mesh size should be index on the gas phase Peclet number $\mathrm{Pe}\equiv\frac{u_g\Delta x}{E_g}$. In the LIBRA Pi case, bubbles don't saturate much (relatively low \PI), the \PT profile is therefore smooth enough to be well described by even a coarse mesh that has a $\mathrm{Pe=2}$, explaining why the \textbf{temporal discretization error dominates the total discretization error}. Still, it should be noted that more extreme cases (e.g. high bubble saturation and poor mixing ) might lead to sharper \PT profile, requiring a lower Pe.
 
@@ -1097,11 +1089,12 @@ In this regime, the extraction time follows $\tau\approx \tau_\mathrm{SPP}\cdot\
 The mass transfer process is throttled by the gas throughput at the outlet, \textbf{extraction time increases with tritium solubility and becomes independent of tritium diffusivity}. Here, temperature primarily drives $K_s$ (exponentially, see \cref{tab:correlations}), thus \textbf{increasing $T$ is counter-productive in PPL}. \textbf{Extraction performances is mainly driven by the sparging gas flow rate \ndotg}, mediated by $u_g$. 
 
 \begin{keyresult}
-    \centering
-    \textbf{\PI  conditions the extraction power of individual bubbles}:\\
-    \PI<0.1 (MTL) $\Rightarrow$ most efficient extraction, high $T$ desirable \\
-    \PI>5 (PPL)  $\Rightarrow$ extraction throttled by saturation, need low $T$ and high \ndotg \\
-    in-between $\Rightarrow$ sub-optimal extraction, operating parameters compete with each other
+    \textbf{\PI  conditions the extraction power of individual bubbles}:
+    \begin{align*}
+    &\PI<0.1 \ \text{(MTL)} \Rightarrow \text{most efficient extraction, high $T$ desirable} \\
+    &\PI>5 \ \text{(PPL)} \Rightarrow \text{extraction throttled by saturation, need low $T$ and high \ndotg} \\
+    &0.1<\PI<5 \Rightarrow \text{sub-optimal extraction, operating parameters compete with each other}
+    \end{align*}
 \end{keyresult}
 
 \subsection{Impact of mixing}
@@ -1146,7 +1139,6 @@ The partial pressure panel of \cref{fig:stratified} separates the two assumption
 \begin{keyresult}
     \textbf{\Gmix  conditions the accuracy of the analytical solution}:
     \begin{align*}
-    &\mathrm{\Gmix \ conditions\ the\ accuracy\ of\ the\ analytical\ solution:}\\
     &\Gmix<0.1 \Rightarrow \text{exponential decay} \\
     &\Gmix>0.1 \ \text{AND} \ \big(\PI>0.1 \ \text{OR} \ \Gp>0.1\big)\Rightarrow \text{non-exponential decay} \\
     &\qquad \text{case} \ \PI<0.1 \ \text{AND} \ \Gp>0.1 \Rightarrow \Tnum>\Tana \ \text{(slower extraction)}\\ 
@@ -1824,6 +1816,26 @@ This exact general form behaves as expected in both limit regimes:
     \item $\langle\Pi\rangle\ll1$ (SPP regime): the exponential weight is unity over the whole column, every height contributes equally to the transfer and $\tau\rightarrow\frac{\langle \varepsilon_l \rangle}{\langle a\,h_l \rangle}=\tau_\mathrm{SPP}$, consistently with \cref{eq:tau_SPP} and without requiring any further assumption;
     \item $\langle\Pi\rangle\gg1$ (PPL regime): the weight collapses onto the top of the column, the bubbles leave saturated at $\PT(H)=\frac{\langle\CT\rangle^l}{K_s}$ and $\tau\rightarrow\frac{\langle \varepsilon_l \rangle\,H\,R\,T\,K_s}{u_g(H)}$, i.e. the extraction is throttled by the gas throughput at the outlet rather than by the interfacial mass transfer.
 \end{itemize}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\chapter{Systematic bias of the backward Euler scheme on the extraction time}
+\label{app:dt_bias}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+This appendix proves the result used in \cref{sec:numerical_error}: the time discretisation shifts the fitted extraction time by $\frac{\Delta t}{2}$, always in the same direction.
+
+The extraction time is not read directly from the simulated inventory but obtained by fitting an exponential decay to $\NT(t)$ over the window $[0,2\tau]$, and that fitted value carries a systematic error inherited from the time discretisation. The ARD equations being linear, once the initial transient has died out the space-discretised inventory relaxes along its slowest eigenmode $\dotNT=-\NT/\tau$; advancing it with the backward Euler scheme of the solver gives the geometric sequence $\NT^{k}=\NT^{0}(1+\Delta t/\tau)^{-k}$, so the discrete solution is still \emph{exactly} exponential, only with a modified time constant $\tau_\Delta$ such that $1/\tau_\Delta=\ln(1+x)/\Delta t$, writing $x\equiv\Delta t/\tau$. Expanding for $x\ll1$:
+\begin{equation}
+\label{eq:tau_delta_expansion}
+    \frac{\tau_\Delta}{\tau}=\frac{x}{\ln(1+x)}=1+\frac{x}{2}-\frac{x^{2}}{12}+O(x^{3})
+    \qquad \Longrightarrow \qquad
+    \tau_\Delta \simeq \tau+\frac{\Delta t}{2}
+\end{equation}
+The discretisation error on $\tau$ is therefore systematic rather than statistical: the fit itself contributes no scatter, since the numerical inventory is an exact exponential and the fit returns $\tau_\Delta$ rather than an estimate of it, and its sign is fixed because $x/\ln(1+x)>1$ for all $x>0$, so backward Euler always over-estimates the extraction time, by
+\begin{equation*}
+    e_\Delta \equiv \frac{\tau_\Delta-\tau}{\tau}\simeq\frac{\Delta t}{2\,\tau}
+\end{equation*}
+which is \cref{eq:e_delta}.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \chapter{Permeation transient simulations}

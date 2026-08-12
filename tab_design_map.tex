@@ -1,5 +1,7 @@
 \begin{table}[htbp]
+    \centering
     \small
+    \setlength{\tabcolsep}{3pt}
     \renewcommand{\arraystretch}{1.35}
     \caption{Decision table covering the 8 regimes a sparging system can fall in. The upper block is where the analytical solution is accurate to $\pm5\%$, i.e. where at most one assumption is violated; in the lower block it is no longer reliable and the numerical model is required, the entry then indicating whether the extraction is faster or slower than \Tana predicts.}
     \label{tab:design_map}
@@ -15,7 +17,7 @@
         \midrule
         \multicolumn{6}{@{}l}{\textit{\textbf{Analytical solution unreliable, use the numerical model}}} \\
         4 & 1 & 0 & 0 & $<\Tana$ & $a\nearrow$, $\PT\searrow$ as bubbles expand \\
-        6 & 0 & 1 & 0 & $<\Tana$ & PPL regime, plug-flow-like liquid, non-exponential decay \\
+        6 & 0 & 1 & 0 & $<\Tana$ & PPL regime, plug-flow liquid, non-exponential decay \\
         7 & 0 & 0 & 1 & $>\Tana$ & MTL regime, profiles stabilize to minimize $a\JT$ \\
         8 & 0 & 0 & 0 & $\ll\Tana$ & both effects combined, non-exponential decay \\
         \bottomrule
