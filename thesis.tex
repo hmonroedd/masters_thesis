@@ -888,18 +888,21 @@ Two consequences are worth keeping in mind when reading the results that follow.
 
 \begin{figure}[htbp]
   \centering
-  \includegraphics[width=\linewidth, trim={0.2cm 1cm 0 1cm}, clip]{fig/verification_P_T2_profile.pdf}
-  \caption{Tritium partial pressure profile in the gas phase at three instants, computed by the 1D ARD model (solid) and given by the analytical solution \cref{eq:PT_profile} (dotted), in the small partial pressure regime (a) and close to the partial pressure limited regime (b).}
-  \label{fig:verification_profile}
-\end{figure}
-\todo{redo fig\_verification\_profile with the panels stacked vertically (shared x axis), then fig\_verification\_inventory will be put on the right panel (keep the two figures separate pdfs, just use subfigures in latex}
-
-
-\begin{figure}[htbp]
-  \centering
-  \includegraphics[width=0.6\linewidth]{fig/verification_inventory.pdf}
-  \caption{Decay of the tritium inventory computed by the 1D ARD model (colored) and given by \cref{eq:tau_ana} (dotted). Bottom: relative residual against the analytical $\tau$ (solid) and against $\tau+\Delta t/2$ (dashed), the decay time the backward Euler scheme reproduces.}
-  \label{fig:verification_inventory}
+  \begin{subfigure}[t]{0.49\linewidth}
+    \centering
+    \includegraphics[width=\linewidth]{fig/verification_P_T2_profile.pdf}
+    \caption{Tritium partial pressure profile in the gas phase at three instants, in the small partial pressure regime (top) and close to the partial pressure limited regime (bottom).}
+    \label{fig:verification_profile}
+  \end{subfigure}
+  \hfill
+  \begin{subfigure}[t]{0.49\linewidth}
+    \centering
+    \includegraphics[width=\linewidth]{fig/verification_inventory.pdf}
+    \caption{Decay of the tritium inventory, and its relative residual against the analytical $\tau$ (solid) and against $\tau+\Delta t/2$ (dashed), i.e. once the discretisation bias of \cref{eq:e_delta} is removed.}
+    \label{fig:verification_inventory}
+  \end{subfigure}
+  \caption{Verification of the 1D ARD model against the analytical solution, in both saturation regimes: (a) the partial pressure profile of \cref{eq:PT_profile}, (b) the inventory decay of \cref{eq:tau_ana}. The model is drawn as a thick faded line, the analytical solution as a thin dashed one.}
+  \label{fig:verification}
 \end{figure}
 
 The analytical solution derived in \cref{sec:analytical_solution} rests on a set of assumptions that the numerical 1D ARD model does not make. A \textbf{virtual} reference case is therefore built in which all of them are satisfied, so that any remaining discrepancy can be attributed to the implementation rather than to the modelling: we use the ARD input corresponding to the LIBRA Pi experiment (see \cref{tab:model_input}), except for the \textbf{tank height which is divided by ten} to satisfy \cref{as:uniform_hydrodynamic}, and for the solubility constant $K_s$ which takes two values in order to probe the implementation correctness in both partial pressure regimes. Each assumption can be checked against \cref{tab:model_input}.
