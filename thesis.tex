@@ -409,14 +409,14 @@ A schematic of the problem at hand along with the main quantities of interest is
     \begin{subfigure}[t]{0.48\linewidth}
         \centering
         \resizebox{\linewidth}{!}{\input{diag_two_film}}
-        \caption{The Lewis-Whitman two-film mass transfer model at a liquid gas interface, adapted from \textcite{evans_physics_2026}. The whole resistance to the transfer sits in the two films; the concentration is discontinuous at the interface itself, where the two sides stay at equilibrium. In molten salts the liquid film carries almost all of the resistance, so $\delta_g$ is neglected in this work and $c_\mathrm{T_2,gi}$ is taken as the bulk gas value.}
+        \caption{The Lewis-Whitman two-film mass transfer model at a liquid gas interface, adapted from \textcite{evans_physics_2026}.}
         \label{fig:two_film_model}
     \end{subfigure}
     \hspace{1 em}
     \begin{subfigure}[t]{0.48\linewidth}
       \centering
       \resizebox{\linewidth}{!}{\input{diag_equilibrium}}
-      \caption{Interfacial equilibrium between the liquid and a bubble, the interface sits on the Henry line, so the driving force of the two-film model is the vertical distance between the bulk liquid concentration and the concentration that would be in equilibrium with the bubble.}
+      \caption{Interfacial equilibrium between the liquid and a bubble.The interface is assumed to be always at equilibrium on the Henry line, so the driving force of the two-film model is the vertical distance between the bulk liquid concentration and the concentration that would be in equilibrium with the bubble.}
       \label{fig:equilibrium}
     \end{subfigure}
 \end{figure}
@@ -426,22 +426,22 @@ Transport through the liquid-gas interface created by bubbles is what directly a
 It relies primarily on diffusion, where the density gradient occurring at the interface drives a particle flux $\JT \:\mathrm{[mol/m^2/s]}$ from the tritium-rich liquid to the tritium-poor gas, hereafter the \textit{interfacial flux}. On top of pure diffusion, turbulence at the liquid-gas interface tends to promote mass exchange between phases. 
 % It depends on two fundamental properties of the solute-solvant couple (here tritium-molten salt): diffusivity $D_T \:\mathrm{[m^2/s]}$ and solubility $K_s$  ($\mathrm{[mol/m^3/Pa]}$ or $\mathrm{[mol/m^3/Pa^{0.5}]}$ depending on the solubility law).
 \\
-Transport of solute gases through liquid-gas interfaces is commonly described by the Lewis-Whitman two-film model\cite{lewis_principles_1924} illustrated in \cref{fig:two_film_model}. In molten salts, \ce{H_2} has a low solubility \cite{malinauskas_solubilities_1974}, so mass transfer through the interface is limited by the liquid film, the interfacial flux is therefore expressed using the liquid side mass transfer coefficient $h_l \:\mathrm{[m/s]}$ which characterized both molecular diffusion and turbulent transport through the liquid film. The interfacial flux is expressed as:
+Transport of solute gases through liquid-gas interfaces is commonly described by the Lewis-Whitman two-film model\cite{lewis_principles_1924} illustrated in \cref{fig:two_film_model}. The whole diffusive resistance to the transfer sits in the two films; the concentration is discontinuous at the interface itself, where the two sides stay at equilibrium. In general, the liquid film carries almost all of the resistance, so $\delta_g$ is neglected in this work and $c_\mathrm{T_2,gi}$ is taken as the bulk gas value\cite{ricapito_tritium_2011}. The interfacial flux is therefore expressed using the liquid side mass transfer coefficient $h_l \:\mathrm{[m/s]}$ which characterized both molecular diffusion and turbulent transport through the liquid film. The interfacial flux is expressed as:
 
 
 \begin{equation*}
-    \JT = h_l \,(\CT-c_\mathrm{T_2,i})
+    \JT = h_l \,(\CT-c_\mathrm{T_2,li})
 \end{equation*}
 
-Where $\CT \: \mathrm{[mol/m^3]}$ is the tritium concentration in the bulk liquid phase, $c_\mathrm{T_2,i}$ is the tritium concentration at the liquid-gas interface.
+Where $\CT \: \mathrm{[mol/m^3]}$ is the tritium concentration in the bulk liquid phase, $c_\mathrm{T_2,i}$ is the tritium concentration in the liquid at the liquid-gas interface.
 \par
-Concentration at the liquid-gas interface is assumed to be always at equilibrium, dictated by the solubility in the liquid phase: $c_{T_2,i}=c_{T_2,eq}=K_s \,P_{T_2}$, where $P_{T_2} \:\mathrm{[Pa]}$ is the tritium partial pressure in the gas phase, and the solubility of the tritium follows a Henry's law with constant $K_s \: \mathrm{[mol/m^3/Pa]}$ as it is the case for molten salts. It follows:
+Concentration at the liquid-gas interface is assumed to be always at equilibrium\cite{ricapito_tritium_2011}, which in molten salts is given by the linear Henry's law as illustrated in \cref{fig:equilibrium}: $c_{T_2,li}=K_s \,P_{T_2}$, where $P_{T_2} \:\mathrm{[Pa]}$ is the tritium partial pressure in the gas phase, and $K_s \: \mathrm{[mol/m^3/Pa]}$ is the Henry's solubility constant of the liquid. It follows:
 \begin{equation}
     \label{eq:JT2}
     \JT = h_l \, (c_{T_2}-K_s\,\PT)
 \end{equation}
 
-In \cref{eq:JT2}, \JT and \PT are the unknown to be solved in the 1D-ARD model; $K_s$ is a salt property; $h_l$ is a parameter that depends on tritium diffusivity and fluid dynamic characteristics of the salt. 
+In \cref{eq:JT2}, \CT and \PT are the unknowns to be solved in the 1D-ARD model, coupled by \JT; $K_s$ is a salt property; $h_l$ is a parameter that depends on tritium diffusivity and fluid dynamic characteristics of the salt. 
 % -> transition to next section
 
 \subsection{Fluid dynamics}
@@ -767,7 +767,8 @@ Solving yields an exponential decay, as obtained previously under the small part
     \tau =\tau_\mathrm{SPP}\,\frac{\langle\Pi\rangle}{1-e^{-\langle\Pi\rangle}}
 \end{equation}
 \end{keyresult}
-This latter form is used as the reference analytical solution in the rest of this work, denoted \Tana for distinction with values that might be obtained numerically. \Cref{as:uniform_hydrodynamic} can be lifted: \cref{app:tau_full} carries the same reasoning through with $a$, $h_l$ and $u_g$ varying along the column, which gives an exact expression of $\tau$ in integral form (\cref{eq:tau_full}) and shows how it collapses back onto \cref{eq:tau_ana} once the profiles flatten.
+
+It is possible to get rid of \Cref{as:uniform_hydrodynamic} by carrying a more complete derivation, as done in \cref{app:tau_full}:$a$, $h_l$ and $u_g$ are allowed to vary along the column, this gives an exact expression of $\tau$ in integral form (\cref{eq:tau_full}), which collapses back onto \cref{eq:tau_ana} once the profiles flatten. This more general expression is however more complex and can't be expressed in a simple algebraic form. The simpler \cref{eq:tau_ana} is therefore retained as the \textbf{reference analytical solution in the rest of this work}, denoted \Tana for distinction with values that might be obtained numerically.
 
 % it can be proven (see "derivation nT2-II") that this expression for P(H) holds even if c_T varies a lot along the height (ie we don't need assumption \label{as:c_is_uniform}) if Pi(H) is small enough (<0.1) -> in the general solution (with integral), we plug c = <c>+c', if the exponential is ~constant in the integration domain (Pi<0.1) then int(exp(pi) * c') = exp(pi)*int(c')=0 
 
@@ -1143,7 +1144,7 @@ The findings of the design study are summarized in \cref{fig:venn}, covering the
 \end{figure}
 
 \paragraph{When can one use the analytical model ?}
- Defining the threshold tolerance at $\pm5\%$, the parity plot of \cref{fig:parity} shows that \textbf{having no more than one the three assumptions violated is a sufficient condition for the analytical model to hold}: all 111 samples satisfying it fall within the reference $\Tnum\pm5\%$, the largest deviation being 3.3\%. It does not matter which of the three is the one relaxed, so this contains in particular the insight that the "good-mixing" assumption can be relaxed ($\Gmix \nless 0.1$) and the analytical model still hold, as found in \cref{sec:impact_of_mixing}. Beyond that the failure is abrupt rather than gradual, as \cref{fig:venn} shows region by region: as soon as a second assumption is violated the deviation can reach 12\%, and up to 46\% when all three are.
+ Defining the threshold tolerance at $\pm5\%$, the parity plot of \cref{fig:parity} shows that \textbf{having no more than one the three assumptions violated is a sufficient condition for the analytical model to hold}: all 111 samples satisfying it fall within the reference $\Tnum\pm5\%$, the largest deviation being 3.3\%. It does not matter which of the three is the one relaxed, so this contains in particular the insight that the "good-mixing" assumption can be relaxed ($\Gmix \nless 0.1$) and the analytical model still hold, as found in \cref{sec:impact_of_mixing}. Beyond that the inaccuracy of the analytical results is abrupt, as \cref{fig:venn} shows region by region: as soon as a second assumption is violated the deviation can reach 41\%, and up to 46\% when all three are.
 
 
 \begin{figure}[htbp]
@@ -1233,7 +1234,7 @@ The sparger design isn't decided yet. The number of nozzles in particular dictat
 
 Beside the already fixed geometry, only four quantities can be controlled by the experiment: the temperature ($T$), the gas molar flow rate (\ndotg), the head space pressure (\Ptop) and the sparger nozzle diameter (\dnoz). Their range is reported in \cref{tab:model_input}. Everything else comes from the closure relations of \cref{tab:correlations,tab:correlations_hydro}. 
 
-The initial tritium inventory is fixed to $3.6\cdot10^{-12} \ \mathrm{molT2}$ (equivalent to $\langle\CT\rangle =3.0\cdot10^{-11} \ \mathrm{molT2/m^3}$) to correspond to an irradiation of $2\cdot10^{-9} \ \mathrm{n/s}$ (the available 14 MeV neutron source) for 6 hours and a TBR=0.1 (calculated for the LIBRA Pi geometry using OpenMC). That being said, in the case of the sparging model itself, as long as the "negligible contribution of \PT to bubble pressure" (\cref{as:T2_press_is_negligible}) holds, it could take any value this would not change the extraction time since the ARD equations are linear. This will however become relevant in \cref{sec:LIBRAPi_permeation} where the boundary condition for the concentration at the salt-metal interface is non-linear. 
+The initial tritium inventory is fixed to $3.6\cdot10^{-12} \ \mathrm{molT2}$ (equivalent to $\langle\CT\rangle =3.0\cdot10^{-11} \ \mathrm{molT2/m^3}$) to correspond to an irradiation of $2\cdot10^{9} \ \mathrm{n/s}$ (the available 14 MeV neutron source) for 6 hours and a TBR=0.1 (calculated for the LIBRA Pi geometry using OpenMC). That being said, in the case of the sparging model itself, as long as the "negligible contribution of \PT to bubble pressure" (\cref{as:T2_press_is_negligible}) holds, it could take any value this would not change the extraction time since the ARD equations are linear. This will however become relevant in \cref{sec:LIBRAPi_permeation} where the boundary condition for the concentration at the salt-metal interface is non-linear. 
 
 
 
@@ -1247,7 +1248,7 @@ Considering the range of attainable operating parameters presented in \cref{tab:
     \item As for $\PI$, it is the uncertain parameter that motivates the 2 scenarios:
     \begin{itemize}
         \item optimistic: $\PI=3.5\cdot10^{-5}-2.4\cdot10^{-3}$, the bubbles are always in the MTL regime
-        \item pessimistic: $\PI=0.03-2.2$, spans MTL up to the entrance of the SPP regime. The temperature might therefore have an adverse effect on the extraction in some regions of the operational parameters space. 
+        \item pessimistic: $\PI=0.03-2.2$, spans MTL up to the entrance of the PPL regime. The temperature might therefore have an adverse effect on the extraction in some regions of the operational parameters space. 
     \end{itemize}
 \end{itemize}
 
@@ -1333,14 +1334,14 @@ The quarter-annulus geometry of the LIBRA Pi experiment is shown in \cref{fig:li
 \begin{figure}[H]
     \begin{subfigure}[t]{0.48\linewidth}
         \centering
-        \includegraphics[height=6cm, trim={0 8cm 0 1cm}, clip]{fig/cell.pdf}
+        \includegraphics[height=7cm, trim={0 8cm 0 1cm}, clip]{fig/cell.pdf}
         \caption{Simulated unit cell and its dimensions: (a-a) perspective front view without the OV wall, showing one spacer rib with evenly spaced gas channels, the dotted-dashed line indicates the cross-section shown in (a-b) the top view. "spacer" is abbreviated as "s"}
         \label{fig:cell}
     \end{subfigure}
     \hspace{1 em}
     \begin{subfigure}[t]{0.48\linewidth}
         \centering
-        \includegraphics[height=6cm, trim={0 2cm 0 2cm}, clip]{fig/BCs.pdf}
+        \includegraphics[height=7cm, trim={0 2cm 0 2cm}, clip]{fig/BCs.pdf}
         \caption{Clipped view of the unit cell with visible HEX elements (medium refinement), bulk volume is shown transparent, revealing labeled surfaces where boundary conditions are applied}
         \label{fig:Bcs}
     \end{subfigure}
@@ -1406,7 +1407,7 @@ where $k_\mathrm{eff}$ is the salt-to-wall mass transfer coefficient. The second
 
 
 \paragraph{OV gas surface BC}
-\ce{T} atoms leave the metal into the OV gas by either: recombining with another \ce{T} into \ce{T2} ($\mathrm{2^{nd}}$ order reaction); recombining with a \ce{H} adsorbed at the OV surface into \ce{HT}; or by isotopic exchange with a partner molecule of the sweep gas (e.g. through \ce{T+H2O -> H+HTO} or \ce{T+H2 -> H+HT}). The first channel is quadratic in the surface concentration, the others are linear, so the flux out of the sweep gas facing surfaces is:
+\ce{T} atoms leave the metal into the OV gas by either: recombining with another \ce{T} into \ce{T2} ($\mathrm{2^{nd}}$ order reaction); recombining with a \ce{H} adsorbed at the OV surface into \ce{HT}; or by isotopic exchange with a partner molecule of the sweep gas (e.g. through \ce{T + H2O -> H + HTO} or \ce{T + H2 -> H + HT}). The first channel is quadratic in the surface concentration, the others are linear, so the flux out of the sweep gas facing surfaces is:
 \begin{equation}
 \label{eq:sweep_BC}
     J_\mathrm{OV}=-k_r\,c_\mathrm{T}^2-k_e\,c_\mathrm{X}\,c_\mathrm{T}
@@ -1436,7 +1437,7 @@ Still large uncertainties remain about the salt-to-metal transport, the presence
 Permeation will impact the amount of tritium available to be extracted by sparging, and the other way around. The modelling on sparging done in this work allowed to establish that the concentration in the salt can be assumed uniform and that we can use a simple time constant $\tau$, independently of the concentration, to represent sparging extraction. The coupling can simply be achieved through a 0D mass balance:
 \begin{equation}
 \label{eq:salt_balance}
-    V_\mathrm{salt}\frac{d\,c_\mathrm{salt}}{dt}=-\frac{c_\mathrm{salt}}{\tau}-A_\mathrm{wetted}\,J_\mathrm{salt}
+    V_\mathrm{salt}\frac{d\,c_\mathrm{salt}}{dt}=-V_\mathrm{salt}\,\frac{c_\mathrm{salt}}{\tau}-A_\mathrm{wetted}\,J_\mathrm{salt}
 \end{equation}
 
 We decided to treat the optimistic scenario of \cref{sec:LIBRAPi_sparging} in nominal conditions, with $\tau_{99}=55.6$ hours. To stay consistent, we use the \textcite{malinauskas_solubilities_1974} and the \textcite{fukada_hydrogen_2006} correlations for the salt solubility and diffusivity respectively.
@@ -1617,13 +1618,13 @@ Adding \ce{H2} to the sweep gas divides the leaked fraction by $\sim30$ and turn
     $\Rightarrow$ \textbf{a reducing OV sweep gas is required to meet the robust accountancy goal}
 \end{keyresult}
 
-\paragraph{The chapter in one picture}
-All four results above are statements about which of four resistances in series dominates, and \cref{fig:resistances} collects them. Tritium leaves the salt either with the bubbles or through the wall, and the wall itself is a reservoir rather than a simple conductor. $R_1$, the salt to wall step, is orders of magnitude larger than the other three, which is why the amount that permeates is set by $k_\mathrm{eff}$ alone and ignores the sweep gas entirely (\cref{sec:perm_salt_side}). What the sweep gas does control is the divider between $R_3$ and $R_4$, i.e. the split between the tritium that is collected and the tritium that is lost (\cref{sec:perm_sweep}). And when $R_3$ is large, which is the case with helium alone, the wall stops passing tritium on at all and stores it instead (\cref{sec:perm_retention}).
+\subsection{Summary}
+All four results above are statements about which of four tritium transport resistances dominates, summarized by \cref{fig:resistances}. Tritium leaves the salt either with the bubbles or through the wall, and the wall itself is a reservoir rather than a simple conductor. $R_1$, the salt to wall step, is orders of magnitude larger than the other three, which is why the amount that permeates is set by $k_\mathrm{eff}$ alone and ignores the sweep gas entirely (\cref{sec:perm_salt_side}). What the sweep gas does control is the divider between $R_3$ and $R_4$, i.e. the split between the tritium that is collected and the tritium that is lost (\cref{sec:perm_sweep}). When $R_3$ is large (He only case), the wall stops passing tritium and stores it instead (\cref{sec:perm_retention}), with a portion of it slowly leaking to the environment through $R_4$.
 
 \begin{figure}[htbp]
   \centering
   \resizebox{\linewidth}{!}{\input{diag_resistances}}
-  \caption{The permeation study as a resistance network. Fill colour follows the tritium concentration, which falls along every pathway. $R_1$ dominates, so it alone sets how much tritium permeates; $R_3$ is drawn as a variable resistance because the sweep gas chemistry is what sets it, and with it the share of the permeated tritium that leaks rather than being collected.}
+  \caption{The permeation study as a resistance network. $R_1$ dominates, so it alone sets how much tritium permeates; the wall has a comparatively small diffusive resistance $R_2$, parallel to a capacitor that stores tritium; $R_3$ variable resistance is set by the sweep gas chemistry.}
   \label{fig:resistances}
 \end{figure}
 
@@ -1734,7 +1735,7 @@ Given the assumed negligible bubble residence time (\cref{as:short_res_time}), w
 Solving yields an exponential decay, as obtained previously under the small partial pressure approximation (\cref{sec:extraction_kinetics}), here generalized for any partial pressure regime:
 \begin{equation}
 \label{eq:tau_full}
-    \tau =\frac{\langle \varepsilon_l \rangle\,H}{\int_0^H a(z)\,h_l(z)\,e^{-\left(\langle\Pi\rangle-\Pi^\star(z)\right)}dz}
+    \boxed{\tau =\frac{\langle \varepsilon_l \rangle\,H}{\int_0^H a(z)\,h_l(z)\,e^{-\left(\langle\Pi\rangle-\Pi^\star(z)\right)}dz}}
 \end{equation}
 
 This exact general form behaves as expected in both limit regimes:
