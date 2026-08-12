@@ -199,8 +199,6 @@ DT fusion itself produces fast neutrons (\cref{eq:DT_fusion}), it naturally foll
 \end{align}
     
 
-\todo{insert plot of neutron cross sections of those reactions} % use Remi's neutron XS plotter: https://github.com/openmc-data-storage/isotope-xs-plotter
-
 \subsection{The breeding blanket}
 % how is breeding engineered ?
 In practice, a FPP would produce tritium in a \textit{breeding blanket} that surrounds the fusion core, be it inertially or magnetically confined. For \cref{eq:Li6_capture,eq:Li7_capture} to occur, the breeding blanket is made of a lithium-containing material, chosen among:
@@ -236,7 +234,6 @@ The fusion fuel cycle is the set of processes that supplies tritium to the plasm
 \subsection{Self-sufficiency}
 % definition of the scientific and engineering TBR, tritium self-sufficiency of a FPP
 % include doubling time considerations, achievable and required TBR ? (Ferry 2023, Abdou 2020)
-\todo{rathre use terminology "neutronics" and "real" TBR} % similarity with fusion gain is too farfelu 
 
 For the fusion power industry to be able to scale, individual FPPs have to produces at least as much tritium as they consumes, i.e. optimize their outer fuel cycle to achieve a sufficiently high TBR. For explanatory purposes. a distinction can be made between the "neutronics" TBR (\cref{eq:TBR_neutronics}), which measures tritium being born in the breeding material from transmutation reactions, and the "real" TBR (\cref{eq:TBR_real}) which measures the tritium that is actually retrieved and can be injected in the fusion core. 
 \begin{align}
@@ -347,7 +344,7 @@ This makes tritium transport measurements hard to reproduce, leading to large di
 The modeling carried on in this work therefore builds on uncertain foundations, the large uncertainties on tritium transport properties will be dealt with by considering various correlations and propagating the impact of the correlation choice to the model's output. 
 
 Physical properties of fluoride salts FLiBe and FLiNaK on the other hand are comparatively well known. The study of fluoride salts has been motivated by both fusion and fission applications, as fluoride salts can be used as coolant in advanced reactor concepts such as Fluoride-salt-cooled High-temperature Reactors (FHR)\cite{stempien_integrated_2016}. First measurement of FLiBe properties such as density, viscosity and surface tension were performed in the 1960s in the context of the Molten Salt Reactor Experiment (MSRE)\cite{cantor_physical_1968} and enriched since then \cite{romatoski_fluoride_2017,vidrio_density_2022}. ClLiF salt on the other hand, which is used in the BABY 1L experiments\cite{delaporte-mathurin_baby_2026} and is envisioned for the LIBRA Pi experiment, was disregarded by fission and fusion research until now, its tritium transport properties are unmeasured, and its physical properties far less characterized
-than those of FLiBe. \todo{check that it is really the case even for physical properties}
+than those of FLiBe. 
 
 \section{Gas sparging in molten salts}
 
@@ -409,14 +406,14 @@ A schematic of the problem at hand along with the main quantities of interest is
 \begin{figure}[ht]
     \begin{subfigure}[t]{0.48\linewidth}
         \centering
-        \includegraphics[height=5.5cm]{fig/boundary_layer.png}
+        \includegraphics[height=5cm]{fig/boundary_layer.png}
         \caption{Illustration of the Lewis-Whitman two-film mass transfer model for a bubble in a liquid, taken from \textcite{evans_physics_2026}.}
         \label{fig:two_film_model}
     \end{subfigure}
     \hspace{1 em}
     \begin{subfigure}[t]{0.48\linewidth}
       \centering
-      \includegraphics[height=5.5cm]{fig/equilibrium_curve.pdf}
+      \includegraphics[height=5cm]{fig/equilibrium_curve.pdf}
       \caption{Interfacial equilibrium between the liquid and a bubble, the interface sits on the Henry line, so the driving force of the two-film model is the vertical distance between the bulk liquid concentration and the concentration that would be in equilibrium with the bubble.}
       \label{fig:equilibrium}
     \end{subfigure}
@@ -588,7 +585,7 @@ Ultimately, what we are interested in is the evolution of the tritium inventory 
 The profiles solved by the 1D ARD model are inherently space dependent, and because of the hydrostatic pressure in the tank $P_l(z)=P_\mathrm{top}+\rho_l\,g\,(H-z)$, all the hydrodynamic parameters are also space dependent. It will be useful in the rest of this work to represent an arbitrary spatially varying quantity $\psi(z)$ by its average over a volume $\alpha$, defined as:
 \begin{equation}
     \label{eq:def_average}
-    \langle \psi \rangle^\alpha \equiv \frac{\iiint_{V_\alpha}\psi(\vec r) \,dV_\alpha}{V_\alpha}
+    \boxed{\langle \psi \rangle^\alpha \equiv \frac{\iiint_{V_\alpha}\psi(\vec r) \,dV_\alpha}{V_\alpha}}
 \end{equation}
 
 When $\alpha$ is the liquid or gas phase ($l,g$) it should be specified in the notation, but we set the convention to omit it when it refers to the whole system (i.e. the tank $t=l \cup g$). Defining $H_\alpha\equiv\frac{V_\alpha}{A}$ and considering that $\iiint_{V_\alpha}\psi(\vec r) \,dV_\alpha=A\,\int_{H_\alpha}\psi(z)\,dz_\alpha$ since we are in 1D, it follows that:
@@ -603,7 +600,6 @@ From the generic definition of the phase fraction (\cref{eq:def_eps}) and the ge
     \langle \CT \rangle^l &= \frac{\NTl}{V_l} \\
     \langle \varepsilon_l\,\CT \rangle &\stackrel{\eqref{eq:def_n}}{=} \frac{\NTl}{V_t}=\langle \varepsilon_l \rangle \, \langle \CT \rangle^l \label{eq:prop_separable}
 \end{align} 
-\todo{figure out a way to highlight those properties that will be reused multiple times (use boxes with different colors for definitions, properties, results?)}
 This holds equivalently for the corresponding gas phase quantities ($\varepsilon_g,\PT$). Note that the average of \CT alone makes physical sense only when averaged over the volume of the liquid phase, for the reason mentioned in \cref{sec:generic_definitions}. The quantity $\langle \CT \rangle$ corresponds to a dilution of the liquid phase tritium, from a volume $V_l$ to a volume $V_t=V_l+V_g$.
 
 \subsubsection{Quantity of interest}
@@ -786,7 +782,10 @@ The 1D-ARD equations require as input some tritium transport and fluid dynamics 
 \input{diag_model_overview}
 
 \subsection{Closure relations resolution}
-There are several available correlations in the literature for the same physical quantity, and the choice of which correlation to use is sometimes non-trivial: it changes depending on what parameters are already known and in what range they are. \todo{give an example (bubble size)}
+There are several available correlations in the literature for the same physical quantity, and the choice of which correlation to use is sometimes non-trivial: it changes depending on what parameters are already known and in what range they are. 
+
+For example, one might choose to compute the gas fraction $\varepsilon_g$ from a correlation based on the gas flow rate and some properties of the flow; an other approach is to first fix the bubble terminal velocity $v_{g}$ with a correlation and afterwards obtain the gas fraction from the gas flow rate by simply using a fundamental property of the superficial velocity: $u_g=\frac{\dot V_g}{A}=\varepsilon_g v_g$. Here it can be seen that the triplet ($\dot V_g$, $\varepsilon_g$, $\v_g$) presents a single degree of freedom to be fixed by a correlation, $\dot V_g$ being an input: which quantity $\varepsilon_g$ or $v_g$ is the correlation-dependent one is up to the user's choice. In general this can lead to a variety of correlations combinations, each equally valid. 
+
 
 In particular, the topic of gas sparging in molten salts presents large unknowns (e.g. tritium transport properties, see \cref{fig:transport_params}), and it is the purpose of this model to explore them. It was therefore designed to offer flexibility as to the closure relations used and the assumptions they are built upon. 
 
@@ -851,13 +850,13 @@ The resulting system is assembled by DOLFINx and solved with a Newton method at 
 \begin{figure}[htbp]
   \centering
   \includegraphics[width=\linewidth]{fig/convergence_refinement.pdf}
-  \caption{Discretisation error on the fitted extraction time, against the time step (left) and the mesh size (right), each measured relative to its own Richardson extrapolate.}
+  \caption{Discretisation error on the fitted extraction time, against the time step (left) and the mesh size (right), each measured relative to its own Richardson extrapolate $\tau_\infty$.}
   \label{fig:convergence}
 \end{figure}
 
 \input{convergence_table}
 
-
+\todo{review, move some stuff to appendix, make it shorter}
 The extraction time is not read directly from the simulated inventory but obtained by fitting an exponential decay to $\NT(t)$ over the window $[0,2\tau]$, and that fitted value carries a systematic error inherited from the time discretisation. The ARD equations being linear, once the initial transient has died out the space-discretised inventory relaxes along its slowest eigenmode $\dotNT=-\NT/\tau$; advancing it with the backward Euler scheme of the solver gives the geometric sequence $\NT^{k}=\NT^{0}(1+\Delta t/\tau)^{-k}$, so the discrete solution is still \emph{exactly} exponential, only with a modified time constant $\tau_\Delta$ such that $1/\tau_\Delta=\ln(1+x)/\Delta t$, writing $x\equiv\Delta t/\tau$. Expanding for $x\ll1$:
 \begin{equation}
 \label{eq:tau_delta_expansion}
@@ -891,7 +890,7 @@ Two consequences are worth keeping in mind when reading the results that follow.
   \begin{subfigure}[t]{0.49\linewidth}
     \centering
     \includegraphics[width=\linewidth]{fig/verification_P_T2_profile.pdf}
-    \caption{Tritium partial pressure profile in the gas phase at three instants, in the small partial pressure regime (top) and close to the partial pressure limited regime (bottom).}
+    \caption{Tritium partial pressure profile in the gas phase at three instants, when the small partial pressure approximation is valid (top) and close to the partial pressure limited regime (bottom).}
     \label{fig:verification_profile}
   \end{subfigure}
   \hfill
@@ -922,8 +921,6 @@ This verifies the numerical implementation in both the partial pressure regimes 
 
 \subsection{Summary of the code structure}
 % diagram of the high level structure of the model, showing the workflow, with corresponding file and API
-
-\todo{refactor the code so that the function of each file/class is more explicit}
 
 The model is implemented as a Python package, \verb|libra_sparging| (Python 3.12 or later), released under the MIT license at \url{https://github.com/LIBRA-project/libra_sparging}. The finite element discretisation is built on FEniCSx/DOLFINx \needcite{DOLFINx}, and the resolution of the closure relations on the graph library NetworkX \needcite{NetworkX}. Every physical quantity carries its units through Pint \needcite{Pint}, which performs the conversions and catches dimensional inconsistencies at run time (a useful safeguard given the number of empirical correlations involved, sometimes with archaic units). NumPy, SciPy, pandas and Matplotlib support the post-processing. Correctness is checked by a \verb|pytest| suite covering the resolution of the model input, the solver on cases with a known solution, and the
 serialisation of the results.
@@ -1065,8 +1062,6 @@ Note that that the error of \Tana grows toward the $\PI>1$ region of \cref{fig:e
 \end{keyresult}
 
 
-\todo{plot RMSE vs Gmix, and maybe with Gp and Pi on a 2D plot to find sufficient condition for non-exponential}
-
 % \subsubsection{Continuous stirred tank approximation}
 % When conditions on $\Gmix$ are met for the "well-mixed" assumption, the \CT ARD equation (\cref{eq:ARD_CT}) can be reduced to 0D:
 % \begin{equation}
@@ -1154,9 +1149,6 @@ The findings of the design study are summarized in \cref{fig:venn}, covering the
 \end{figure}
 
 
-\todo{does it actually make sense to talk about PFC ? In a PFC the reactant is introduced by "plugs" in the moving phase. The only similary with PFC here is that mixing is neglible}
-
-
 In a design problem, the tritium transport properties are not controlled directly. \Cref{fig:violin} compares what each region of the design space can reach, and the spread within a case there reflects the sampled transport parameters, so it is the medians that compare the regimes. The designer controls the tank geometry $H$ and $d_t$, the sparger nozzles and the range of expected operational parameters $T$, \ndotg and \Ptop, all of which are synthesized in the dimensionless groups \PI, \Gp and \Gmix.
 
 The optimal design depends on the constraints: beside the obvious extraction time goal, there might be cases when the tritium concentration of the outlet gas becomes a strong constraint. For instance in the LIBRA Pi experiment, after being extracted from the vessel, tritium is stripped from its carrying gas by water bubblers (ready to be counted using a liquid scintillator). The gas rate drives evaporation in those bubblers, it is thus desirable that the tritium concentration in the gas is optimized so that the gas flow rate itself can be kept low enough, eventually enabling a higher tritium concentration in the water samples to be counted. 
@@ -1215,7 +1207,7 @@ Headspace pressure, \Ptop         & 1-2 atm \\
 
 The model input corresponding to the LIBRA Pi experiment is reported in \cref{tab:model_input}. The quarter-annulus geometry of LIBRA Pi (see \cref{fig:librapi}) containing a salt volume of $\sim120$ L is described by a cylinder of height 0.93 m and equivalent base area $A=0.13 \ \mathrm{m^2}$ chosen to conserve salt volume. 
 
-LIBRA Pi will run in ClLiF molten salt, which is a convenient experimental breeder as it doesn't have Be toxicity problem. The current state of literature on ClLiF doesn't contain correlations for its tritium transport properties. This last point motivates the choice of rather using the properties of other molten salts as a ClLiF proxy. The physical properties (density, surface tension, viscosity) were taken for \ce{FLiBe}, they are expected to have a secondary impact on kinetics prediction. \todo{should try to find CLiF properties}Regarding the tritium transport properties, this makes the extraction time estimate inherently uncertain. Then, the best that can be done is to enclose the extraction time estimate between upper and lower bounds, corresponding to pessimistic and optimistic scenarios derived from the currently available correlations for tritium transport in molten salt (presented in \cref{fig:transport_params}):
+LIBRA Pi will run in ClLiF molten salt, which is a convenient experimental breeder as it doesn't have Be toxicity problem. The current state of literature on ClLiF doesn't contain correlations for its tritium transport properties. This last point motivates the choice of rather using the properties of other molten salts as a ClLiF proxy. The physical properties (density, surface tension, viscosity) were taken for \ce{FLiBe}, they are expected to have a secondary impact on kinetics prediction. Regarding the tritium transport properties, this makes the extraction time estimate inherently uncertain. Then, the best that can be done is to enclose the extraction time estimate between upper and lower bounds, corresponding to pessimistic and optimistic scenarios derived from the currently available correlations for tritium transport in molten salt (presented in \cref{fig:transport_params}):
 \begin{itemize}
     \item \textit{pessimistic scenario} = high solubility (i.e. the salt wants to retain tritium) and low diffusivity (slowing down mass transfer on the liquid side of the liquid-gas interface): $K_s$ and $D_l$ are both given by the correlations derived by \textcite{calderoni_measurement_2008} for \ce{T2} in \ce{FLiBe};
     \item \textit{optimistic scenario} = low solubility and high diffusivity: $K_s$ is given by the \textcite{malinauskas_solubilities_1974} correlation for \ce{D_2} in \ce{FLiBe}, $D_l$ is given by the \textcite{fukada_hydrogen_2006} correlation for \ce{H2} in \ce{FLiNaK}. 
@@ -1313,15 +1305,12 @@ The purpose of this chapter is therefore to evaluate the amount of tritium that 
 
 \subsection{Geometry}
 
-\todo{is the usage of "ribs" or "spacer ribs" right here ?}
-
 \begin{figure}[htbp]
   \centering
   \includegraphics[height=8cm, trim={0 0.5cm 0 1.5cm}, clip]{fig/librapi.pdf}
   \caption{Orthographic projection of (a) the LIBRA Pi experiment viewed from the outside, with labelled faces; (b) an exploded view of the LIBRA Pi double-walled vessel (IV and OV) mechanically coupled by spacer ribs.}
   \label{fig:librapi}
 \end{figure}
-\todo{crop in latex so that it looks centered}
 
 The quarter-annulus geometry of the LIBRA Pi experiment is shown in \cref{fig:librapi}(a). We are specifically interested about the vessel itself, consisting of an \textit{inner and outer wall} (IV and OV) so that tritium that permeates from the salt to the structural material can be collected by running a sweep gas in-between the two walls, called \textit{OV gas}. The salt volume doesn't fill the vessel all the way up, it stops at a certain height which delimits the portion of the wall that is \textit{wetted} and can permeate. In LIBRA Pi specifically, some spacers are required between the IV and OV to hold the walls together, as pictured in \cref{fig:librapi}(b). They make several parallel ribs spanning the whole width of 5 of the 6 faces: \textit{bottom}, 2 \textit{sides}, \textit{inner} and \textit{outer}. Small repeated archs are carved in the spacers, these are channels that allow the OV gas to flow. They add complexity to the spacer's geometry.  Resolving the small features of the multiple spacers would be intractable in 3D at the scale of the full vessel. Instead, we run the 3D simulations at a smaller scale, from which we reconstruct the vessel-scale quantities of interest.
 
@@ -1437,7 +1426,6 @@ Permeation will impact the amount of tritium available to be extracted by spargi
 \end{equation}
 
 We decided to treat the optimistic scenario of \cref{sec:LIBRAPi_sparging} in nominal conditions, with $\tau_{99}=55.6$ hours. To stay consistent, we use the \textcite{malinauskas_solubilities_1974} and the \textcite{fukada_hydrogen_2006} correlations for the salt solubility and diffusivity respectively.
-\todo{run the same PRF sweep in the pessimistic scenario ($\tau_{99}=126.5$ h) to bound the sparging/permeation competition}
 
 All the structural material is considered made of inconel. In practice, the salt is expected to reach 550°C and the vessel to be below that. Here, we conservatively consider the vessel is at salt temperature, so that the predicted tritium permeation is an upper bound.
 
@@ -1490,7 +1478,6 @@ It shows that a $-5.4\%$ underestimation of the leakage flux can be attributed t
 The point is not to have a perfect simulation but to know where it stops being trustworthy. Three limitations should be kept in mind when reading the results:
 \begin{itemize}
     \item \textbf{Mass conservation is the accuracy floor of every accountancy number}. The surface fluxes are recovered from the gradient of a linear field, which does not conserve mass exactly: at the selected mesh, what enters through the salt face and what leaves through the two others differ by 0.26\% in the convergence study, and by up to 1.9\% at the wall loadings actually reached during a run (\cref{fig:permeation_vs_sparging}(b)). This is because the transient runs add a second contribution on top of this one: the time integration is only first order, so the finite time step introduces its own imbalance, which the steady-state convergence study cannot see. This is why the bars of \cref{fig:partition} can slightly exceed 100\% of the bred inventory, and it is the reason no result below the percent level should be read as significant.
-    \todo{quantify the time-step contribution separately by rerunning one transient case with a halved step, so the space and time parts of the imbalance can be told apart}
     \item \textbf{The parallelepipedic channel biases the leakage flux by 4.7\%}, as quantified above. It is a geometric bias, not a discretization error, so refining does not remove it.
     \item \textbf{The environment-side boundary is a perfect sink}. Any oxide or surface resistance on the outer wall would reduce the leaked fraction, so the leakage numbers reported here are upper bounds.
     \item \textbf{One cell stands in for the 3 lateral faces}. Using the inner cell for the side and outer faces as well hides a spread of the contact ratio of $-4.7\%$ to $+6.9\%$ in relative terms. Since the leaked fraction is assumed to be dictated by the contact area, this propagates directly to the reconstructed leakage.
@@ -1576,7 +1563,6 @@ The leakage ratio of \cref{sec:perm_sweep} describes the \textit{branching betwe
 
 This is important for the robust accountancy goal: tritium sitting in the metal at the end of a run will come out delayed, on a timescale much longer than the run itself. This is accounted for in the BABY experiments by running \ce{H2} in the sweep gas at the end of every run, to collect all the tritium retained in the wall. 
 
-\todo{run one case much longer than 4 days to get the post-run release timescale of the retained inventory, this is what an accountancy campaign would need to know}
 
 \begin{keyresult}
     \centering
