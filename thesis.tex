@@ -91,7 +91,7 @@
 
 \begin{document}
 \maketitle
-\listoftodos
+% \listoftodos
 \dedication{
 "If, indeed, the sub-atomic energy in the stars is being freely used to maintain their great furnaces, it seems to bring a little nearer to fulfillment our dream of controlling this latent power for the well-being of the human race -- or for its suicide"
 Arthur Eddington, 1920
@@ -109,7 +109,7 @@ I would also like to thank EPFL for the education it gave me, in microengineerin
 
 I also want to thank Mathieu for accepting to be the reader of this thesis.
 
-Lastly, I would like to thank the Zeno Karl Schindler foundation for their helpful support during my stay in Boston.
+Lastly, I would like to thank the Zeno Karl Schindler foundation for their trust and helpful support during my stay in Boston.
 
 }
 \makeacks
@@ -928,13 +928,6 @@ The resulting system is assembled by DOLFINx and solved with a Newton method at 
 
 \input{convergence_table}
 
-It can be shown that this discretisation error is \textbf{systematic rather than statistical}: the backward Euler scheme reproduces the inventory decay as an exact exponential, only with a time constant $\tau_\Delta\simeq\tau+\frac{\Delta t}{2}$, so it always over-estimates the extraction time by
-\begin{equation}
-\label{eq:e_delta}
-    e_\Delta \equiv \frac{\tau_\Delta-\tau}{\tau}\simeq\frac{\Delta t}{2\,\tau}
-\end{equation}
-which is first order in $\Delta t$ and independent of the operating point, since it only involves the ratio of the time step to the extraction time being measured. A short proof is given in \cref{app:dt_bias}. Being systematic, this bias can be subtracted rather than merely bounded, and every comparison of a fitted extraction time against the analytical solution in the following chapters is made on $\tau_\Delta-\frac{\Delta t}{2}$, so that what is left is the model error alone.
-
 
 A spatial and temporal convergence study of the LIBRA Pi case (\cref{tab:model_input}) was performed, it is shown in \cref{fig:convergence}. The corresponding results are reported in \cref{tab:convergence_gci}. The observed order of convergence is $0.998$ in time and $1.999$ in space, as expected of a backward Euler scheme and of P1 elements, and the measured ratio $e_\Delta/(\Delta t/\tau)$ is $0.501$. On the finest discretisations the Roache grid convergence index is $0.157\ \%$ in time and $1.2\times10^{-6}\ \%$ in space, suggesting that \textbf{the total discretisation error on $\tau$ is entirely set by the time step through \cref{eq:e_delta}, and the mesh contributes nothing}.
 
@@ -946,6 +939,13 @@ The conclusions of this convergence study are as follow:
     \item \textbf{The temporal resolution decides the discretization error}: the time step can be indexed on the extraction time, which dictates the temporal dynamics of the system. It can be evaluated prior to a simulation using \Tana. In the rest of this work, a good compromise between accuracy and computational efficiency was chosen at $\Delta t = 10^{-2}\,\tau$, which gives $e_\Delta\approx+0.5\,\%$;
     \item \textbf{A coarse mesh size is acceptable as long as $\tau$ is concerned}: it is an integral of the outlet flux, which in the partial pressure limited regime does not depend on the shape of the \PT profile at all. \textbf{$\mathrm{Pe}=2$ is therefore sufficient, it is adopted in the rest of this work}. Only cases where the quantity of interest is $\PT(z)$ itself at large $\langle\Pi\rangle$ might require a finer mesh
 \end{itemize}
+
+It can be shown that the temporal discretization error is \textbf{systematic rather than statistical}: the backward Euler scheme reproduces the inventory decay as an exact exponential, only with a time constant $\tau_\Delta\simeq\tau+\frac{\Delta t}{2}$, so it always over-estimates the extraction time by
+\begin{equation}
+\label{eq:e_delta}
+    e_\Delta \equiv \frac{\tau_\Delta-\tau}{\tau}\simeq\frac{\Delta t}{2\,\tau}
+\end{equation}
+which is first order in $\Delta t$ and independent of the operating point, since it only involves the ratio of the time step to the extraction time being measured. A short proof is given in \cref{app:dt_bias}. Being systematic, this bias can be subtracted rather than merely bounded, and every comparison of a fitted extraction time against the analytical solution in the following chapters is made on $\tau_\Delta-\frac{\Delta t}{2}$, so that \textbf{what is left is the model error alone}.
 
 
 \subsubsection{Comparison with the analytical solution}
@@ -988,7 +988,7 @@ This verifies the numerical implementation in both the partial pressure regimes 
 \subsection{Code structure}
 % diagram of the high level structure of the model, showing the workflow, with corresponding file and API
 
-The model is implemented as a Python package, \verb|libra_sparging| (Python 3.12 or later), released under the MIT license at \url{https://github.com/LIBRA-project/libra_sparging}. The finite element discretisation is built on FEniCSx/DOLFINx \cite{Baratta_DOLFINx_the_next_2025}. Every physical quantity carries its units using the Pint library, which performs the conversions and catches dimensional inconsistencies at run time (a useful safeguard given the number of empirical correlations, sometimes involving exotic units). NumPy, SciPy, pandas and Matplotlib support the post-processing. Correctness is checked by a \verb|pytest| suite covering the resolution of the model input, the solver on cases with a known solution, and the
+The model is implemented as a Python package, \verb|libra_sparging| (Python 3.12 or later), released under the MIT license at \url{https://github.com/LIBRA-project/libra_sparging}\textcite{noauthor_libra-projectlibra_sparging_nodate}. The finite element discretisation is built on FEniCSx/DOLFINx \cite{Baratta_DOLFINx_the_next_2025}. Every physical quantity carries its units using the Pint library, which performs the conversions and catches dimensional inconsistencies at run time (a useful safeguard given the number of empirical correlations, sometimes involving exotic units). NumPy, SciPy, pandas and Matplotlib support the post-processing. Correctness is checked by a \verb|pytest| suite covering the resolution of the model input, the solver on cases with a known solution, and the
 serialisation of the results.
 
 The API of \verb|libra_sparging| package is synthesized in \cref{fig:code_structure}: the user describes the system with the four dataclasses of step~1, from which \texttt{from\_parameters} resolves the parameters (scalars and $z$-profiles) required by the 1D-ARD equations (step~3); any parameter left unspecified is filled with the default closure relations of \texttt{closure.py}. The dimensionless diagnostics of \texttt{SimulationInput} are available before any computation, and give the discretisation steps handed to \texttt{solve}, which returns a \texttt{SimulationResults} object holding the profiles and the requested exports. The dashed path is the shortcut used in practice: the pre-built cases of \texttt{example\_cases.py} return a ready \texttt{SimulationInput}. All quantities carry physical units, as \texttt{pint} objects built on the registry \texttt{ureg} of \texttt{config.py}.
@@ -1210,7 +1210,7 @@ The findings of the design study are summarized in \cref{fig:venn}, covering the
 
 \begin{figure}[htbp]
   \centering
-  \includegraphics[width=0.6\linewidth]{fig/design_venn.pdf}
+  \includegraphics[width=0.9\linewidth]{fig/design_venn.pdf}
   \caption{Map of the design space, showing where the analytical model is accurate. The three circles are the regions where each assumption is \textbf{violated}, so a system for which all three hold falls outside them (case 1). Each region carries its case number in \cref{tab:design_map} and the median signed error of \Tana, which the fill colour repeats.}
   \label{fig:venn}
 \end{figure}
